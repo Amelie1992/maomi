@@ -1,0 +1,304 @@
+#prize{
+	background: #ffd119;
+	padding-bottom:178px;
+	/*font-family: MicrosoftYaHei;*/
+}
+.prize_header{
+	width:100%;
+}
+.prize_header img{
+	width:100%;
+}
+.prize_mes{
+	padding:0 15px;
+}
+.prize_mes .fish_num{
+	font-size:12px;
+	color:#f95d18;
+	margin:0 auto;
+	text-align:center;
+	line-height:20px;
+}
+.fish_num i{
+	font-style: normal;
+}
+.award_num{
+	padding:18px 15px;
+}
+.award1,.award5{
+	display: inline-block;
+	width:30%;
+	font-size:18px;
+	text-align:center;
+	color:white;
+	line-height:20px;
+	background:url(../../images/awardrotate/bg_btn.png) no-repeat;
+	background-size:cover;
+	padding:12px 16px;
+	letter-spacing: 1px;
+}
+@media only screen and (min-width: 414px) {
+	.award1,.award5{
+		padding:18px 35px;
+	}
+}
+@media only screen and (min-width: 320px) {
+	.award1,.award5{
+		padding:8px 16px;
+	}
+}
+@media only screen and (min-width: 375px) {
+	.award1,.award5{
+		padding:12px 18px;
+	}
+}
+.award5{
+	float:right;
+}
+/*终将概率公示*/
+.probability{
+	width:100%;
+	margin:auto;
+	background:url(../../images/awardrotate/pro_bg.png) no-repeat;
+	background-size:100% 100%;
+	padding-bottom:4px;
+}
+.probability_tit{
+	text-align:center;
+	line-height:20px;
+	font-size:14px;
+	padding:20px 0 14px 0;
+	color: #f95d18;
+}
+.img_box{
+	width:92%;
+	margin:0 auto;
+	display: flex;
+	flex-wrap: wrap;
+}
+.img_box div{
+	display: inline-block;
+	width:25%;
+	margin-bottom:9px;
+}
+.img_box div img{
+	width:70%;
+	display:block;
+	margin:auto;
+}
+.img_box div p{
+	padding:6px 0;
+	text-align:center;
+	font-size:12px;
+	color: #f95d18;
+}
+/*中奖名单*/
+.winners{
+	width:100%;
+	padding:24px 0 20px 0;
+	margin-top:15px;
+	background:url(../../images/awardrotate/winner_bg.png) no-repeat;
+	background-size:100% 100%;
+}
+.winners_tit{
+	width: 96%;
+	margin:0 auto;
+	background:url(../../images/awardrotate/winner_titbg.png) no-repeat;
+	background-size:100%;
+	padding:8px 0;
+	font-size:14px;
+	color:white;
+	text-align:center;
+}
+@media only screen and (max-width: 414px) {
+	.winners_tit{
+		padding:12px 0;
+	}
+}
+@media only screen and (max-width: 375px) {
+	.winners_tit{
+		padding:8px 0;
+	}
+}
+@media only screen and (max-width: 320px) {
+	.winners_tit{
+		padding:6px 0;
+	}
+}
+.winners_name{
+	width:68%;
+	height:93px;
+	overflow: hidden;
+	margin-top:20px;
+	padding-left:24px;
+	
+}
+.prizeBox-nameList {
+	height: 140px;
+}
+
+#scrollMessage {
+	width:90%;
+	margin: 0 auto;
+	text-align: left;
+	overflow: hidden;
+	height: 140px;
+	position: absolute;
+	left: 15%;
+}
+
+#message_1 li,
+#message_2 li {
+	height: 25px;
+	list-style: none;
+	color: black;
+	font-size: 14px;
+}
+#scrollMessage span{
+	margin: 0 5px;
+}
+
+.winners_name table{
+	position:relative;
+	top:0;
+	font-family: MicrosoftYaHei;
+	font-size:12px;
+	color:#212121;
+	border-collapse:separate;
+	border-spacing:0px 0px;
+}
+.winners_name table tr{
+	display: block;
+	padding:0;
+	margin:0;	
+}
+.winners_name table td{
+	display: inline-block;
+	padding-right:10px;
+	padding-bottom:15px;
+}
+@media only screen and (max-width: 320px) {
+	.winners_name{
+		width:70%;
+	}
+}
+/*活动规则*/
+.rules{
+	background:url(../../images/awardrotate/rules_bg.png) no-repeat;
+	background-size:100% 100%;
+	margin-top:15px;
+	padding:20px 13px 28px;
+	color:#f95d18;
+}
+.rules_tit{
+	line-height:36px;
+	text-align:center;
+	margin-bottom:15px;
+}
+.rules_tit img{
+	display: inline-block;
+	width:34%;
+	padding-bottom:5px;
+}
+.rules_tit h2{
+	margin:0 9px;
+	display: inline-block;
+	font-size:14px;
+}
+.rules_con{
+	font-size:12px;
+	padding-left:20px;
+}
+.rules_con ul li{
+	padding-bottom:9px;
+	line-height: 18px;
+	list-style-type:decimal;
+	list-style-position: outside;
+}
+/*抽奖*/
+.shade{
+	display: none;
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background-color: rgba(0, 0, 0, 0.7);
+}
+.gain_bg{
+	position:absolute;
+	top:180px;
+	width:100%;
+	padding-top:86px;
+	padding-bottom:10px;
+	background:url(../../images/awardrotate/gain.png) no-repeat;
+	background-size:100% 100%;
+	display: flex;
+	justify-content: space-around;
+}
+@media only screen and (max-width: 320px) {
+	.gain_bg{
+		top:160px;
+	}
+}
+@media only screen and (min-width: 414px) {
+	.gain_bg{
+		top:210px;
+	}
+}
+.gain_bg div{
+	display: inline-block;
+	width:13%;
+}
+@media only screen and (max-width: 320px) {
+	.gain_bg div{
+		width:15%;
+	}
+}
+.gain_bg div p{
+	color: #ffffff;
+	font-size:10px;
+	text-align:center;
+	padding:8px 0;
+}
+.gain_bg div img{
+	display: inline-block;
+	width:100%;
+}
+.shade_on{
+	width:100%;
+	position:absolute;
+	top:380px;
+	text-align:center;
+	color:white;
+	font-size:12px;
+}
+@media only screen and (max-width: 320px) {
+	.shade_on{
+		top:340px;
+	}
+}
+@media only screen and (min-width: 414px) {
+	.shade_on{
+		top:400px;
+	}
+}
+#img1,#img2,#img3,#img4,#img5{
+	animation-duration: 0.5s;
+    animation-timing-function: linear;
+}
+#img1{
+    animation-delay: 0.1s;   /*动画延迟时间*/  
+}
+#img2{
+    animation-delay: 0.2s;    /*动画延迟时间*/
+}
+#img3{
+    animation-delay: 0.4s;   /*动画延迟时间*/
+}
+#img4{
+    animation-delay: 0.6s;    /*动画延迟时间*/
+}
+#img5{
+    animation-delay:0.8s;    /*动画延迟时间*/
+}

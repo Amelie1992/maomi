@@ -1,0 +1,119 @@
+.wrap {
+	background-image: url(../../images/activity/twoTwelve/mmcf-12-wx-bg.png);
+	background-size: 100% 100%;
+	background-position: center;
+}
+
+.wrap-head img {
+	width: 100%;
+}
+
+.wrap-con {
+	width: 90%;
+	margin: 0 auto;
+	background-image: url(../../images/activity/twoTwelve/mmcf-12-wx-conbg.png);
+	background-size: 104% 100%;
+	background-position: center;
+}
+
+.wrap-con table {
+	width: 100%;
+	text-align: center;
+}
+
+.wrap-con table th {
+	width: 50%;
+	padding: 15px 0;
+}
+
+.wrap-con .item {
+	width: 80%;
+	margin: 20px auto;
+	border: dashed 1px #e3330b;
+	position: relative;
+}
+
+.item .rate,
+.item .rate-tips {
+	align-items: center;
+	font-weight: normal;
+	text-align: center;
+}
+
+.item .code-num {
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	border: solid 2px #e3330b;
+	border-radius: 50%;
+	line-height: 28px;
+	position: relative;
+	top: -20px;
+	background-color: white;
+	color: #e3330b;
+}
+
+.item .rate {
+	font-size: 24px;
+	font-weight: bold;
+	color: #e3330b;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.item .rate-tips {
+	font-size: 14px;
+	font-weight: normal;
+	font-stretch: normal;
+	letter-spacing: 1px;
+	color: #487dc0;
+}
+
+.item .item-btn {
+	display: inline-block;
+	width: 90px;
+	height: 24px;
+	background: url(../../images/activity/twoTwelve/mmcf-12-wx-labelbox-fa.png) no-repeat center;
+	background-size: 100% 100%;
+	color: white;
+	font-size: 12px;
+	text-align: center;
+	line-height: 24px;
+	position: relative;
+	bottom: -12px;
+}
+
+.item .item-su {
+	background-image: none;
+	background-color: white;
+	color: #E3330B;
+	border: solid 2px #e3330b;
+	font-size: 14px;
+}
+
+.rule {
+	width: 90%;
+	margin: 0 auto;
+	padding-bottom: 50px;
+}
+.rule li {
+	color: #487dc0;
+	font-size: 12px;
+	line-height: 22px;
+	text-align: left;
+}
+.rule .rule-title{
+	text-align: center;
+	padding-bottom: 15px;
+	width: 100%;
+}
+.rule .rule-title b{
+	margin: 0 15px;
+	color: #e3330b;
+	font-size: 16px;
+}
+.rule .rule-title span{
+	display: inline-block;
+	width: 30%;				
+	border: 1px dashed #E3330B; 
+}

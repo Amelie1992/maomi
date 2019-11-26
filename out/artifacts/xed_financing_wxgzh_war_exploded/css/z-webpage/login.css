@@ -1,0 +1,140 @@
+@CHARSET "UTF-8";
+
+.wrap {
+	width: 100%;
+	position: relative;
+}
+
+.wrap img:nth-child(1) {
+	width: 100%;
+}
+
+.wrap ul {
+	position: absolute;
+	top: 19%;
+	left: 0;
+	width: 96%;
+	margin-left: 2%;
+}
+
+.wrap ul li {
+	padding: 5px 0;
+	/*text-align: center;*/
+}
+
+.wap-reg-img-title {
+	float: left;
+	width: 10%;
+	height: 35px;
+	border: 1px solid #F95D18;
+	border-right: 1px solid #F95D18;
+	border-radius: 8px;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	background-size: 20px 20px;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.wrap ul li:nth-of-type(1) .wap-reg-img-title {
+	background-image: url(../../images/z-webpage/wap-tel.png);
+}
+
+.wrap ul li:nth-of-type(2) .wap-reg-img-title {
+	background-image: url(../../images/z-webpage/wap-catcha.png);
+}
+
+.wrap ul li:nth-of-type(3) .wap-reg-img-title {
+	background-image: url(../../images/z-webpage/wap-mm.png);
+}
+
+.wrap ul li:nth-of-type(4) .wap-reg-img-title {
+	background-image: url(../../images/z-webpage/wap-friend.png);
+}
+
+.wrap ul li input {
+	border: none;
+	outline: none;
+	border: 1px solid #F95D18;
+	width: 88%;
+	height: 35px;
+	border-radius: 8px;
+	border-left: none;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	text-indent: 20px;
+}
+
+.wrap ul li:nth-child(2) input {
+	width: 55%;
+}
+
+.wrap ul li:nth-child(2) span {
+	display: inline-block;
+	width: 30%;
+	height: 36px;
+	line-height: 35px;
+	text-align: center;
+	color: white;
+	background-color: #F95D18;
+	border-radius: 8px;
+	position: relative;
+	top: -2px;
+	font-size: 12px;
+}
+
+.reg-btn {
+	display: inline-block;
+	color: white;
+	line-height: 35px;
+	height: 35px;
+	border-radius: 8px;
+	background-color: #F95D18;
+	width: 100%;
+	text-align: center;
+}
+
+.agreement, .goto-log {
+	text-align: center;
+	font-size: 12px;
+	color: #757575;
+	padding: 5px 0;
+}
+
+.goto-log b {
+	color: #F95D18;
+}
+
+#wap-code {
+	width: 40%;
+	margin: 0 auto;
+}
+/*ip5*/
+@media only screen and (min-width: 0px) and (max-width: 320px) {
+	#wap-code {
+		width: 25%;
+		margin: 0 auto;
+	}
+}
+
+@media only screen and (min-width: 321px) and (max-width: 374px) {
+	#wap-code {
+		width: 30%;
+		margin: 0 auto;
+	}
+}
+
+.friend {
+	display: inline-block;
+	color: white;
+	line-height: 35px;
+	height: 35px;
+	border-radius: 8px;
+	background-color: #F95D18;
+	width: 50%;
+	text-align: center;
+	margin-left: 25%;
+	position: absolute;
+	top: 50.5%;
+	left: 0px;
+}

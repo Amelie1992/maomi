@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xed.financing.wxgzh.mapper.pay.PayExportInfoMapper">
+
+	<!--保存 -->
+	<insert id="savePayExport" parameterType="payExportInfoBean">
+			INSERT INTO pay_export_quick (
+			  version,
+			  type,
+			  responsecode,
+			  responsemsg,
+			  mchntcd,
+			  mchntorderid,
+			  orderid,
+			  bankcard,
+			  amt,
+			  sign
+			) 
+			VALUES
+			  (
+			  #{VERSION},
+			  #{TYPE},
+			  #{RESPONSECODE},
+			  #{RESPONSEMSG},
+			  #{MCHNTCD},
+			  #{MCHNTORDERID},
+			  #{ORDERID},
+			  #{BANKCARD},
+			  #{AMT},
+			  #{SIGN}
+			  ) 
+	</insert>
+	
+	<!-- 修改错误代码 -->
+	<update id="updatePayExportStatus" parameterType="payExportInfoBean">
+		UPDATE 
+		  pay_export_quick 
+		SET
+		  orderstatus=#{orderStatus}
+		WHERE orderid = #{ORDERID} 
+	</update>
+	
+		<select id="queryAccountId" resultType="java.lang.String" parameterType="payExportInfoBean">
+		SELECT
+			e.account_id accountId
+		FROM
+			pay_entry_quick e,
+			pay_export_quick ex
+		WHERE
+			e.mchntorderid = ex.mchntorderid
+		AND ex.responsecode = '0000'
+		AND ex.orderid=#{ORDERID}
+	</select>
+</mapper>

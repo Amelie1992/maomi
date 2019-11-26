@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.goodsorder.GoodsOrderMapper">
+	
+	<!-- 根据类型查询标 -->	
+	<select id="queryGoodsOrder" resultType="goodsOrderBean" parameterType="goodsOrderBean">
+		SELECT 
+		  o.order_id as orderId,
+		  o.account_id as accountId,
+		  <if test="orderType != null and orderType == '0' " >
+		  o.goods_money as goodsMoney,
+		  </if>
+		  <if test="orderType != null and orderType == '1' " >
+		  IFNULL(TRUNCATE(o.goods_money / 100, 2),0) goodsMoney,
+		  </if>
+		  o.goods_id as goodsId,
+		  o.order_type as orderType,
+		  o.goods_num as goodsNum,
+		  o.order_status as orderStatus,
+		  o.order_user_name as orderUserName,
+		  o.order_user_telephone as orderUserTelephone,
+		  o.order_user_addr orderUserAddr,
+		  o.remark as remark,
+		  i.goods_name as goodsName,
+		  DATE_FORMAT(
+		    o.order_time,
+		    '%Y-%m-%d'
+		  ) AS orderTime,
+		  DATE_FORMAT(
+		    o.mod_time,
+		    '%Y-%m-%d'
+		  ) AS modTime
+		FROM
+		  mm_goods_info AS i,mm_goods_order o
+		WHERE i.goods_id = o.goods_id
+		ORDER BY o.order_time DESC
+	</select>
+	
+	<!-- 查看标的详情 -->
+	<select id="queryGoodsOrderById" resultType="goodsOrderBean" parameterType="goodsOrderBean">
+		SELECT 
+		  o.order_id as orderId,
+		  o.account_id as accountId,
+		  <if test="orderType != null and orderType == '0' " >
+		  o.goods_money as goodsMoney,
+		  </if>
+		  <if test="orderType != null and orderType == '1' " >
+		  IFNULL(TRUNCATE(o.goods_money / 100, 2),0) goodsMoney,
+		  </if>
+		  o.goods_id as goodsId,
+		  o.order_type as orderType,
+		  o.goods_num as goodsNum,
+		  o.order_status as orderStatus,
+		  o.order_user_name as orderUserName,
+		  o.order_user_telephone as orderUserTelephone,
+		  o.order_user_addr orderUserAddr,
+		  o.remark as remark,
+		  i.goods_name as goodsName,
+		  DATE_FORMAT(
+		    o.order_time,
+		    '%Y-%m-%d'
+		  ) AS orderTime,
+		  DATE_FORMAT(
+		    o.mod_time,
+		    '%Y-%m-%d'
+		  ) AS modTime
+		FROM
+		  mm_goods_info AS i,mm_goods_order o
+		WHERE i.goods_id = o.goods_id
+		and o.order_id = #{orderId}
+	</select>
+	
+	<!-- 查看标的详情 -->
+	<select id="queryGoodsOrderByAccountId" resultType="goodsOrderBean" parameterType="goodsOrderBean">
+		SELECT 
+		  o.order_id as orderId,
+		  o.account_id as accountId,
+		  <if test="orderType != null and orderType == '0' " >
+		  o.goods_money as goodsMoney,
+		  </if>
+		  <if test="orderType != null and orderType == '1' " >
+		  IFNULL(TRUNCATE(o.goods_money / 100, 2),0) goodsMoney,
+		  </if>
+		  o.goods_id as goodsId,
+		  o.order_type as orderType,
+		  o.goods_num as goodsNum,
+		  o.order_status as orderStatus,
+		  o.order_user_name as orderUserName,
+		  o.order_user_telephone as orderUserTelephone,
+		  o.order_user_addr orderUserAddr,
+		  o.remark as remark,
+		  i.goods_name as goodsName,
+		  DATE_FORMAT(
+		    o.order_time,
+		    '%Y-%m-%d'
+		  ) AS orderTime,
+		  DATE_FORMAT(
+		    o.mod_time,
+		    '%Y-%m-%d'
+		  ) AS modTime
+		FROM
+		  mm_goods_info AS i,mm_goods_order o
+		WHERE i.goods_id = o.goods_id
+		and o.account_id = #{accountId}
+		<if test="orderType != null and orderType != '' " >
+			and o.order_type = #{orderType} 
+		</if>
+		ORDER BY o.order_time DESC
+	</select>
+	
+	<!-- 立即投标  添加投标信息 -->
+	<insert id="insertGoodsOrderBean" parameterType="goodsOrderBean">
+		INSERT INTO mm_goods_order 
+		(
+			account_id,
+			goods_id,
+			order_type,
+			goods_num,
+			goods_money,
+			order_time,
+			order_status,
+			order_user_name,
+			order_user_telephone,
+			order_user_addr,
+			remark
+		) 
+		VALUES
+		  (
+		    #{accountId},
+			#{goodsId},
+			#{orderType},
+			#{goodsNum},
+			#{goodsMoney},
+			now(),
+			#{orderStatus},
+			#{orderUserName},
+			#{orderUserTelephone},
+			#{orderUserAddr},
+			#{remark}
+		  )
+	</insert>
+	
+	<!-- 立即投标  修改标信息 -->
+	<update id="updateGoodsOrderBean" parameterType="goodsOrderBean">
+		UPDATE 
+		  mm_goods_order 
+		SET
+		  order_id = #{orderId}
+		  <if test="goodsNum != null and goodsNum != '' " >
+		  	,goods_num = #{goodsNum}
+		  </if>
+		  <if test="goodsMoney != null and goodsMoney != '' " >
+		  	,goods_money = #{goodsMoney}
+		  </if>
+		  <if test="orderTime != null and orderTime != '' " >
+		  	,order_time = #{orderTime}
+		  </if>
+		  <if test="orderStatus != null and orderStatus != '' " >
+		  	,order_status = #{orderStatus}
+		  </if>
+		  <if test="orderUserName != null and orderUserName != '' " >
+		  	,order_user_name = #{orderUserName}
+		  </if>
+		  <if test="orderUserTelephone != null and orderUserTelephone != '' " >
+		  	,order_user_telephone = #{orderUserTelephone}
+		  </if>
+		  <if test="orderUserAddr != null and orderUserAddr != '' " >
+		  	,order_user_addr = #{orderUserAddr}
+		  </if>
+		WHERE order_id = #{orderId}
+	</update>
+</mapper>

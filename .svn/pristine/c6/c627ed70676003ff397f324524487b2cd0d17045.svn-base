@@ -1,0 +1,218 @@
+
+
+// 返回
+function getBack() {
+	window.location.href = $("#basePath").val() + 'scorecenter/gotoscorecenter';
+}
+
+// 购买鱼干
+function toBuyScore() {
+	window.location.href = $("#basePath").val() + 'integralscore/toIntegral';
+}
+
+// 我的奖品
+function goMyAward() {
+	window.location.href = $("#basePath").val() + 'awardrotate/gotomyaward';
+}
+
+
+function shadeshow(a) {
+	var index=layer.load();
+	$.ajax({
+		url : "./awardrotate/getfiveawardit",
+		type : "POST",
+		dataType : "json",
+		data:
+		{
+			nums:a
+		},
+		success : function(data) {
+			layer.closeAll();
+			var money="";
+			var score=data.accountScore;
+			if(data.result=="FAIL")
+			{
+				alert("您的鱼干不足,无法抽奖");
+			}
+			else if(data.result=="SUCCESS")
+			{
+				itemlist=data.itemlist;
+				moneylist=data.moneylist;
+				var str="";
+				var classstr="";
+				for(var i = 0;i<itemlist.length;i++)
+				{
+					var item = itemlist[i]
+					var img="";
+					if(item==0)
+					{
+						img="p7.png";
+						money="好可惜";
+					}
+					else if(item==1)
+					{
+						img="P4.png";
+						money="1张";
+					}
+					else if(item==2)
+					{
+						img="p2.png"
+						money=moneylist[i]+"元";
+					}
+					else if(item==3)
+					{
+						img="P6.png";
+						money=moneylist[i]+"次";
+					}
+					else if(item==4 || item==5)
+					{
+						img="p3.png";
+						money=moneylist[i]+"元";
+					}
+					else if(item==6)
+					{
+						img="p5.png";
+						money=moneylist[i]+"个";
+					}
+					else if(item==7)
+					{
+						img="p1.png";
+						money=moneylist[i]+"%";
+					}
+					else if(item==8)
+					{
+						img="P8.png";
+						money=moneylist[i]+"个";
+					}
+					$(".prize_header img").attr(
+						"src", "images/awardrotate/bg2.png"
+					);
+					$(".shade").show();
+					$('.shade').on('touchmove', function(e) {
+						e.preventDefault();
+					});
+					$('body').scroll(function(){
+						return false;
+					})
+					if(i<=1)
+					{
+						classstr="zoomInRight";
+					}
+					else if(i==2)
+					{
+						classstr="zoomIn";
+					}
+					else
+					{
+						classstr="zoomInLeft";
+					}
+					str +='<div id="img'+(i+1)+'" class="animated '+ classstr+'">'
+					 +'<img src="images/awardrotate/'+img+'" /><p>'+money+'</p>'
+					 +'</div>'
+					$("#award").html(str);
+				}
+				$("#score").text(score);
+			}
+			
+		}
+	});
+}
+
+function iosShadeshow(a) {
+	var accountId = $(".accountId").val();
+	var index=layer.load();
+	$.ajax({
+		url : "./ios/awardrotate/getfiveawardit",
+		type : "POST",
+		dataType : "json",
+		data:
+		{
+			nums:a,
+			accountId:accountId
+		},
+		success : function(data) {
+			layer.closeAll();
+			var money="";
+			var score=data.accountScore;
+			if(data.result=="FAIL")
+			{
+				alert("您的鱼干不足,无法抽奖");
+			}
+			else if(data.result=="SUCCESS")
+			{
+				itemlist=data.itemlist;
+				moneylist=data.moneylist;
+				var str="";
+				var classstr="";
+				for(var i = 0;i<itemlist.length;i++)
+				{
+					var item = itemlist[i]
+					var img="";
+					if(item==0)
+					{
+						img="p7.png";
+						money="好可惜";
+					}
+					else if(item==1)
+					{
+						img="P4.png";
+						money="1张";
+					}
+					else if(item==2)
+					{
+						img="p2.png"
+						money=moneylist[i]+"元";
+					}
+					else if(item==3)
+					{
+						img="P6.png";
+						money=moneylist[i]+"次";
+					}
+					else if(item==4 || item==5)
+					{
+						img="p3.png";
+						money=moneylist[i]+"元";
+					}
+					else if(item==6)
+					{
+						img="p5.png";
+						money=moneylist[i]+"个";
+					}
+					else if(item==7)
+					{
+						img="p1.png";
+						money=moneylist[i]+"%";
+					}
+					$(".prize_header img").attr(
+						"src", "images/awardrotate/bg2.png"
+					);
+					$(".shade").show();
+					$('.shade').on('touchmove', function(e) {
+						e.preventDefault();
+					});
+					$('body').scroll(function(){
+						return false;
+					})
+					if(i<=1)
+					{
+						classstr="zoomInRight";
+					}
+					else if(i==2)
+					{
+						classstr="zoomIn";
+					}
+					else
+					{
+						classstr="zoomInLeft";
+					}
+					str +='<div id="img'+(i+1)+'" class="animated '+ classstr+'">'
+					 +'<img src="images/awardrotate/'+img+'" /><p>'+money+'</p>'
+					 +'</div>'
+					$("#award").html(str);
+				}
+				$("#score").text(score);
+			}
+			
+		}
+	});
+}

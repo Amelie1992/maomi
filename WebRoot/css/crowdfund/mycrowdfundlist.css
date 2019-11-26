@@ -1,0 +1,159 @@
+.wrap {
+				width: 100%;
+			}
+			
+			.head {
+				width: 100%;
+			}
+			
+			.head img:nth-child(1) {
+				width: 100%;
+			}
+			
+			.zc-state {
+				width: 100%;
+				height: 60px;
+				overflow: hidden;
+			}
+			
+			.zc-state div {
+				float: left;
+				height: 60px;
+			}
+			
+			.zc-state-left {
+				width: 50%;
+			}
+			
+			.zc-state-left img {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.zc-state-right {
+				width: 50%;
+				background-color: #757575;
+				text-align: center;
+				color: white;
+				line-height: 60px;
+				font-size: 16px;
+			}
+			
+			.zc-name {
+				line-height: 50px;
+				text-align: center;
+				font-size: 15px;
+				color: #FD482C;
+				background-color: #F4F4F4;
+			}
+			/*众筹中未开奖*/
+			
+			.zc-i-wkj {
+				/*display: none;*/
+			}
+			/*众筹成功未开奖*/
+			
+			.zc-t-wkj {
+				display: none;
+			}
+			/*众筹成功 未中奖*/
+			
+			.zc-t-wzj .zc-state-left {
+				width: 100%;
+				line-height: 60px;
+				text-indent: 15px;
+			}
+			
+			.zc-t-wzj .zc-state-left span {
+				/*display: inline-block;*/
+				margin-right: 5px;
+				padding: 5px;
+				border-radius: 50%;
+				background-color: #FF8310;
+				font-size: 12px;
+				color: white;
+			}
+			
+			.zc-t-wzj {
+				display: none;
+			}
+			/*众筹成功 中奖*/
+			
+			.zc-t-zj .zc-state-left {
+				width: 100%;
+				line-height: 60px;
+				text-indent: 15px;
+			}
+			
+			.zc-t-zj .zc-state-left span {
+				/*display: inline-block;*/
+				margin-right: 5px;
+				padding: 5px;
+				border-radius: 50%;
+				background-color: #FF8310;
+				font-size: 12px;
+				color: white;
+			}
+			
+			.zc-t-zj {
+				height: 60px;
+				line-height: 30px;
+			}
+			
+			.zc-t-zj span {
+				margin-right: 5px;
+				padding: 5px;
+				border-radius: 50%;
+				background-color: #FF8310;
+				font-size: 12px;
+				color: white;
+			}
+			
+			.zc-t-zj {
+				display: none;
+			}
+			/*众筹失败*/
+			
+			.zc-f-wkj .zc-state-left {
+				width: 100%;
+			}
+			
+			.zc-f-wkj .zc-state-left img {
+				width: 100%;
+			}
+			
+			.zc-f-wkj {
+				display: none;
+			}
+			
+			
+			
+			
+			.zc-record{
+				width: 100%;
+			}
+			.zc-record table{
+				width: 100%;
+				text-align: center;
+			}
+			.zc-record table th{
+				height: 40px;
+				line-height: 40px;
+				background-color: #E0E0E0;
+				font-size: 12px;
+				color: #757575;
+			}
+			.zc-record table td{
+				height: 40px;
+				line-height: 40px;
+				border-bottom: 1px solid #E0E0E0;
+				font-size: 12px;
+				color: #888888;
+			}
+			
+			.zc-btn{
+				width: 100%;
+			}
+			.zc-btn img{
+				width: 100%;
+			}

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xed.financing.wxgzh.mapper.capital.CapitalMapper">
+
+	<!-- 查询用户总金额 -->
+	<select id="queryCapitalById" parameterType="capitalBean" resultType="capitalBean">
+			SELECT 
+			  c.capital_id as capitalId,
+			  c.account_id as accountId,
+			  inf.account_name as accountName,
+			  IFNULL(TRUNCATE(c.investment_money / 100, 2),0) as investmentMoney,
+			  IFNULL(TRUNCATE(c.freeze_money / 100, 2),0) as freezeMoney,
+			  IFNULL(TRUNCATE(c.withdraw_money / 100, 2),0) as withdrawMoney,
+			  IFNULL(TRUNCATE(c.no_withdraw_money / 100, 2),0) as noWithdrawMoney,
+			  (IFNULL(TRUNCATE(c.withdraw_money / 100, 2),0)+IFNULL(TRUNCATE(c.no_withdraw_money / 100, 2),0))AS availableBalance,  
+			  IFNULL(TRUNCATE(c.freedom_money / 100, 2),0) as freedomMoney,
+			  IFNULL(TRUNCATE(c.now_withdraw_money / 100, 2),0) as nowWithdrawMoney
+			FROM
+			  mm_account_capital c,mm_account_info inf
+			WHERE 
+			c.account_id = inf.account_id
+			and 
+			c.account_id = #{accountId} 
+	</select>
+	
+	<!-- 立即投标 修改用户金额 -->
+	<update id="editCapitalById" parameterType="capitalBean">
+		UPDATE 
+		  mm_account_capital 
+		<trim prefix="SET" suffixOverrides=","  >  
+			<if test="investmentMoney != null and investmentMoney != '' " >
+		  	investment_money = #{investmentMoney},
+		  	</if>
+		  	<if test="freezeMoney != null and freezeMoney != '' " >
+		  	freeze_money = #{freezeMoney},
+		  	</if>
+		  	<if test="withdrawMoney != null and withdrawMoney != '' " >
+		  	withdraw_money = #{withdrawMoney},
+		  	</if>
+		  	<if test="noWithdrawMoney != null and noWithdrawMoney != '' " >
+		  	no_withdraw_money = #{noWithdrawMoney},
+		  	</if>
+		  	<if test="freedomMoney != null and freedomMoney != '' " >
+		  	freedom_money=#{freedomMoney},
+		  	</if>
+		  	<if test="nowWithdrawMoney != null and nowWithdrawMoney != '' " >
+		  	now_withdraw_money=#{nowWithdrawMoney},
+		  	</if>
+		  </trim>
+		WHERE account_id = #{accountId}
+	</update>
+	
+	<!-- 查询用户信息 -->
+	<select id="queryAccountInfo" parameterType="capitalBean" resultType="capitalBean">
+			SELECT
+				a.account_name AS accountName,
+				a.telephone AS telePhone,
+				al.account_score AS accountScore,
+				al.account_exp AS accountExp,
+				al.account_level AS accountLevel
+			FROM
+				mm_account_info AS a left join mm_account_level al
+			ON
+				a.account_id=al.account_id	
+			WHERE
+				a.account_id = #{accountId}
+	</select>
+	
+	<!-- 添加用户资金账户 -->
+	<insert id="addAccountCapital" parameterType="capitalBean">
+		INSERT INTO mm_account_capital (
+			account_id,
+			investment_money,
+			freeze_money,
+			withdraw_money,
+			no_withdraw_money,
+			freedom_money,
+			now_withdraw_money
+		)
+		VALUES
+			(#{accountId}, 0, 0, 0, 0, 0, 0)
+	</insert>
+	
+	<update id="updateCapInfo" parameterType="accountCapital">
+		update 
+			mm_account_capital
+		set
+			withdraw_money = #{withdrawMoney}
+		  	,freeze_money = #{freezeMoney}
+		WHERE account_id = #{accountId} and withdraw_money - #{txMoney}>=0
+	</update>
+	
+	<!-- 修改金额 -->
+	<update id="editAccountCapitalById" parameterType="accountCapital">
+		UPDATE 
+		  mm_account_capital 
+		<trim prefix="set" suffixOverrides=",">
+			<if test="investmentMoney != null and investmentMoney != '' ">
+				investment_money=#{investmentMoney},
+			</if>
+			<if test="freezeMoney != null and freezeMoney != '' ">
+				freeze_money=#{freezeMoney},
+			</if>
+			<if test="withdrawMoney != null and withdrawMoney != '' ">
+				withdraw_money=#{withdrawMoney},
+			</if>
+			<if test="noWithdrawMoney != null and noWithdrawMoney != '' ">
+				no_withdraw_money=#{noWithdrawMoney},
+			</if>
+			<if test="freedomMoney != null and freedomMoney != '' ">
+				freedom_money=#{freedomMoney},
+			</if>
+			<if test="nowWithdrawMoney != null and nowWithdrawMoney != '' ">
+				now_withdraw_money=#{nowWithdrawMoney},
+			</if>
+		</trim>
+		WHERE account_id = #{accountId}
+	</update>
+</mapper>

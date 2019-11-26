@@ -1,0 +1,90 @@
+.content_inner .accordion {
+ 	/*width: 200px;*/
+ 	width: 100%;
+ 	/*height: 540px;*/
+ 	background: #FFF;
+ 	/*overflow: scroll;*/
+
+ }
+
+.content_inner .accordion .link {
+	cursor: pointer;
+	display: block;
+	/*padding: 15px 15px 15px 15px;*/
+	color: #888;
+	font-size: 14px;
+	position: relative;
+	-webkit-transition: all 0.4s ease;
+	-o-transition: all 0.4s ease;
+	transition: all 0.4s ease;
+	background-color: white;
+	font-weight: normal;
+	margin-top: 0;
+
+}
+
+.content_inner .accordion li:last-child .link {
+	border-bottom: 0;
+}
+
+.content_inner .accordion li i {
+	position: absolute;
+	/*top: 16px;*/
+	left: 12px;
+	font-size: 18px;
+	color: #888;
+	-webkit-transition: all 0.4s ease;
+	-o-transition: all 0.4s ease;
+	transition: all 0.4s ease;
+}
+
+.content_inner .accordion li i.fa-chevron-down {
+	right: 12px;
+	left: auto;
+	font-size: 12px;
+	font-weight: normal;
+}
+
+.content_inner .accordion li.open .link {
+	/*background-color: #CCCCCC;*/
+}
+
+.content_inner .accordion li.open i {
+	/*color: #b63b4d;*/
+}
+.content_inner .accordion li.open i.fa-chevron-down {
+	-webkit-transform: rotate(180deg);
+	-ms-transform: rotate(180deg);
+	-o-transform: rotate(180deg);
+	transform: rotate(180deg);
+}
+
+/**
+ * Submenu
+ -----------------------------*/
+.content_inner .submenu {
+ 	display: none;
+ 	background-color: #f5f5f5;
+ 	font-size: 14px;
+ 	/*padding-left:10px ;*/
+ }
+
+
+ .content_inner .submenu a {
+ 	display: block;
+ 	text-decoration: none;
+ 	color: #666;
+ 	padding: 12px;
+ 	padding: 20px 12px;
+ 	padding-left: 25px;
+ 	-webkit-transition: all 0.25s ease;
+ 	-o-transition: all 0.25s ease;
+ 	transition: all 0.25s ease;
+ 	line-height: 25px;
+ 	background-color: #FAFAFA;
+ }
+
+ .content_inner .submenu a:hover {
+ 	/*color:#F55F13;*/
+ }
+

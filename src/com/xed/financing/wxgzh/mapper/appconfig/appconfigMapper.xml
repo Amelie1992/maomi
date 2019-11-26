@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.appconfig.AppconfigMapper">
+	
+	<select id="queryAppConfig" parameterType="appconfigBean" resultType="appconfigBean">
+	
+		SELECT 
+		  p.pic_url picUrl,
+		  p.pic_link picLink,
+		  p.show_flag showFlag,
+		  p.add_time addTime,
+		  p.remarks remarks,
+		  p.pic_flag picFlag
+		FROM
+		  base_app_config_pic p 
+		WHERE
+		  show_flag=0
+		<if test="picFlag != null and picFlag != ''">
+			and pic_flag=#{picFlag}
+		</if>
+		ORDER BY p.pic_flag ,p.add_time desc
+	</select>
+
+	<!-- app图片管理数量 -->
+	<select id="countAppConfig"	parameterType="appconfigBean" resultType="java.lang.Integer">
+		SELECT 
+		  count(1)
+		FROM
+		  base_app_config_pic p 
+		WHERE
+		  show_flag=0
+		<if test="picFlag != null and picFlag != ''">
+			and pic_flag=#{picFlag}
+		</if>
+		
+	</select>
+	
+	<!-- 根据用户id查询用户信息 -->
+	<select id="queryAppConfigById" parameterType="appconfigBean" resultType="appconfigBean">
+		SELECT
+		  p.pic_id picId,
+		  p.pic_url picUrl,
+		  p.pic_flag picFlag,
+		  p.pic_link picLink,
+		  p.show_flag showFlag,
+		  p.add_time addTime,
+		  p.remarks remarks
+		FROM
+		  base_app_config_pic
+		WHERE
+		  pic_id=#{picId}
+	</select>
+</mapper>

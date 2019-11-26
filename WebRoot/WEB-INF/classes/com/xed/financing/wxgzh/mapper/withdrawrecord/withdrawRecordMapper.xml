@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xed.financing.wxgzh.mapper.withdrawrecord.WithdrawRecordMapper">
+
+	<!-- 查看提现列表 -->
+	<select id="queryWithdrawRecords" parameterType="withdrawRecordBean" resultType="withdrawRecordBean">
+		SELECT
+			wr.withdraw_id AS withdrawId,
+			wr.account_id AS accountId,
+			wr.money AS money,
+			DATE_FORMAT(wr.apply_time, '%Y-%m-%d %H:%i:%s') AS applyTime,
+			DATE_FORMAT(wr.arrival_time, '%Y-%m-%d %H:%i:%s') AS arrivalTime,
+			wr.withdraw_status AS withdrawStatus,
+			wr.remark AS remark
+		FROM
+			mm_withdraw_record wr
+		WHERE 1 = 1
+		<if test="accountId != null and accountId != ''">
+			AND wr.account_id = #{accountId}
+		</if>
+		<if test="withdrawStatus != null and withdrawStatus != ''">
+			AND wr.withdraw_status = #{withdrawStatus}
+		</if>
+	</select>
+	
+	<!-- 查看提现  -->
+	<select id="queryWithdrawRecord" parameterType="withdrawRecordBean" resultType="withdrawRecordBean">
+		SELECT
+			wr.withdraw_id AS withdrawId,
+			wr.account_id AS accountId,
+			wr.money AS money,
+			DATE_FORMAT(wr.apply_time, '%Y-%m-%d %H:%i:%s') AS applyTime,
+			DATE_FORMAT(wr.arrival_time, '%Y-%m-%d %H:%i:%s') AS arrivalTime,
+			wr.withdraw_status AS withdrawStatus,
+			wr.remark AS remark
+		FROM
+			mm_withdraw_record wr
+		WHERE 1 = 1
+		<if test="withdrawId != null and withdrawId != ''">
+			AND wr.withdraw_id = #{withdrawId}
+		</if>
+		<if test="accountId != null and accountId != ''">
+			AND wr.account_id = #{accountId}
+		</if>
+		<if test="withdrawStatus != null and withdrawStatus != ''">
+			AND wr.withdraw_status = #{withdrawStatus}
+		</if>
+	</select>
+	
+	<!-- 添加提现详情 -->
+	<insert id="addWithdrawRecord" parameterType="withdrawRecordBean">
+		INSERT INTO mm_withdraw_record (
+			account_id,
+			money,
+			apply_time,
+			withdraw_status,
+			remark
+		)
+		VALUES
+		(
+			#{accountId},
+			#{money},
+			NOW(),
+			'1',
+			#{remark}
+		)
+	</insert>
+	
+	<!-- 更新提现信息 -->
+	<update id="updateWithdrawRecord" parameterType="withdrawRecordBean">
+		UPDATE mm_withdraw_record 
+		<trim prefix="SET" suffixOverrides=","  >  
+			<if test="withdrawStatus != null and withdrawStatus != ''">
+				withdraw_status = #{withdrawStatus},
+			</if>
+			<if test="isArrival != null and isArrival != ''">
+				arrival_time = NOW(),
+			</if>
+			<if test="remark != null and remark != ''">
+				remark = #{remark},
+			</if>
+		  </trim>
+		WHERE withdraw_id = #{withdrawId} 
+	</update>
+	
+	<!-- 修改优惠券概述信息 -->
+	<delete id="deleteWithdrawRecord" parameterType="withdrawRecordBean">
+		DELETE FROM mm_withdraw_record
+		WHERE wr.withdraw_status = #{withdrawStatus}
+	</delete>
+	
+</mapper>

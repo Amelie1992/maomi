@@ -1,0 +1,269 @@
+			.wrap {
+				width: 100%;
+			}
+			
+			.banner {
+				width: 100%;
+				position: relative;
+				background-color: #ee423f;
+				z-index: 11;
+			}
+			
+			.banner img:nth-of-type(1) {
+				width: 100%;
+				height: 50%;
+			}
+			
+			.banner img:nth-of-type(2) {
+				width: 100%;
+				position: absolute;
+				top: 70%;
+				left: 0;
+			}
+			
+			.gq-jizi {
+				width: 100%;
+				text-align: center;
+				background-color: #ee423f;
+				position: relative;
+			}
+			
+			.floatcloud {
+				height: 20px;
+			}
+			
+			.textbox {
+				width: 100%;
+				position: relative;
+				text-align: center;
+				padding-top: 22%;
+			}
+			
+			.textbox p:nth-of-type(1) {
+				font-size: 16px;
+				color: #EE423F;
+				width: 90%;
+				margin: 0 auto;
+				padding: 10px 0 20px 0;
+				font-weight: bold;
+				background-image: url(../../images/wx-gq-text-bg.png);
+				background-size: 100% 100%;
+				background-position: center;
+				background-repeat: no-repeat;
+			}
+			
+			.textbox p:nth-of-type(2) {
+				font-size: 12px;
+				/*padding-top: 5px;*/
+				padding-bottom: 10px;
+				color: #fff1dc;
+			}
+			
+			.textbox p:nth-of-type(2) u a {
+				color: #fff1dc;
+			}
+			
+			.iconBox {
+				width: 90%;
+				margin: 0 auto;
+				/*margin-top: 5%;*/
+				padding: 15px 12px;
+				background-image: url(../../images/wx-gq-jizi-bg.png);
+				background-size: 100% 100%;
+				background-position: center;
+				background-repeat: no-repeat;
+			}
+			
+			.iconBox table {
+				width: 100%;
+				text-align: center;
+				position: relative;
+			}
+			
+			.iconBox table th {
+				position: relative;
+			}
+			
+			.wx-gq-icon {
+				position: absolute;
+				width: 40%;
+				left: 32.5%;
+				top: 12%;
+			}
+			
+			.wx-gq-g {
+				width: 100%;
+			}
+			
+			.iconBox table td span {
+				width:40px;
+				/*max-width: 40px;*/
+				height: 40px;
+				display: inline-block;
+				font-size: 14px;
+				line-height: 40px;
+				font-weight: bold;
+				color:#FFF1DC ;
+				background-image: url(../../images/wx-gq-jizi-num-bg.png);
+				background-size: 100% 100%;
+				background-position: center;
+				background-repeat: no-repeat;
+				text-align: center;
+				margin-left: 5px;
+			}
+			
+			.btn-before {
+				display: inline-block;
+				padding: 10px 30px;
+				border-radius: 20px;
+				background-color: #bdbdbd;
+				margin-top: 10px;
+				color: #f2f2f2;
+				font-size: 18px;
+			}
+			
+			.btn-after {
+				display: inline-block;
+				padding: 10px 30px;
+				border-radius: 20px;
+				background-color: #b31622;
+				margin-top: 10px;
+				color: #fcf0c4;
+				font-size: 18px;
+			}
+			
+			.btn-after:active {
+				position: relative;
+				top: 1px;
+			}
+			
+			.gq-touzi {
+				background-color: #EE423F;
+				width: 100%;
+				overflow: hidden;
+			}
+			
+			.gq-touzi .iconBox table th:nth-of-type(1) {
+				background-image: none;
+				position: relative;
+				width: 45%;
+			}
+			
+			.gq-touzi .iconBox table th:nth-of-type(1) img {
+				width: 70%;
+				position: relative;
+				left: 0px;
+				top: 0px;
+			}
+			
+			.iconBox table th p {
+				color: #EE423F;
+				font-size: 16px;
+				line-height: 20px;
+			}
+			
+			.iconBox table th b {
+				display: inline-block;
+				width: 100%;
+				position: absolute;
+				color: yellow;
+				font-size: 1rem;
+				top: 15%;
+				display: none;
+			}
+			
+			.gq-qiandao {
+				width: 100%;
+				background-color: #EE423F;
+				padding-top: 30px;
+			}
+			
+			.gq-qiandao .iconBox table th:nth-of-type(1) {
+				background-image: none;
+				position: relative;
+				width: 45%;
+			}
+			.gq-qiandao .iconBox table th:nth-of-type(1) img{
+				width: 70%;
+				position: relative;
+				left: 0px;
+				top: 0px;
+			}
+			.iconBox p {
+				padding: 5px;
+				text-align: center;
+				font-size: 10px;
+				color: #888;
+			}
+			
+			.gq-yqhy {
+				background-color: #EE423F;
+				padding-top: 30px;
+			}
+			
+			.wx-qg-xqj {
+				width: 100%;
+			}
+			
+			.gq-hdgz {
+				background-color: #EE423F;
+				padding-top: 30px;
+				padding: 5px;
+			}
+			
+			.gq-hdgz ul {
+				border: 1px solid #fccebd;
+				border-radius: 5px;
+				padding: 6px;
+			}
+			
+			.gq-hdgz li {
+				line-height: 20px;
+				color: #EE423F;
+				padding: 10px 0;
+				font-size: 14px;
+			}
+			
+			.gq-hdgz-tips {
+				padding: 6px;
+				background-color: #FFF1DC;
+				border: 1px solid #B31622;
+				border-radius: 5px;
+			}
+			
+			.copyRight {
+				background-color: #EE423F;
+				text-align: center;
+				font-size: 12px;
+				line-height: 20px;
+				color: white;
+				width: 100%;
+				position: relative;
+				overflow: hidden;
+				height: 100px;
+			}
+			
+			.copyRight img {
+				position: absolute;
+				width: 100%;
+				left: 0;
+				bottom: -60%;
+			}
+			.footer {
+				background-color: #fafafa;
+				/*height: 80px;*/
+				position: fixed;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+			}
+			
+			.footer table {
+				width: 100%;
+				text-align: center;
+				font-size: 14px;
+			}
+			
+			.footer table img {
+				width: 30%;
+			}

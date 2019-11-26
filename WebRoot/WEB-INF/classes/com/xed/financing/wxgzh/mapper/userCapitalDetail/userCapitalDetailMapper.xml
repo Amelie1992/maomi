@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xed.financing.wxgzh.mapper.userCapitalDetail.UserCapitalDetailMapper">
+
+	<!-- 添加借款人资金明细 -->
+	<insert id="addUserCapitalDetail" parameterType="userCapitalDetailBean">
+		INSERT INTO mm_user_capital_detail (
+			user_id,
+			money,
+			type,
+			in_expend,
+			deal_time,
+			remark,
+			is_show
+		)
+		VALUES
+			(
+				#{userId},
+				#{money},
+				#{type},
+				#{inExpend},
+				NOW(),
+				#{remark},
+				#{isShow}
+			)
+	</insert>
+</mapper>

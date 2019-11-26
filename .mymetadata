@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="xed_financing_wxgzh"
+  id="myeclipse.1429448673611"
+  context-root="/xed_financing_wxgzh"
+  j2ee-spec="5.0"
+  archive="xed_financing_wxgzh.war">
+  <attributes>
+    <attribute name="webrootdir" value="/WebRoot" />
+  </attributes>
+</project-module>
+

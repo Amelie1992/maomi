@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.savings.SavingsMapper">
+	<!-- 获取用户猫咪储蓄总额 -->
+	<select id="findAllMonetById" parameterType="savingsBean" resultType="savingsBean">
+		SELECT 
+		s.account_id AS accountId,
+		IFNULL (SUM(  TRUNCATE ( s.savings_money, 0 ) ), 0) savingsMoney
+		FROM mm_account_savings s
+		WHERE s.account_id = #{accountId}
+		AND s.savings_type = 1
+	</select>
+	
+	<!-- 添加猫咪储蓄记录 -->
+	<insert id="addSavingsRecord" parameterType="savingsBean">
+		INSERT INTO mm_account_savings
+			(account_id,savings_money,savings_type,savings_from,add_time,savings_validity,remark)
+		VALUE
+			(#{accountId},#{savingsMoney},#{savingsType},#{savingsFrom},NOW(),DATE_ADD(add_time, INTERVAL #{savingsValidity} DAY),#{remark})
+	</insert>
+	
+	<!-- 更改赠送人 已注册的-->
+	<update id="updateGiveAccountId" parameterType="savingsBean">
+		UPDATE 
+			mm_account_savings 
+		SET 
+			give_account_id = (SELECT account_id FROM  mm_account_info WHERE telephone = #{giveAccountId}),
+			savings_type = 2
+		WHERE 
+			account_id = #{accountId}
+		and 
+			savings_id = #{savingsId}
+	</update>
+	
+	<!-- 更改赠送人 未注册-->
+	<update id="updateGiveAccountIdno" parameterType="savingsBean">
+		UPDATE 
+			mm_account_savings 
+		SET 
+			give_account_id = #{giveAccountId},
+			savings_type = 2
+		WHERE 
+			account_id = #{accountId}
+		and 
+			savings_id = #{savingsId}
+	</update>
+	
+	<!-- 更改提现后的状态-->
+	<update id="updateWithdrawalsType" parameterType="savingsBean">
+		UPDATE 
+			mm_account_savings 
+		SET 
+			savings_type = 3 
+		WHERE 
+			account_id = #{accountId}
+		AND 
+			savings_type = 1
+	</update>
+	
+	<!-- 更改使用后的状态-->
+	<update id="updateUseType" parameterType="savingsBean">
+		UPDATE 
+			mm_account_savings 
+		SET 
+			savings_type = 1 
+		WHERE 
+			account_id = #{accountId}
+		AND 
+			savings_type = 0
+		AND 
+			savings_id = #{savingsId}
+		
+	</update>
+	
+	<!-- 查询最近的记录 -->
+	<select id="findSavingsNearest" parameterType="savingsBean" resultType="savingsBean">
+		SELECT 
+		savings_id as savingsId,
+		account_id as accountId,
+		IFNULL( TRUNCATE ( savings_money/100 , 2), 0 ) as savingsMoney,
+		savings_type as savingsType,
+		give_account_id as  giveAccountId,
+		savings_from as savingsFrom,
+		add_time as addTime,
+		savings_validity as savingsValidity,
+		remark
+		FROM mm_account_savings 
+		WHERE savings_type = 0 
+		and
+		account_id = #{accountId}
+		AND 
+		DATE_FORMAT( add_time, '%Y-%m-%d %H:%i:%S' ) = 
+		(SELECT MAX(DATE_FORMAT( add_time, '%Y-%m-%d %H:%i:%S' )) FROM mm_account_savings )
+	</select>
+	
+	<!-- 查询用户 没有使用 的猫咪储蓄红包 -->
+	<select id="findNotUsed" resultType="savingsBean" parameterType="savingsBean">
+		SELECT 
+		savings_id AS savingsId,
+		account_id AS accountId,
+		IFNULL( TRUNCATE ( savings_money/100 , 2), 0 ) AS savingsMoney,
+		savings_type AS savingsType,
+		give_account_id AS  giveAccountId,
+		savings_from AS savingsFrom,
+		DATE_FORMAT( add_time, '%Y-%m-%d' ) AS addTime,
+		DATE_FORMAT( savings_validity, '%Y-%m-%d' ) AS savingsValidity,
+		remark
+		FROM mm_account_savings 
+		WHERE savings_type = 0 
+		AND
+		account_id = #{accountId}
+		ORDER BY add_time DESC
+	</select>
+	
+	<!-- 查询用户猫咪储蓄红包 (未使用的除外) -->
+	<select id="findSavingsOther" resultType="savingsBean" parameterType="savingsBean">
+		SELECT 
+		savings_id AS savingsId,
+		account_id AS accountId,
+		IFNULL( TRUNCATE ( savings_money/100 , 2), 0 ) AS savingsMoney,
+		savings_type AS savingsType,
+		give_account_id AS  giveAccountId,
+		savings_from AS savingsFrom,
+		DATE_FORMAT( add_time, '%Y-%m-%d' ) AS addTime,
+		DATE_FORMAT( savings_validity, '%Y-%m-%d' ) AS savingsValidity,
+		remark
+		FROM mm_account_savings 
+		WHERE 
+		account_id = #{accountId}
+		AND savings_type != 0
+		ORDER BY add_time DESC
+	</select>
+	
+	<!-- 根据savingsId查询红包信息 -->
+	<select id="findSavingsInfo" resultType="savingsBean" parameterType="savingsBean">
+		SELECT 
+		savings_id AS savingsId,
+		account_id AS accountId,
+		IFNULL( TRUNCATE ( savings_money/100 , 2), 0 ) AS savingsMoney,
+		savings_type AS savingsType,
+		give_account_id AS  giveAccountId,
+		is_register as isRegister,
+		savings_from AS savingsFrom,
+		DATE_FORMAT( add_time, '%Y-%m-%d' ) AS addTime,
+		DATE_FORMAT( savings_validity, '%Y-%m-%d' ) AS savingsValidity,
+		remark
+		FROM mm_account_savings 
+		WHERE savings_id = #{savingsId}
+	</select>
+	
+	<!-- 更改 未使用红包过期 状态 -->
+	<update id="updateSavingsValidaty">
+		UPDATE 
+		  mm_account_savings 
+		SET
+		  savings_type = -1 
+		WHERE savings_type = 0 
+		  AND 
+		  <![CDATA[ 
+		 	 DATE_FORMAT( savings_validity, '%Y-%m-%d' ) <  DATE_FORMAT( NOW(), '%Y-%m-%d' ) 
+		  ]]> 
+		 
+	</update>
+	
+	<!-- 查询未注册用户是否有 赠送的红包 -->
+	<select id="findGivedRedp" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT COUNT(1) FROM mm_account_savings s, mm_account_info i
+		WHERE s.`give_account_id` = i.`telephone` AND s.`savings_type` = 2 and i.account_id = #{accountId}
+	</select>
+	
+	<!-- 查出该注册用户 赠送红包 -->
+	<select id="findGivedRedpList" parameterType="java.lang.String" resultType="savingsBean">
+		SELECT 
+		s.savings_id AS savingsId,
+		s.account_id AS accountId,
+		s.savings_money AS savingsMoney,
+		s.savings_type AS savingsType,
+		s.give_account_id AS  giveAccountId,
+		s.is_register AS isRegister,
+		s.savings_from AS savingsFrom,
+		DATE_FORMAT( add_time, '%Y-%m-%d' ) AS ADDTIME,
+		DATE_FORMAT( savings_validity, '%Y-%m-%d' ) AS savingsValidity
+		FROM mm_account_savings s, mm_account_info i
+		WHERE s.`give_account_id` = i.`telephone` AND s.`savings_type` = 2 and i.account_id = #{accountId}
+	</select>
+</mapper>

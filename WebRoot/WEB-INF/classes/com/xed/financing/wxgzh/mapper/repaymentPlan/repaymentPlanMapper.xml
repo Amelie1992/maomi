@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xed.financing.wxgzh.mapper.repaymentPlan.RepaymentPlanMapper">
+
+<!--添加还款计划  -->
+<insert id="addRepayPlanRecord" parameterType="repaymentPlanBean">
+	INSERT INTO mm_repayment_plan
+		(
+		subject_id,
+		back_principal,
+		back_interest,
+		liquidated_damages,
+		back_money,
+		actual_money,
+		pending_money,
+		back_time,
+		actual_time,
+		remark
+		)
+	VALUES
+		(
+		#{subjectId},
+		#{backPrincipal},
+		#{backInterest},
+		#{liquidatedDamages},
+		#{backMoney},
+		#{actualMoney},
+		#{pendingMoney},
+		#{backTime},
+		#{actualTime},
+		#{remark}
+		)
+</insert>
+</mapper>

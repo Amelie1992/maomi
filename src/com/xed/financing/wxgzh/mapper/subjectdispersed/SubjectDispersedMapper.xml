@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.subjectdispersed.SubjectDispersedMapper">
+	
+	<!-- 查询所有筹标的总数 -->
+	<select id="queryiIsStatus" resultType="java.lang.Integer">
+		SELECT COUNT(*) 
+		FROM mm_dispersed_subject_info 
+		WHERE subject_status = 0
+	</select>
+	
+	<!-- 查询生效各类标总投资金额 和 数量 -->
+	<select id="querySubjectOnTypesAndMonry" resultType="subjectDispersedBean" parameterType="subjectDispersedBean">
+		SELECT
+			IFNULL(TRUNCATE(SUM(s.subject_money) / 1000000, 2),0) typeMoney, 
+			s.subject_type subjectType,
+			COUNT(*) typeCount
+		FROM 
+			mm_dispersed_subject_info s
+		WHERE 
+			s.subject_status = 0
+		and
+			s.subject_type=#{subjectType}
+	</select>
+	
+	<!-- 根据类型查询标 -->	
+	<select id="queryDispersedSubjectList" resultType="subjectDispersedBean" parameterType="subjectDispersedBean">
+		SELECT 
+		  S.subject_id as subjectId,
+		  S.subject_code as subjectCode,
+		  S.subject_name as subjectName,
+		  IFNULL(TRUNCATE(S.subject_money / 100, 2),0) subjectMoney,
+		  IFNULL(TRUNCATE(S.subject_overplus_money / 100, 2),0) subjectOverplusMoney,
+		  IFNULL(TRUNCATE(S.subject_starting_money / 100, 2),0) AS subjectStartingMoney,
+		  S.subject_type as subjectType,
+		  S.subject_term as subjectTerm,
+		  S.subject_periods as subjectPeriods,
+		  S.subject_rate as subjectRate,
+		  S.user_id as userId,
+		  S.repeat_type as repeatType,
+		  S.used_purpose as usedPurpose,
+		  S.used_remark as usedRemark,
+		  S.is_team isTeam,
+		  DATE_FORMAT(
+		    S.start_time,
+		    '%Y-%m-%d'
+		  ) AS startTime,
+		  DATE_FORMAT(
+		    S.effect_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS effectTime,
+		  DATE_FORMAT(S.end_time, '%Y-%m-%d %H:%i:%s') AS endTime,
+		  DATE_FORMAT(
+		    S.full_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS fullTime,
+		  S.subject_status as subjectStatus, 
+		  S.own_type as ownType,
+		  S.is_limit as isLimit,
+		  TIMESTAMPDIFF(MONTH,effect_time,NOW()) AS mCount,
+		  IFNULL(TRUNCATE(SUM(d.money) / 10000, 0),0) AS money  
+		FROM
+		  mm_dispersed_subject_info AS S LEFT JOIN mm_dispersed_record_info d
+		ON s.subject_id=d.subject_id
+		WHERE 
+			S.subject_status != '-1'
+		AND 
+			S.subject_type = #{subjectType} 
+		GROUP BY 
+			S.subject_id
+		ORDER BY
+			S.effect_time DESC
+	</select>
+	
+	<!-- 查看分散标标的详情 -->
+	<select id="queryDispersedSubjectListById" resultType="subjectDispersedBean" parameterType="subjectDispersedBean">
+			SELECT 
+			  DATE_FORMAT(now(),'%Y-%m-%d') AS currentTime,
+			  S.subject_id as subjectId,
+			  S.subject_code as subjectCode,
+			  S.subject_name as subjectName,
+			  IFNULL(TRUNCATE(S.subject_money / 100, 2),0) subjectMoney,
+			  IFNULL(TRUNCATE(S.subject_overplus_money / 100, 2),0) subjectOverplusMoney,
+			  IFNULL(TRUNCATE(S.subject_starting_money / 100, 2),0) AS subjectStartingMoney,
+			  S.subject_type as subjectType,
+			  S.subject_term as subjectTerm,
+			  S.subject_periods as subjectPeriods,
+			  S.subject_rate as subjectRate,
+			  S.user_id as userId,
+			  S.repeat_type as repeatType,
+			  S.used_purpose as usedPurpose,
+			  S.used_remark as usedRemark,
+			  S.is_team isTeam,
+			  DATE_FORMAT(
+			    S.start_time,
+			    '%Y-%m-%d %H:%i:%s'
+			  ) AS startTime,
+			  DATE_FORMAT(
+			    S.effect_time,
+			    '%Y-%m-%d'
+			  ) AS effectTime,
+			  DATE_FORMAT(S.end_time, '%Y-%m-%d %H:%i:%s') AS endTime,
+			  DATE_FORMAT(
+			    S.full_time,
+			    '%Y-%m-%d %H:%i:%s'
+			  ) AS fullTime,
+			  S.subject_status as subjectStatus,
+			  S.own_type as ownType,
+		  	  S.is_limit as isLimit,
+			  u.user_name as userName,
+			  u.user_sex as userSex,
+			  u.user_age as userAge,
+			  u.house_type as houseType,
+			  u.car_type as carType,
+			  u.id_card as idCard,
+			  u.is_loan as isLoan,
+			  u.borrower_type as borrowerType,
+			  IFNULL(TRUNCATE(u.loan_money/100,2),0) as loanMoney,
+			  (SELECT c.city_name FROM mm_city_info c LEFT JOIN mm_user_info u ON c.city_code = u.province LEFT JOIN mm_subject_info AS S  ON s.user_id =u.user_id WHERE s.subject_id =#{subjectId}) AS province,
+ 			  (SELECT c.city_name FROM mm_city_info c LEFT JOIN mm_user_info u ON c.city_code = u.city LEFT JOIN mm_subject_info AS S  ON s.user_id =u.user_id WHERE s.subject_id =#{subjectId}) AS city,
+ 			  (SELECT c.city_name FROM mm_city_info c LEFT JOIN mm_user_info u ON c.city_code = u.classify LEFT JOIN mm_subject_info AS S  ON s.user_id =u.user_id WHERE s.subject_id =#{subjectId}) AS classify,
+			  u.remark as remark,
+			  c.car_brand as carBrand,
+			  c.car_color as carColor,
+			  c.car_tag as carTag,
+			  IFNULL(TRUNCATE(c.car_money/100,2),0) as carMoney,
+			  IFNULL(TRUNCATE(c.car_expect_money/100,2),0) as carExpectMoney,
+			  c.car_mileage as carMileage,
+			  c.is_overhaul as isOverhaul,
+			  c.is_second as isSecond,
+			  c.car_limit as carLimit,
+			   TIMESTAMPDIFF(MONTH,effect_time,NOW()) AS mCount 
+			FROM
+			  mm_dispersed_subject_info AS S 
+			LEFT JOIN
+			  mm_user_info u
+			ON s.user_id =u.user_id
+			LEFT JOIN 
+			  mm_user_car c 
+    		ON c.user_id = u.user_id 
+			WHERE
+			s.subject_id = #{subjectId}
+	</select>
+	
+	<!-- 分散标投资记录 -->
+	<select id="queryFreedomInvest" resultType="subjectDispersedBean" parameterType="subjectDispersedBean">
+		SELECT 
+		  r.dispersed_id as dispersedId,
+		  r.account_id as accountId,
+		  r.subject_id as subjectId,
+		  IFNULL(TRUNCATE(r.money / 10000, 4),0) AS money,  
+		  DATE_FORMAT(r.in_time, '%Y-%m-%d') as inTime,
+		  a.telephone AS telephone,
+		  a.account_name AS accountName 
+		FROM
+		  mm_dispersed_record_info r LEFT JOIN mm_account_info a
+		ON
+		  r.account_id=a.account_id
+		WHERE
+		  subject_id=#{subjectId}
+	</select>
+	
+	<!-- 根据标查询投资总金额 -->
+	<select id="countInvestMoneyById" resultType="String" parameterType="subjectDispersedBean">
+		SELECT 
+		  IFNULL(TRUNCATE(SUM(r.money) / 10000, 0),0) AS money
+		FROM
+		  mm_dispersed_record_info r 
+		WHERE
+		  subject_id=#{subjectId}
+	</select>
+</mapper>

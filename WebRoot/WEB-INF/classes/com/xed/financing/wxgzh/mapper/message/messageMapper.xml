@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.message.MessageMapper">
+	
+	<!-- 添加企业用户消息记录 -->
+	<insert id="addCompanyMessage" parameterType="companyMessageBean">
+		INSERT INTO mm_company_account_message (
+		  account_id,
+		  msg_content,
+		  msg_type,
+		  is_send,
+		  add_time
+		) 
+		VALUES
+		  (
+		    #{accountId},
+		    #{msgContent},
+		    #{msgType},
+		    #{isSend},
+		    now()
+		  )
+	</insert>
+	<!-- 查询用户消息 -->
+	<select id="queryAccountMessage" parameterType="messageBean" resultType="messageBean">
+		SELECT 
+		  msg_id AS msgId,
+		  account_id AS accountId,
+		  msg_content AS msgContent,
+		  msg_title AS msgTitle,
+		  is_read AS isRead,
+		  DATE_FORMAT(add_time,'%Y-%m-%d %H:%i:%s') AS addTime,
+		  is_out as isOut
+		FROM
+		  mm_account_message 
+		WHERE
+		  account_id= #{accountId}
+		AND
+		  is_out = 0
+		ORDER BY is_read,add_time DESC
+	</select>
+	
+	<!-- 消息详情 -->
+	<select id="queryAccountMessageById" parameterType="messageBean" resultType="messageBean">
+		SELECT 
+		  msg_id AS msgId,
+		  account_id AS accountId,
+		  msg_content AS msgContent,
+		  msg_title AS msgTitle,
+		  is_read AS isRead,
+		  DATE_FORMAT(add_time,'%Y-%m-%d %H:%i:%s') AS addTime
+		FROM
+		  mm_account_message 
+		WHERE
+		  msg_id= #{msgId}
+	</select>
+	
+	<!-- 置为已读 -->
+	<update id="updateMessageStatus" parameterType="messageBean">
+		UPDATE 
+		  mm_account_message 
+		SET
+		  is_read = 1
+		WHERE 
+		  1=1
+		<if test="msgId != null and msgId != '' " > 
+		  and msg_id = #{msgId} 
+		</if>
+		<if test="accountId != null and accountId != '' " > 
+		  and account_id= #{accountId}
+		</if>
+	</update>
+	
+	<!-- 清空消息 -->
+	<update id="delAccountMessage" parameterType="messageBean">
+		UPDATE 
+		  mm_account_message 
+		SET
+		  is_out = 1
+		WHERE account_id = #{accountId}
+	</update>
+	
+	<!-- 添加消息 -->
+	<insert id="addMessageInfo" parameterType="messageBean">
+		INSERT INTO mm_account_message (
+		  account_id,
+		  msg_title,
+		  msg_content,
+		  is_read,
+		  add_time,
+		  is_out
+		) 
+		VALUES
+		  (
+		    #{accountId},
+		    #{msgTitle},
+		    #{msgContent},
+		    '0',
+		    NOW(),
+		    0
+		  ) 
+	</insert>
+	
+	<select id="countNoRead" parameterType="messageBean" resultType="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  mm_account_message 
+		WHERE is_read = '0' 
+		  AND is_out=0
+		  AND account_id = #{accountId}
+	</select>
+	
+	<!-- 根据消息标题查询用户记录 -->
+	<select id="countRecordByTitle" parameterType="messageBean" resultType="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  mm_account_message 
+		WHERE 
+		  account_id = #{accountId}
+		AND 
+		  msg_title=#{msgTitle}  
+	</select>
+	
+</mapper>

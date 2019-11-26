@@ -1,0 +1,203 @@
+body{
+				background-color: #f2f2f2;
+			}
+			.wrap{
+				
+			}
+			.swiper-container {
+				width: 100%;
+				height: 50px;
+			}
+			
+			.swiper-slide {
+				text-align: center;
+				font-size: 16px;
+				background: #fff;
+				display: -webkit-box;
+				display: -ms-flexbox;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-pack: center;
+				-ms-flex-pack: center;
+				-webkit-justify-content: center;
+				justify-content: center;
+				-webkit-box-align: center;
+				-ms-flex-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+			}
+			
+			.swiper-button-next,
+			.swiper-button-prev {
+				position: absolute;
+				top: 78%;
+				width: 14px;
+				height: 14px;
+				z-index: 10;
+				cursor: pointer;
+				background-size: 100% 100%;
+				background-position: center;
+				background-repeat: no-repeat;
+			}
+			.currentChose_head {
+	color: #FC7831;
+	border-bottom: 2px solid #FC7831;
+}
+			.swiper-button-prev,
+			.swiper-container-rtl .swiper-button-next {
+				background-image: url(../../images/backdark.png);
+				left: 0px;
+				right: auto
+			}
+			
+			.swiper-button-prev.swiper-button-black,
+			.swiper-container-rtl .swiper-button-next.swiper-button-black {
+				background-image: url(../../images/backdark.png);
+			}
+			
+			.swiper-button-prev.swiper-button-white,
+			.swiper-container-rtl .swiper-button-next.swiper-button-white {
+				background-image: url(../../images/backlight.png);
+			}
+			
+			.swiper-button-next,
+			.swiper-container-rtl .swiper-button-prev {
+				background-image: url(../../images/nextdark.png);
+				right: 0px;
+				left: auto
+			}
+			
+			.swiper-button-next.swiper-button-black,
+			.swiper-container-rtl .swiper-button-prev.swiper-button-black {
+				background-image: url(../../images/nextdark.png);
+			}
+			
+			.swiper-button-next.swiper-button-white,
+			.swiper-container-rtl .swiper-button-prev.swiper-button-white {
+				background-image: url(../../images/nextlight.png);
+			}
+			
+		
+			.content-title img{
+				width: 100%;
+			}
+				.content{
+				width: 100%;
+				height: 370px;
+				position: relative;
+				
+				
+			}
+			.content-box{
+				width: 80%;
+				height: 310px;
+				margin: 0 auto;
+				padding: 16px;
+				border-radius: 4px;
+				background-color: white;
+				position: absolute;
+				top: -20%;
+				left: 5%;
+				text-align: center;
+				/*overflow: hidden;*/
+			}
+		
+			.content-box-title{
+				font-size: 16px;
+				line-height: 17px;
+				color: #333333;
+				position: relative;
+				text-align: left;
+			}
+			.content-box-icon{
+				position: absolute;
+				top: -25px;
+				right: -10px;
+				display: inline-block;
+				width: 70px;
+				height: 25px;
+				line-height: 25px;
+				border-radius: 5px;
+				background-color: #2C82F8;
+				font-size: 14px;
+				color: white;
+				text-align: center;
+			}
+			.interest{
+				color: #F85B2B;
+				font-size: 27px;
+				/*font-weight: bold;*/
+				margin-top: 20px;
+			}
+			.interest span{
+				font-size: 16px;
+			}
+			.interest-tips{
+				color: #888888;
+				margin-top: 12px;
+				padding-bottom: 20px;
+			}
+			.content-box-left{
+				width: 45%;
+				float: left;
+				height: 80px;
+				line-height: 25px;
+				padding-top: 10px;
+				border-right:1px solid #E3E3E3 ;
+				margin-left: 5%;
+				
+			}
+			.content-box-left p:nth-of-type(1){
+				color: #333333;
+				font-size: 18px;
+			}
+			.content-box-right{
+				width: 45%;
+				float: left;
+				height: 80px;
+				line-height: 25px;
+				padding-top: 10px;
+			}
+			.content-box-right p:nth-of-type(1){
+				color: #333333;
+				font-size: 18px;
+			}
+			.content-box a{
+				display: inline-block;
+				width: 60%;
+				height: 40px;
+				color: white;
+				font-size: 18px;
+				line-height: 40px;
+				text-align: center;
+				background-color: #F95D18;
+				border-radius: 5px;
+				margin: 20px auto;
+			}
+			.content-box a:active{
+				position: relative;
+				top: 1px;
+			}
+			.tips{
+				color: #888888;
+				padding: 5px 0;
+			}
+			.footer {
+				background-color: #fafafa;
+				/*height: 80px;*/
+				position: fixed;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+				border-top:1px solid #EEEEEE ;
+			}
+			
+			.footer table {
+				width: 100%;
+				text-align: center;
+				font-size: 14px;
+			}
+			
+			.footer table img {
+				width: 30%;
+			}

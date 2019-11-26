@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.payentry.PayEntryInfoMapper">
+
+	<!--保存 -->
+	<insert id="savePayEntry" parameterType="payEntryInfoBean">
+		INSERT INTO pay_entry_quick (
+			account_id,
+			mchntcd,
+			type,
+			version,
+			logotp,
+			mchntorderid,
+			userid,
+			amt,
+			bankcard,
+			backurl,
+			reurl,
+			homeurl,
+			name,
+			idtype,
+			idno,
+			signtp
+		)
+		VALUES
+		(
+			#{ACCOUNTID},
+			#{MCHNTCD},
+			#{TYPE},
+			#{VERSION},
+			#{LOGOTP},
+			#{MCHNTORDERID},
+			#{USERID},
+			#{AMT},
+			#{BANKCARD},
+			#{BACKURL},
+			#{REURL},
+			#{HOMEURL},
+			#{NAME},
+			#{IDTYPE},
+			#{IDNO},
+			#{SIGNTP}
+		)
+	</insert>
+
+</mapper>

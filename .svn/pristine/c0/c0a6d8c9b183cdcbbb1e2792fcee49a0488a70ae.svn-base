@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.accountInfo.AccountInfoMapper">
+	
+	<!-- 根据登录用户获取用户信息 -->
+	<select id="getLoginAccountInfo" parameterType="String" resultType="accountInfo">
+		SELECT
+			ai.account_id AS accountId,
+			ai.account_name AS accountName,
+			ai.`password` AS `password`,
+			ai.deal_password AS dealPassword,
+			ai.telephone AS telephone,
+			ai.real_name AS realName,
+			ai.id_card AS idCard,
+			al.account_score AS accountScore,
+			al.account_exp AS accountExp,
+			al.account_level AS accountLevel,
+			ai.account_qq AS accountQQ,
+			ai.account_wx AS accountWX,
+			ai.account_wb AS accountWB,
+			ai.account_email AS accountEmail,
+			ai.is_email_validate AS isEmailValidate,
+			ai.reg_time AS regTime,
+			ai.login_time AS loginTime,
+			ai.`status` AS `status`,
+			ai.recommend_telephone AS recommendTelephone,
+			ai.is_change_name AS isChangeName,
+			ai.account_sex AS accountSex,
+			ai.account_contact_type AS accountContactType,
+			ai.account_contact_name AS accountContactName,
+			ai.account_contact_phone AS accountContactPhone,
+			ai.reg_type AS regType,
+			ai.new_subject_count AS newSubjectCount,
+			ai.risk_result AS riskResult,
+			ai.is_risk AS isRisk,
+			ai.is_company AS isCompany,
+			ai.account_icon AS accountIcon,
+			ai.unionid AS unionid,
+			ai.risk_amount as riskAmount
+		FROM
+			mm_account_info AS ai left join mm_account_level al
+		ON
+			ai.account_id=al.account_id
+		WHERE
+			ai.account_id = #{accountId}
+	</select>
+	
+	<!-- 根据ID获取用户信息 -->
+	<select id="getAccountInfo" parameterType="String" resultType="accountInfo">
+		SELECT
+			ai.account_id AS accountId,
+			ai.account_name AS accountName,
+			ai.`password` AS `password`,
+			ai.deal_password AS dealPassword,
+			ai.telephone AS telephone,
+			ai.real_name AS realName,
+			ai.id_card AS idCard,
+			al.account_score AS accountScore,
+			al.account_exp AS accountExp,
+			al.account_level AS accountLevel,
+			ai.account_qq AS accountQQ,
+			ai.account_wx AS accountWX,
+			ai.account_wb AS accountWB,
+			ai.account_email AS accountEmail,
+			ai.is_email_validate AS isEmailValidate,
+			ai.reg_time AS regTime,
+			ai.login_time AS loginTime,
+			ai.`status` AS `status`,
+			ai.recommend_telephone AS recommendTelephone,
+			ai.is_change_name AS isChangeName,
+			ai.account_sex AS accountSex,
+			ai.account_contact_type AS accountContactType,
+			ai.account_contact_name AS accountContactName,
+			ai.account_contact_phone AS accountContactPhone,
+			ai.reg_type AS regType,
+			ai.new_subject_count AS newSubjectCount,
+			ai.risk_result AS riskResult,
+			ai.is_risk AS isRisk,
+			ai.is_company AS isCompany,
+			ai.account_icon AS accountIcon,
+			ai.is_reward AS isReward,
+			ai.unionid AS unionid,
+			ai.risk_amount as riskAmount,
+			ai.have_gold as haveGold
+		FROM
+			mm_account_info AS ai left join mm_account_level al
+		ON
+			ai.account_id=al.account_id
+		WHERE
+			ai.account_id = #{accountId}
+	</select>
+	
+	<!-- 检查用户名是否存在 -->
+	<select id="checkAccountName" parameterType="String" resultType="int">
+		SELECT
+			COUNT(1)
+		FROM
+			mm_account_info
+		WHERE
+			account_name = #{accountName}
+			or telephone = #{accountName}
+	</select>
+	
+	<!-- 修改用户名 -->
+	<update id="changeAccountName" parameterType="accountInfo">
+		UPDATE mm_account_info
+		SET account_name = #{accountName},
+			is_change_name = '1'
+		WHERE
+			account_id = #{accountId}
+			and is_change_name = '0'
+	</update>
+	
+	<!-- 判断登录密码是否正确 -->
+	<select id="checkLoginPassword" parameterType="accountInfo" resultType="int">
+		SELECT
+			COUNT(1)
+		FROM
+			mm_account_info AS ai
+		WHERE
+			ai.account_id = #{accountId}
+		AND ai.`password` = #{password}
+	</select>
+	
+	<!-- 修改登录密码 -->
+	<update id="changeLoginPassword" parameterType="accountInfo">
+		UPDATE mm_account_info
+		SET `PASSWORD` = #{password}
+		WHERE
+			account_id = #{accountId}
+	</update>
+	
+	<!-- 判断交易密码是否正确 -->
+	<select id="checkDealPassword" parameterType="accountInfo" resultType="int">
+		SELECT
+			COUNT(1)
+		FROM
+			mm_account_info AS ai
+		WHERE
+			ai.account_id = #{accountId}
+		AND ai.deal_password = #{dealPassword}
+	</select>
+	
+	<!-- 修改交易密码 -->
+	<update id="changeDealPassword" parameterType="accountInfo">
+		UPDATE mm_account_info
+		SET deal_password = #{dealPassword}
+		WHERE
+			account_id = #{accountId}
+	</update>
+	
+	<!-- 通过电话号码查看用户信息 -->
+	<select id="getAccountInfoByPhone" parameterType="String" resultType="accountInfo">
+		SELECT
+			ai.account_id AS accountId,
+			ai.account_name AS accountName,
+			ai.`password` AS `password`,
+			ai.deal_password AS dealPassword,
+			ai.telephone AS telephone,
+			ai.real_name AS realName,
+			ai.id_card AS idCard,
+			al.account_score AS accountScore,
+			al.account_exp AS accountExp,
+			al.account_level AS accountLevel,
+			ai.account_qq AS accountQQ,
+			ai.account_wx AS accountWX,
+			ai.account_wb AS accountWB,
+			ai.account_email AS accountEmail,
+			ai.is_email_validate AS isEmailValidate,
+			ai.reg_time AS regTime,
+			ai.login_time AS loginTime,
+			ai.`status` AS `status`,
+			ai.recommend_telephone AS recommendTelephone,
+			ai.is_change_name AS isChangeName,
+			ai.unionid AS unionid,
+			ai.risk_amount as riskAmount
+		FROM
+			mm_account_info AS ai left join mm_account_level al
+		ON
+			ai.account_id=al.account_id
+		WHERE
+			ai.telephone = #{phone}
+	</select>
+	
+	<!-- 通过微信accountWX查看用户信息 -->
+	<select id="getAccountInfoByAccountWX" parameterType="String" resultType="accountInfo">
+		SELECT
+			ai.account_id AS accountId,
+			ai.account_name AS accountName,
+			ai.`password` AS `password`,
+			ai.deal_password AS dealPassword,
+			ai.telephone AS telephone,
+			ai.real_name AS realName,
+			ai.id_card AS idCard,
+			al.account_score AS accountScore,
+			al.account_exp AS accountExp,
+			al.account_level AS accountLevel,
+			ai.account_qq AS accountQQ,
+			ai.account_wx AS accountWX,
+			ai.account_wb AS accountWB,
+			ai.account_email AS accountEmail,
+			ai.is_email_validate AS isEmailValidate,
+			ai.reg_time AS regTime,
+			ai.login_time AS loginTime,
+			ai.`status` AS `status`,
+			ai.recommend_telephone AS recommendTelephone,
+			ai.is_change_name AS isChangeName,
+			ai.account_sex AS accountSex,
+			ai.account_contact_type AS accountContactType,
+			ai.account_contact_name AS accountContactName,
+			ai.account_contact_phone AS accountContactPhone,
+			ai.reg_type AS regType,
+			ai.new_subject_count AS newSubjectCount,
+			ai.risk_result AS riskResult,
+			ai.is_risk AS isRisk,
+			ai.is_company AS isCompany,
+			ai.account_icon AS accountIcon,
+			ai.is_reward AS isReward,
+			ai.unionid AS unionid,
+			ai.risk_amount as riskAmount
+		FROM
+			mm_account_info AS ai left join mm_account_level al
+		ON
+			ai.account_id=al.account_id	
+		WHERE
+			ai.account_wx = #{accountWX}
+	</select>
+	
+	<!-- 通过微信unionid查看用户信息 -->
+	<select id="getAccountInfoByUnionid" parameterType="String" resultType="accountInfo">
+		SELECT
+			ai.account_id AS accountId,
+			ai.account_name AS accountName,
+			ai.`password` AS `password`,
+			ai.deal_password AS dealPassword,
+			ai.telephone AS telephone,
+			ai.real_name AS realName,
+			ai.id_card AS idCard,
+			al.account_score AS accountScore,
+			al.account_exp AS accountExp,
+			al.account_level AS accountLevel,
+			ai.account_qq AS accountQQ,
+			ai.account_wx AS accountWX,
+			ai.account_wb AS accountWB,
+			ai.account_email AS accountEmail,
+			ai.is_email_validate AS isEmailValidate,
+			ai.reg_time AS regTime,
+			ai.login_time AS loginTime,
+			ai.`status` AS `status`,
+			ai.recommend_telephone AS recommendTelephone,
+			ai.is_change_name AS isChangeName,
+			ai.account_sex AS accountSex,
+			ai.account_contact_type AS accountContactType,
+			ai.account_contact_name AS accountContactName,
+			ai.account_contact_phone AS accountContactPhone,
+			ai.reg_type AS regType,
+			ai.new_subject_count AS newSubjectCount,
+			ai.risk_result AS riskResult,
+			ai.is_risk AS isRisk,
+			ai.is_company AS isCompany,
+			ai.account_icon AS accountIcon,
+			ai.is_reward AS isReward,
+			ai.unionid AS unionid,
+			ai.risk_amount as riskAmount
+		FROM
+			mm_account_info AS ai left join mm_account_level al
+		ON
+			ai.account_id=al.account_id	
+		WHERE
+			ai.unionid = #{unionid}
+	</select>
+	
+	<!-- 实名认证，修改真实姓名和身份证号 -->
+	<update id="certification" parameterType="accountInfo">
+		UPDATE mm_account_info
+		SET real_name = #{realName},
+			id_card = #{idCard},
+			account_sex = #{accountSex}
+		WHERE
+			account_id = #{accountId}
+	</update>
+	
+	<!-- 确认电话号码是否注册过 -->
+	<select id="checkTelephone" parameterType="String" resultType="int">
+		SELECT
+			count(1)
+		FROM
+			mm_account_info
+		WHERE
+			telephone = #{telephone}
+	</select>
+	
+	<!-- 修改QQ、WB、WX、其他联系人、风险能力测试 -->
+	<update id="bindInfo" parameterType="accountInfo">
+		UPDATE mm_account_info
+		<trim prefix="SET" suffixOverrides=","  >  
+	    		<if test="accountWX != null and accountWX != '' ">  
+            			account_wx = #{accountWX},
+       	 		</if>
+        		<if test="accountQQ != null and accountQQ != '' ">  
+             			account_qq=#{accountQQ},
+        		</if> 
+        		<if test="accountWB != null and accountWB != '' ">  
+             			account_wb=#{accountWB},
+        		</if> 
+        		<if test="accountContactType != null and accountContactType != '' ">  
+             			account_contact_type=#{accountContactType},
+        		</if>
+        		<if test="accountContactName != null and accountContactName != '' ">  
+             			account_contact_name=#{accountContactName},
+        		</if> 
+        		<if test="accountContactPhone != null and accountContactPhone != '' ">  
+             			account_contact_phone=#{accountContactPhone},
+        		</if>
+        		<if test="riskResult != null and riskResult != '' ">  
+             			risk_result=#{riskResult},
+        		</if>
+        		<if test="isRisk != null and isRisk != '' ">  
+             			is_risk=#{isRisk},
+        		</if>
+        		<if test="newSubjectCount != null and newSubjectCount != '' ">  
+             			new_subject_count=#{newSubjectCount},
+        		</if>
+        		<if test="riskAmount != null and riskAmount != '' ">  
+             			risk_amount=#{riskAmount},
+        		</if>
+        		<if test="unionid != null and unionid != '' ">  
+             			unionid=#{unionid},
+        		</if>
+	  	</trim>
+	  	WHERE
+			account_id = #{accountId}
+	</update>
+	
+	<!-- 判断是否为羊毛党 -->
+	<select id="countWoolMan" parameterType="accountInfo" resultType="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  mm_account_info AS ai 
+		WHERE ai.status = 0 
+		  AND (
+		     ai.recommend_telephone IN('13815077796','15861166011','15165619400') 
+		    OR ai.telephone IN ('13815077796','15861166011','15165619400')
+		  ) 
+		  AND ai.account_id = #{accountId} 
+	</select>
+	
+	<!-- 查询累计天数>=1的所有用户 -->
+	<select id="queryMeetThanOne" parameterType="accountInfo" resultType="accountInfo">
+		SELECT 
+		  ai.account_id AS accountId,
+		  ai.account_name AS accountName,
+		  ai.password AS PASSWORD,
+		  ai.deal_password AS dealPassword,
+		  ai.telephone AS telephone,
+		  ai.real_name AS realName,
+		  ai.id_card AS idCard,
+		  al.account_score AS accountScore,
+		  al.account_exp AS accountExp,
+		  al.account_level AS accountLevel,
+		  ai.account_qq AS accountQQ,
+		  ai.account_wx AS accountWX,
+		  ai.account_wb AS accountWB,
+		  ai.account_email AS accountEmail,
+		  ai.is_email_validate AS isEmailValidate,
+		  ai.reg_time AS regTime,
+		  ai.login_time AS loginTime,
+		  ai.status AS STATUS,
+		  ai.recommend_telephone AS recommendTelephone,
+		  ai.is_change_name AS isChangeName,
+		  ai.is_reward AS isReward,
+		  ac.freedom_money,
+		  ai.unionid AS unionid
+		FROM
+		  mm_account_info AS ai 
+		LEFT JOIN 
+		  mm_account_capital ac 
+		ON
+		  ai.account_id=ac.account_id 
+		LEFT JOIN 
+		  mm_account_level al 
+		ON
+		  ai.account_id=al.account_id
+		WHERE 
+		 ai.account_id>0
+		<if test="isReward == 0">  
+			<![CDATA[
+			AND 
+			 ai.is_reward<11
+			AND
+			 ai.is_reward>=1
+			AND
+			 IFNULL(TRUNCATE(ac.freedom_money / 100, 2),0)<10000
+			]]> 
+		</if>
+		<if test="isReward == 10">  
+			<![CDATA[
+			AND
+			 ai.is_reward<11
+			AND
+			 IFNULL(TRUNCATE(ac.freedom_money / 100, 2),0)>=10000
+			]]> 
+		</if>
+	</select>
+	
+	<!-- 修改累计天数 -->
+	<update id="editPlusIsReward" parameterType="java.util.List">
+		UPDATE 
+		  mm_account_info 
+		SET
+		  is_reward = is_reward + 1 
+		WHERE 
+		  account_id in
+		<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+               #{item}
+        </foreach>
+	</update>
+	
+	<!-- 重置累计天数 -->
+	<update id="editResetIsReward" parameterType="java.util.List">
+		UPDATE 
+		  mm_account_info 
+		SET
+		  is_reward = 0
+		WHERE 
+		  account_id in
+		<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+               #{item}
+        </foreach>
+	</update>
+	
+	<update id="updateAccountInfoAccountWXByTelephone" parameterType="accountInfo">	
+		UPDATE mm_account_info
+		SET 
+			account_wx = #{accountWX},
+			unionid = #{unionid}
+		WHERE
+			telephone = #{telephone}
+	</update>
+	
+	<!-- 判断身份证是否存在-->
+	<select id="checkIdCard" parameterType="accountInfo" resultType="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  mm_account_info AS ai 
+		WHERE ai.id_card = #{idCard}
+	</select>
+	
+	<!-- 查看用户投资数量 -->
+	<select id="countInvestSubject" parameterType="accountInfo" resultType="java.lang.Integer">
+		SELECT 
+		  COUNT(*) 
+		FROM
+		  mm_capital_detail c 
+		WHERE c.account_id = #{accountId} 
+		  AND c.`in_expend` = '1' 
+		  AND c.`money` > 0 
+		  AND c.`type` = '3' 
+	</select>
+	
+	<!-- 查询所有用户 -->
+	<select id="queryAllUser" parameterType="accountInfo" resultType="accountInfo">
+		SELECT
+			ai.account_id AS accountId,
+			ai.account_name AS accountName,
+			ai.`password` AS `password`,
+			ai.deal_password AS dealPassword,
+			ai.telephone AS telephone,
+			ai.real_name AS realName,
+			ai.id_card AS idCard,
+			ai.account_qq AS accountQQ,
+			ai.account_wx AS accountWX,
+			ai.account_wb AS accountWB,
+			ai.account_email AS accountEmail,
+			ai.is_email_validate AS isEmailValidate,
+			ai.reg_time AS regTime,
+			ai.login_time AS loginTime,
+			ai.`status` AS `status`,
+			ai.recommend_telephone AS recommendTelephone,
+			ai.is_change_name AS isChangeName,
+			ai.account_sex AS accountSex,
+			ai.account_contact_type AS accountContactType,
+			ai.account_contact_name AS accountContactName,
+			ai.account_contact_phone AS accountContactPhone,
+			ai.reg_type AS regType,
+			ai.new_subject_count AS newSubjectCount,
+			ai.risk_result AS riskResult,
+			ai.is_risk AS isRisk,
+			ai.is_company AS isCompany,
+			ai.account_icon AS accountIcon,
+			ai.unionid AS unionid,
+			IFNULL(ac.freedom_money,0)
+		FROM
+			mm_account_info AS ai LEFT JOIN mm_account_capital ac
+		ON 
+			ai.account_id=ac.account_id
+		WHERE
+			1=1
+		<![CDATA[
+		AND 
+			IFNULL(ac.freedom_money,0)>0
+		]]>  
+	</select>
+	
+	<!-- 检查用户是否上传头像 -->
+	<select id="checkIcon" parameterType="accountInfo" resultType="java.lang.String">
+		SELECT 
+			account_icon 
+		FROM 
+			mm_account_info 
+		WHERE 
+			account_id = #{accountId}
+	</select>
+	
+	<!-- 保存用户头像 -->
+	<update id="updateAccountIcon" parameterType="accountInfo">
+		UPDATE 
+			mm_account_info 
+		SET 
+			account_icon = #{accountIcon} 
+		WHERE 
+			account_id = #{accountId}
+	</update>
+	
+	<update id="updAutoBid" parameterType="accountInfo">
+		UPDATE 
+			mm_account_info 
+		SET 
+			auto_bid = #{autoBid} 
+		WHERE 
+			account_id = #{accountId}
+	</update>
+	
+	<!-- 修改用户开户金账户成功 -->
+	<update id="changeHaveGold" parameterType="String">
+		UPDATE 
+			mm_account_info 
+		SET 
+			have_gold = '1' 
+		WHERE 
+			account_id = #{accountId}
+	</update>
+	
+	<!-- 根据身份证查询是否有这个用户-->
+	<select id="countAccountInfoByIdCard" parameterType="String" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM
+			mm_account_info
+		WHERE
+			1=1
+			<if test="idCard!=null and idCard!=''">
+			AND id_card = #{idCard}
+			</if>
+		AND account_id>0
+		AND	`status`='0'	
+	</select>
+	
+</mapper>

@@ -1,0 +1,106 @@
+.headbox {
+				width: 100%;
+			}
+			
+			.headbox img {
+				width: 100%;
+			}
+			
+			.content {
+				background-color: #ee423f;
+				position: relative;
+				top: -2px;
+				padding: 12px;
+				padding-top: 0;
+			}
+			
+			.tyj,
+			.yqm,
+			.zc,
+			.mmhb {
+				position: relative;
+				/*padding: 12px;*/
+				background-color: #fffdef;
+				margin-bottom: 20px;
+				overflow: hidden;
+			}
+			
+			.content-left {
+				width: 25%;
+				float: left;
+				padding: 2%
+			}
+			
+			.content-left img {
+				width: 100%;
+			}
+			
+			.content-right {
+				width: 65%;
+				padding: 2%;
+				float: right;
+				color: #EE423F;
+				font-size: 14px;
+				padding-top: 25px;
+			}
+			
+			.content-right table {
+				width: 100%;
+				text-align: center;
+				font-size: 14px;
+			}
+			/*5*/
+			
+			@media only screen and (min-width: 319px) and (max-width: 321px) {
+				.content-right table {
+					width: 100%;
+					text-align: center;
+					font-size: 12px;
+				}
+			}
+			
+			.content-right p {
+				text-align: center;
+				padding-top: 20px;
+			}
+			
+			.content-right p span {
+				display: inline-block;
+				width: 70px;
+				padding: 8px;
+				text-align: center;
+				border-radius: 10px;
+				background-color: #ee423f;
+				border: 1px solid #EE423F;
+				color: white;
+				font-size: 12px;
+			}
+			
+
+			
+			.content-right p .tolook {
+				background-color: #fffdef;
+				border: 1px solid #E33145;
+				color: #EE423F;
+				
+				margin-right: 10px;
+			}
+			/*5*/
+			
+			@media only screen and (min-width: 219px) and (max-width: 321px) {
+				.content-right p .touse{
+					margin-left: 0;
+				}
+				.content-right p .tolook{
+					margin-right: 0;
+				}
+			}
+			
+			.light-bar {
+				width: 30px;
+				height: 1px;
+			}
+			
+			.light-bar img {
+				width: 100%;
+			}

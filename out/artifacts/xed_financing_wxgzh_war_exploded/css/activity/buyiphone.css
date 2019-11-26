@@ -1,0 +1,134 @@
+.wrap {
+	width: 100%;
+	background-color: #f4f4f4;
+}
+
+.content-head-top {
+	width: 100%;
+	background-image: url(../../images/activity/wx-double11-phone-bg.png);
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.content-head img {
+	width: 80%;
+	margin-left: 10%;
+	margin-top: 10%;
+	margin-bottom: 10%;
+}
+
+.content-head-phone-tips-red {
+	width: 100%;
+	line-height: 40px;
+	color: white;
+	font-size: 12px;
+	text-align: center;
+	background-image: url(../../images/activity/wx-double11-phone-comingsoon-bg.png);
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+	opacity: 0.7;
+	text-align:center;
+}
+
+.content-head-phone-tips {
+	width: 100%;
+	line-height: 40px;
+	background-color: white;
+	text-align: center;
+	color: #212121;
+	font-size: 16px;
+	margin-bottom: 15px;
+}
+
+.content-head-bottom {
+	background-color: white;
+	border-bottom: 1px solid #e0e0e0;
+	margin-bottom: 15px;
+}
+
+.content-head-bottom p {
+	padding: 12px 0 12px 12px;
+	font-size: 16px;
+	color: #212121;
+}
+
+.content-head-bottom div {
+	padding: 15px 10px;
+	text-align: center;
+}
+
+.content-head-bottom span {
+	display: inline-block;
+	width: 30%;
+	text-align: center;
+	height: 30px;
+	line-height: 30px;
+	border: 1px solid #E0E0E0;
+	font-size: 14px;
+}
+
+.content-head-bottom-2 span {
+	display: inline-block;
+	width: 45%;
+	text-align: center;
+	height: 30px;
+	line-height: 30px;
+	border: 1px solid #E0E0E0;
+}
+
+.content-head-bottom-3 {
+	background-color: white;
+	
+}
+.content-head-bottom-3 select
+{
+	width:180px;
+}
+
+.content-head-bottom-3 li {
+	height: 40px;
+	line-height: 40px;
+	border-bottom: 1px solid #E0E0E0;
+}
+
+.content-head-bottom-3 span {
+	display: inline-block;
+}
+
+.content-head-bottom-3 textarea {
+	width: 62%;
+	min-width: 190px;
+	border: none;
+	outline: none;
+}
+
+.content-head-bottom-left-tips {
+	padding-left: 10px;
+	display: inline-block;
+	width: 100px;
+	text-align: left;
+	font-size: 16px;
+	color: #212121;
+	margin-right: 10px;
+}
+
+.content-head-bottom-right-tips input {
+	border: none;
+	height: 30px;
+	outline: none;
+	width: 100%;
+	min-width: 180px;
+}
+
+.getPhone {
+	display: inline-block;
+	width: 100%;
+	height: 40px;
+	margin-bottom: 15px;
+}
+
+.getPhone img {
+	width: 100%;
+}

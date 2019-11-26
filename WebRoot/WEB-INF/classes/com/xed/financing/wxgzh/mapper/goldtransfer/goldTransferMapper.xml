@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xed.financing.wxgzh.mapper.goldtransfer.GoldTransferMapper">
+
+	<!-- 添加金账户明细 -->
+	<insert id="addGoldTransfer" parameterType="goldTransferBean">
+		insert into mm_gold_transfer (
+			  resp_code,
+			  mchnt_cd,
+			  mchnt_txn_ssn,
+			  signature,
+			  in_cust_no,
+			  out_cust_no,
+			  add_time
+		) 
+		values
+		  (
+		    #{respCode}, 
+			#{mchntCd},            
+			#{mchntTxnSsn},
+			#{signature},
+			#{inCustNo},
+			#{outCustNo},
+			NOW()      
+		  ) 
+	</insert>
+	
+
+</mapper>

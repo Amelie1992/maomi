@@ -1,0 +1,168 @@
+* {
+				font-size: 0;
+			}
+			
+			.banner {
+				width: 100%;
+			}
+			
+			.space {
+				width: 100%;
+				text-align: center;
+				background-color: #bce8ff;
+				position: relative;
+				padding: 25px 0;
+			}
+			
+			.space .title-box {
+				width: 90%;
+				margin: 0 auto;
+				background-image: linear-gradient(-45deg, #ff722c 0%, #ffb654 100%), linear-gradient( #28baff, #28baff);
+				background-blend-mode: normal, normal;
+				border-radius: 10px;
+				padding: 5px;
+			}
+			
+			.space .title {
+				width: 100%;
+				margin: 0 auto;
+				font-size: 14px;
+				color: #212121;
+				line-height: 40px;
+				background-color: #fffae8;
+				border-radius: 5px;
+			}
+			.space .title p
+			{
+				font-size:14px;
+				color:#ff762f;
+			}
+			.content {
+				position: relative;
+				margin: 0 auto;
+			}
+			
+			.content .content-box {
+				width: 90%;
+				margin: 0 auto;
+				background-image: linear-gradient(-45deg, #ff722c 0%, #ffb654 100%), linear-gradient( #28baff, #28baff);
+				background-blend-mode: normal, normal;
+				border-radius: 10px;
+				padding: 5px;
+				text-align: center;
+				position: absolute;
+				top: 60px;
+				left: 0;
+				/*bottom: 0;*/
+				right: 0;
+				margin: auto;
+				z-index: 15;
+			}
+			@media only screen and (min-width: 319px) and (max-width: 320px) {
+				.content .content-box{
+					top: 15px;
+				}
+			}
+			.content .content-title {
+				width: 150px;
+				height: 40px;
+				background-image: url(../../images/activity/goabroad/wx-ac-cgy-titlebg.png);
+				background-size: 100% 100%;
+				background-repeat: no-repeat;
+				margin: 0 auto;
+				color: #ff762f;
+				font-size: 18px;
+				line-height: 40px;
+				position: absolute;
+				top: -30px;
+				left: 0;
+				bottom: 0;
+				right: 0;
+				/*margin: auto;*/
+			}
+			
+			.content .content-detail {
+				text-align: center;
+				background-color: #fffae8;
+				border-radius: 6px;
+				padding-bottom: 15px;
+			}
+			
+			.content .content-detail .content-detail-img {
+				width: 90%;
+				margin: 0 auto;
+				margin-top: 15px;
+			}
+			
+			.content .content-detail .content-detail-title {
+				color: #422c26;
+				font-size: 21px;
+				text-align: left;
+				margin-bottom: 5px;
+				margin-top: 15px;
+				padding-left: 15px;
+			}
+			
+			.content .content-detail .content-detail-text {
+				font-size: 14px;
+				width: 90%;
+				margin: 0 auto;
+				text-align: left;
+				line-height: 22px;
+				margin-top: 15px;
+				padding-bottom: 15px;
+			}
+			
+			.content .content-detail .content-detail-text span {
+				font-size: 14px;
+				color: #ff6c00;
+			}
+			
+			.content .content-detail h4 {
+				background-color: #422c26;
+				width: 100px;
+				height: 5px;
+				margin-left: 15px;
+			}
+			
+			.content .content-detail table {
+				width: 90%;
+				margin: 0 auto;
+			}
+			
+			.content .content-detail table a {
+				width: 120px;
+				height: 35px;
+				display: inline-block;
+				font-size: 15px;
+				color: white;
+				background-image: linear-gradient(-90deg, #ff722c 0%, #ffb654 100%), linear-gradient( #422c26, #422c26);
+				background-blend-mode: normal, normal;
+				line-height: 35px;
+				border-radius: 20px;
+			}
+			
+			.content .content-detail h3 {
+				background-color: #422c26;
+				width: 150px;
+				height: 3px;
+				margin-top: 5px;
+				margin-left: 15px;
+			}
+			.rule-box{
+				height: 785px;
+				background-color: #BCE8FF;
+			}
+			.content .content-box .rule {
+				background-color: #fffae8;
+				border-radius: 6px;
+				padding-bottom: 15px;
+				text-align: left;
+			}
+			
+			.content .content-box .rule li {
+				font-size: 14px;
+				color: #422c26;
+				line-height: 22px;
+				padding: 5px 15px;
+			}

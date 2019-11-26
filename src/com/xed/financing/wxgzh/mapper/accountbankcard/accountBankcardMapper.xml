@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.accountbankcard.AccountBankcardMapper">
+	
+	<!-- 查询用户绑定的银行卡 -->
+	<select id="getAccountBankcardByAccountId" parameterType="String" resultType="accountBankcardBean">
+		SELECT
+			ab.card_id cardId,
+			ab.account_id accountId,
+			ab.bank_id bankId,
+			ab.bank_city bankCity,
+			ab.bank_opening bankOpening,
+			ab.bank_card bankCard,
+			ab.is_default isDefault,
+			ab.is_withdrawals isWithdrawals,
+			bi.bank_name bankName,
+			bi.bank_pic bankPic,
+			bi.parent_bank_id parentBankId
+		FROM
+			mm_account_bankcard AS ab
+		LEFT JOIN base_bank_info AS bi ON bi.bank_code = ab.bank_id
+		WHERE
+			ab.account_id = #{accountId}
+	</select>
+	
+	<!-- 添加绑定银行卡 -->
+	<insert id="addAccountBankcard" parameterType="accountBankcardBean">
+		INSERT INTO mm_account_bankcard (
+			account_id,
+			bank_id,
+			bank_city,
+			bank_opening,
+			bank_card,
+			is_default,
+			is_withdrawals
+		)
+		VALUES
+			(
+				#{accountId},
+				#{bankId},
+				#{bankCity},
+				#{bankOpening},
+				#{bankCard},
+				'1',
+				'0'
+			)
+	</insert>
+	
+	<!-- 修改绑定银行卡 -->
+	<update id="updateAccountBankcard" parameterType="accountBankcardBean">
+		UPDATE mm_account_bankcard
+		SET bank_id = #{bankId},
+		 bank_city = #{bankCity},
+		 bank_opening = #{bankOpening},
+		 bank_card = #{bankCard}
+		WHERE account_id = #{accountId}
+	</update>
+	
+	<select id="getAllBankInfo" resultType="accountBankcardBean">
+		SELECT
+			bi.bank_name bankName,
+			bi.bank_code bankCode,
+			bi.bank_pic bankPic
+		FROM
+			base_bank_info AS bi
+	</select>
+	
+	<select id="getBankcardCount" resultType="int" parameterType="String">
+		SELECT
+			COUNT(1)
+		FROM
+			mm_account_bankcard
+		WHERE
+			account_id = #{accountId}
+	</select>
+	
+</mapper>

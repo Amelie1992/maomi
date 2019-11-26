@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xed.financing.wxgzh.mapper.draw.DrawMapper">
+
+	<!-- 查看积分抽奖中奖列表 -->
+	<select id="queryDrawList" parameterType="drawBean" resultType="drawBean">
+			SELECT 
+			  dr.draw_id AS drawId,
+			  dr.account_id AS accountId,
+			  dr.draw_rank AS drawRank,
+			  dr.draw_content AS drawContent,
+			  DATE_FORMAT(
+		   		dr.draw_time,
+		    	'%Y-%m-%d'
+		  		) AS drawTime,
+			  dr.is_grant AS isGrant,
+			  ai.telephone AS telephone
+			FROM
+				mm_draw_record dr,
+				mm_account_info ai
+			WHERE dr.account_id = ai.account_id
+		order by dr.draw_time DESC
+		<if test="isAward != null and isAward != ''" >
+			limit 0,10
+		</if>
+	</select>
+	
+	<!-- 查看积分抽奖信息 -->
+	<select id="queryDraw" parameterType="drawBean" resultType="drawBean">
+			SELECT 
+			  dr.draw_id AS drawId,
+			  dr.account_id AS accountId,
+			  dr.draw_rank AS drawRank,
+			  dr.draw_content AS drawContent,
+			  DATE_FORMAT(
+		   		dr.draw_time,
+		    	'%Y-%m-%d %H:%i:%s'
+		  		) AS drawTime,
+			  dr.is_grant AS isGrant,
+			  ai.telephone AS telephone
+			FROM
+				mm_draw_record dr,
+				mm_account_info ai
+			WHERE dr.account_id = ai.account_id
+			<if test="drawId != null and drawId != ''" >
+				AND dr.draw_id = #{drawId}
+			</if>
+			<if test="accountId != null and accountId != ''" >
+				AND dr.account_id = #{accountId}
+			</if>
+			<if test="drawRank != null and drawRank != ''" >
+				AND dr.draw_rank LIKE '%#{drawRank}%'
+			</if>
+			<if test="drawContent != null and drawContent != ''" >
+				AND dr.draw_content LIKE '%#{drawContent}%'
+			</if>
+			<if test="drawTime != null and drawTime != ''" >
+				AND dr.draw_time = #{drawTime}
+			</if>
+			<if test="isGrant != null and isGrant != ''" >
+				AND dr.is_grant = #{isGrant}
+			</if>
+			<if test="telephone != null and telephone != ''" >
+				AND ai.telephone LIKE '%#{telephone}%'
+			</if>
+		order by dr.draw_time DESC
+	</select>
+
+	<!-- 添加抽奖记录 -->
+	<insert id="addDraw" parameterType="drawBean">
+		insert into mm_draw_record(
+			account_id,
+			draw_rank,
+			draw_content,
+			draw_time,
+			is_grant
+		)
+		values(
+			#{accountId},
+			#{drawRank},
+			#{drawContent},
+			NOW(),
+			'1'
+		)
+	</insert>
+	
+	<!-- 修改优惠券概述信息 -->
+	<delete id="deleteDraw" parameterType="drawBean">
+		delete from mm_draw_record
+		where draw_id = #{drawId}
+	</delete>
+	
+</mapper>

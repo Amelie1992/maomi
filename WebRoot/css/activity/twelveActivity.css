@@ -1,0 +1,196 @@
+.wrap {
+				width: 100%;
+				position: relative;
+				margin-bottom:50px;
+			}
+			
+			.wrap img:nth-child(1) {
+				width: 100%;
+			}
+			
+			.content {
+				top: 24%;
+				position: absolute;
+				width: 100%;
+				/*height: 100%;*/
+			}
+			.content-lable{
+				width: 100%;
+				height: 40px;
+				text-align: center;
+				background-image: url(../../images/wx-12-lable.png);
+				background-size: 100% 100%;
+				background-position: center;
+				background-repeat: no-repeat;
+				line-height: 40px;
+				font-size: 16px;
+				color:#9728ff ;
+				position: absolute;
+				top: 19%;
+			}
+			.content-inner {
+				width: 95%;
+				margin-left: 2.5%;
+				text-align: center;
+			}
+			
+			.content-inner img {
+				width: 100%;
+			}
+			
+			.content-inner div {
+				width: 100%;
+				position: absolute;
+				top: 0px;
+				left: 0;
+			}
+			
+			.content-inner-title {
+				height: 40px;
+				line-height: 40px;
+				text-align: center;
+				color: white;
+				font-size: 16px;
+			}
+			
+			.content-inner-title span {
+				display: inline-block;
+				height: 2px;
+				width: 90px;
+				line-height: 40px;
+				background-color: white;
+			}
+			
+			.phone-price-num {
+				color: #f512f8;
+				padding-top: 5%;
+				font-size: 30px;
+				text-align: center;
+			}
+			
+			.phone-price-num span {
+				font-size: 12px;
+			}
+			
+			.phone-price {
+				color: #F512F8;
+				padding: 4% 0;
+				font-size: 14px;
+				text-align: center;
+			}
+			
+			.content-inner table {
+				width: 90%;
+				margin: 0 auto;
+				text-align: center;
+				border-top: 2px solid #E0E0E0;
+			}
+			
+			.content-inner table th {
+				padding: 4% 0;
+				color: #5430f6;
+				font-size: 14px;
+			}
+			
+			.content-inner table td {
+				color: #757575;
+				font-size: 12px;
+				padding-bottom: 5px;
+				padding-bottom: 2%;
+			}
+			
+			.content-inner div .tz-btn {
+				width: 50%;
+				margin: 0 auto;
+				position: absolute;
+				bottom: 8%;
+				left: 25%;
+			}
+			
+			.content-inner-2 {
+				position: absolute;
+				top: 105%;
+			}
+			
+			.double12-rule-title {
+				width: 100%;
+				margin: 0 auto;
+				text-align: center;
+				position: absolute;
+				bottom: 18%;
+				left: 0;
+				line-height: 40px;
+			}
+			
+			.double12-rule-title span {
+				width: 90px;
+				height: 2px;
+				line-height: 40px;
+				background-color: white;
+				display: inline-block;
+			}
+			
+			.double12-rule-title img {
+				width: 40%;
+				vertical-align: middle;
+			}
+			
+			.double12-rule {
+				position: absolute;
+				left: 2.5%;
+				bottom: 2%;
+				width: 95%;
+				margin: 0 auto;
+				text-align: left;
+				color: white;
+			}
+			
+			.double12-rule li {
+				line-height: 22px;
+				font-size: 12px;
+			}
+			
+			@media only screen and (min-width: 0px) and (max-width: 320px) {
+				.phone-price-num {
+					color: #f512f8;
+					padding-top: 0%;
+					font-size: 30px;
+					text-align: center;
+				}
+				.double12-rule-title {
+					width: 100%;
+					margin: 0 auto;
+					text-align: center;
+					position: absolute;
+					bottom: 19%;
+					left: 0;
+					line-height: 40px;
+				}
+				.double12-rule {
+					position: absolute;
+					left: 2.5%;
+					bottom: 0%;
+					width: 95%;
+					margin: 0 auto;
+					text-align: left;
+					color: white;
+				}
+			}
+			.footer {
+				background-color: #fafafa;
+				/*height: 80px;*/
+				position: fixed;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+			}
+			
+			.footer table {
+				width: 100%;
+				text-align: center;
+				font-size: 14px;
+			}
+			
+			.footer table img {
+				width: 30%;
+			}

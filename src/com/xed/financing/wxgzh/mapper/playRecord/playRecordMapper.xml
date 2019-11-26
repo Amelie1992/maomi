@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.playRecord.PlayRecordMapper">
+
+	<!--  -->
+	<insert id="addPlayRecord" parameterType="playRecordBean">
+		INSERT INTO mm_play_record (
+			telephone,
+			`NAME`,
+			score,
+			play_date
+		)
+		VALUES
+			(
+				#{telephone},
+				#{name},
+				#{score},
+				NOW()
+			)
+	</insert>
+	<!-- 查询排名前10条游戏记录（一个人只能有一个排名） -->
+	<select id="queryPlayRecordBeanList" resultType="playRecordBean">
+		SELECT NAME,
+		telephone,
+		MAX(score) score,
+		play_date playDate,
+		is_prize isPrize,
+		prize_date prizeDate
+		FROM mm_play_record 
+		GROUP BY telephone 
+		ORDER BY score 
+		DESC LIMIT 0,10
+	</select>
+	
+	<!-- 查询个人最高分 -->
+	<select id="selPlayRecordBean" parameterType="playRecordBean" resultType="playRecordBean">
+		SELECT NAME,
+		telephone,
+		MAX(score) score,
+		play_date playDate,
+		is_prize isPrize,
+		prize_date prizeDate
+		FROM mm_play_record
+		where telephone = #{telephone}
+		and name = #{name}
+	</select>
+	
+</mapper>

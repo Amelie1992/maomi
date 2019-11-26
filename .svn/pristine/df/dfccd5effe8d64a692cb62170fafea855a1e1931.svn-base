@@ -1,0 +1,341 @@
+.wrap {
+	width: 100%;
+}
+
+* {
+	box-sizing: border-box;
+	padding: 0px;
+	margin: 0px;
+}
+
+div.screening {
+	width: 100%;
+	overflow: hidden;
+	background: #fff;
+	z-index: 4;
+}
+
+div.screening>ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	border-bottom: solid 1px #d3d3d3;
+	overflow: hidden;
+}
+
+div.screening>ul>li {
+	float: left;
+	font-size: 1em;
+	width: 100%;
+	text-align: center;
+	line-height: 3rem;
+	border-left: solid 1px #d3d3d3;
+}
+
+div.screening>ul>li>span {
+	background: url(../../images/up.png) no-repeat right center;
+	background-size: 0.75em;
+	padding-right: 15px;
+}
+
+div.screening>ul>.current>span {
+	background: url(../../images/down.png) no-repeat right center;
+	background-size: 0.75em;
+}
+
+.back {
+	position: absolute;
+	left: 20px;
+	top: 15px;
+	width: 10px;
+	z-index: 1500;
+	/*height: 15px;*/
+}
+
+.selectBox {
+	position: absolute;
+	top: 0px;
+	right: 50px;
+	display: none;
+}
+
+.select {
+	width: 15px;
+	height: 12px;
+}
+
+.meishi22, .grade-eject, .Category-eject, .Sort-eject {
+	position: fixed;
+	top: -65%;
+	width: 100%;
+	height: 63%;
+	z-index: 1;
+	text-align: center;
+	-webkit-transition-duration: 0.4s;
+}
+
+.meishi22>ul, .grade-eject>ul, .Category-eject>ul, .Sort-eject>ul {
+	margin: 0;
+	padding: 0;
+	overflow: auto;
+	height: 100%;
+	width: 100%;
+	-webkit-transition-duration: 0.4s;
+}
+
+.meishi22>ul>li, .grade-eject>ul>li, .Category-eject>ul>li, .Sort-eject>ul>li
+	{
+	height: 3rem;
+	line-height: 3rem;
+	font-size: 1em;
+	border-bottom: solid 1px #eee;
+	color: #888888;
+	position: relative;
+}
+
+.meishi22>ul.meishia-w, .grade-eject>ul.grade-w, .Category-eject>ul.Category-w
+	{
+	background: #fff;
+	position: absolute;
+	z-index: 1;
+}
+
+.meishi22>ul.meishia-t, .grade-eject>ul.grade-t, .Category-eject>ul.Category-t
+	{
+	background: #eee;
+	position: absolute;
+	z-index: 2;
+	left: 100%;
+}
+
+.meishi22>ul.meishia-t>li, .grade-eject>ul.grade-t>li, .Category-eject>ul.Category-t>li
+	{
+	border-bottom: solid 1px #e5e5e5;
+}
+
+.meishi22>ul.meishia-s, .grade-eject>ul.grade-s, .Category-eject>ul.Category-s
+	{
+	background: #fff;
+	position: absolute;
+	z-index: 3;
+	left: 100%;
+	list-style-type: none;
+}
+
+.meishi22>ul.meishia-s>li, .grade-eject>ul.grade-s>li, .Category-eject>ul.Category-s>li
+	{
+	border-bottom: solid 1px #eee;
+	margin-left: 1rem;
+	padding: 0;
+}
+
+.grade-w-roll {
+	top: 3rem;
+}
+
+.grade-w-roll::after {
+	position: fixed;
+	content: "";
+	width: 100%;
+	height: 100%;
+	display: block;
+	background: rgba(0, 0, 0, 0.2);
+	top: 0;
+}
+/*筛选*/
+.filtrate {
+	width: 90%;
+	margin: 0 auto;
+}
+
+.filtrate table {
+	width: 100%;
+	height: 50px;
+	text-align: center;
+}
+
+.filtrate table th {
+	font-weight: normal;
+	font-size: 14px;
+}
+
+.currentChose {
+	color: #FC7831;
+	border-bottom: 2px solid #FC7831;
+}
+/*内容*/
+.content {
+	padding: 10px 0;
+	margin-bottom: 50px;
+}
+/*优惠券总体样式*/
+.content-detail {
+	width: 100%;
+	position: relative;
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	background-position: center;
+	padding-top: 25px;
+}
+
+.content-detail table {
+	width: 90%;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.content-detail table th {
+	width: 33.3%;
+	color: white;
+}
+
+.content-detail table th:nth-of-type(1) {
+	font-size: 24px;
+	font-weight: bold;
+	text-align: left;
+}
+
+.content-detail table th:nth-of-type(2) {
+	text-align: center;
+}
+
+.content-detail table th:nth-of-type(3) {
+	text-align: right;
+}
+
+.content-detail table th img {
+	width: 10px;
+	height: 15px;
+	position: relative;
+	top: 2px;
+}
+
+.yhq-tips {
+	font-size: 12px;
+	color: white;
+}
+
+.yhq-type {
+	color: white;
+	font-size: 18px;
+}
+
+.content-detail ul {
+	width: 90%;
+	margin: 0 auto;
+	padding-top: 30px;
+	padding-bottom: 20px;
+	font-size: 12px;
+}
+
+.content-detail ul li {
+	line-height: 30px;
+	color: #212121;
+	height: 30px;
+}
+
+.content-detail ul li span {
+	color: #888888;
+}
+
+.content-detail ul img {
+	width: 20px;
+	vertical-align: middle;
+	margin-right: 5px;
+}
+/*现金券*/
+.xjq {
+	background-image: url(../../images/wx-yhq-xjq.png);
+}
+
+.xjq ul li:nth-child(1) {
+	color: #e81ca3;
+}
+
+.xjq ul li:nth-child(1) span {
+	color: #e81ca3;
+}
+/*加息券*/
+.jxq {
+	background-image: url(../../images/wx-yhq-jxq.png);
+}
+
+.jxq ul li:nth-child(1) {
+	color: #f3781e;
+}
+
+.jxq ul li:nth-child(1) span {
+	color: #f3781e;
+}
+/*体验金*/
+.tyj {
+	background-image: url(../../images/wx-yhq-tyj.png);
+}
+
+.tyj ul li:nth-child(1) {
+	color: #1ca2e8;
+}
+
+.tyj ul li:nth-child(1) span {
+	color: #1ca2e8;
+}
+/*增值券*/
+.zzq {
+	background-image: url(../../images/wx-yhq-zzq.png);
+}
+
+.zzq ul li:nth-child(1) {
+	color: #9e1ce8;
+}
+
+.zzq ul li:nth-child(1) span {
+	color: #9e1ce8;
+}
+/*提现券*/
+.txq {
+	background-image: url(../../images/wx-yhq-txq.png);
+}
+
+.txq ul li:nth-child(1) {
+	color: #1ce8ac;
+}
+
+.txq ul li:nth-child(1) span {
+	color: #1ce8ac;
+}
+/*活动券*/
+.hdq {
+	background-image: url(../../images/wx-yhq-hdq.png);
+}
+
+.hdq ul li:nth-child(1) {
+	color: #e8471c;
+}
+
+.hdq ul li:nth-child(1) span {
+	color: #e8471c;
+}
+/*过期*/
+.gq {
+	background-image: url(../../images/wx-yhq-gq.png);
+}
+
+.gq ul li {
+	color: #888888 !important;
+}
+
+.gq ul li:nth-child(1) {
+	color: #888;
+}
+
+.gq ul li:nth-child(1) span {
+	color: #888;
+}
+
+.goto-hc {
+	position: absolute;
+	right: 5%;
+	top: 5px;
+	padding: 10px;
+	color: #F95D18;
+}

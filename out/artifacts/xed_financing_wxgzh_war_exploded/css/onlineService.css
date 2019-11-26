@@ -1,0 +1,20 @@
+@CHARSET "UTF-8";
+
+*{
+	margin: 0px;
+	font-size: 16px;
+	padding: 0px;
+}
+a{
+	text-decoration: none;	
+	color: black;
+}
+
+ a:hover{
+	color: #8080c0;	
+}
+#footer{
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+}

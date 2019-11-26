@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.revenueSettlement.RevenueSettlementMapper">
+	
+	<resultMap type="accountInvest" id="IncomeInvestMap">
+		<id property="investId" column="investId" />
+		<result property="subjectId" column="subjectId" />
+		<result property="accountId" column="accountId" />
+		<result property="currentTime" column="currentTime" />
+		<result property="investTime" column="investTime" />
+		<result property="fullTime" column="fullTime" />
+		<result property="endTime" column="endTime" />
+		<result property="lastProfitTime" column="lastProfitTime" />
+		<result property="nextProfitTime" column="nextProfitTime" />
+		<result property="investMoney" column="investMoney" />
+		<result property="surplusMoney" column="surplusMoney" />
+		<result property="couponMoney" column="couponMoney" />
+		<result property="subjectName" column="subjectName" />
+		<result property="subjectRate" column="subjectRate" />
+		<result property="expenseRate" column="expenseRate"/>
+		<result property="subjectRates" column="subjectRates" />
+		<result property="monthProfit" column="monthProfit" />
+		<result property="yearProfit" column="yearProfit" />
+		<result property="isTeam" column="isTeam" />
+		<result property="isCredit" column="isCredit" />
+		<result property="investStatus" column="investStatus" />
+		<result property="investType" column="investType" />
+		<result property="repeatType" column="repeatType" />
+		<result property="isDayProfit" column="isDayProfit" />
+		<result property="revenueTime" column="revenueTime" />
+		<result property="subjectPeriods" column="subjectPeriods" />
+		<result property="subjectTerm" column="subjectTerm" />
+		<result property="subjectType" column="subjectType" />
+		<result property="subjectStatus" column="subjectStatus" />
+		
+		<result property="earlyTime" column="earlyTime" />
+		<result property="isEarly" column="isEarly" />
+		<result property="equalizeMoney" column="equalizeMoney" />
+		<result property="earlyRepaymentMoney" column="earlyRepaymentMoney" />
+		<result property="earlySurplusMoney" column="earlySurplusMoney" />
+		
+		<result property="vipRate" column="vipRate" />
+		<result property="isGold" column="isGold"/>
+		<result property="userId" column="userId" />
+			<association property="couponDetail" javaType="couponDetailBean">
+				<id property="couDetailId" column="couDetailId" />
+				<result property="couponId" column="couponId" />
+				<result property="couponMoney" column="couponDetailMoney" />
+				<result property="interestDays" column="interestDays" />
+				<result property="interestType" column="interestType" />
+				<result property="couponType" column="couponType" />
+			</association>
+			
+			<association property="profitReturnBean" javaType="profitReturnBean">
+				<id property="profitReturnId" column="profitReturnId" />
+				<result property="accountId" column="accountId" />
+				<result property="investId" column="investId" />
+				<result property="accountPhone" column="accountPhone" />
+				<result property="userPhone" column="userPhone" />
+				<result property="subjectId" column="subjectId" />
+			</association>
+	</resultMap>
+	
+	
+	<!--  查询当天结算收益的投标信息  -->
+	<select id="getSettlementIncomeInvestInfo" resultMap="IncomeInvestMap">
+		SELECT
+			ai.invest_id AS investId,
+			ai.subject_id AS subjectId,
+			ai.account_id AS accountId,
+			ai.invest_time AS investTime,
+			ai.full_time AS fullTime,
+			ai.end_time AS endTime,
+			ai.last_profit_time AS lastProfitTime,
+			ai.next_profit_time AS nextProfitTime,
+			IFNULL(ai.invest_money, 0) AS investMoney,
+			IFNULL(ai.surplus_money, 0) AS surplusMoney,
+			IFNULL(ai.coupon_money, 0) AS couponMoney,
+			ai.subject_rate AS subjectRate,
+			ai.expense_rate AS expenseRate,
+			ai.month_profit AS monthProfit,
+			ai.year_profit AS yearProfit,
+			ai.is_team AS isTeam,
+			ai.is_credit AS isCredit,
+			ai.invest_status AS investStatus,
+			ai.invest_type AS investType,
+			ai.repeat_type AS repeatType,
+			ai.is_day_profit AS isDayProfit,
+			ai.is_gold AS isGold,
+			TO_DAYS(ai.next_profit_time) - TO_DAYS(ai.last_profit_time) AS revenueTime,
+			cd.cou_detail_id AS couDetailId,
+			cd.coupon_id AS couponId,
+			cd.coupon_money AS couponDetailMoney,
+			cd.interest_days AS interestDays,
+			cd.interest_type AS interestType,
+			ci.coupon_type AS couponType,
+			si.subject_periods AS subjectPeriods,
+			si.subject_term AS subjectTerm,
+			si.user_id AS userId,
+			ui.telephone AS userPhone,
+			aii.telephone AS accountPhone
+		FROM
+			mm_account_invest AS ai
+		LEFT JOIN mm_account_additional AS aa ON aa.invest_id = ai.invest_id
+		LEFT JOIN mm_coupon_detail AS cd ON cd.cou_detail_id = aa.cou_detail_id
+		LEFT JOIN mm_coupon_info AS ci ON ci.coupon_id = cd.coupon_id
+		LEFT JOIN mm_subject_info AS si ON ai.subject_id = si.subject_id 
+		LEFT JOIN mm_user_info AS ui ON ui.user_id = si.user_id
+		LEFT JOIN mm_account_info AS aii ON aii.account_id = ai.account_id
+		WHERE
+			TO_DAYS(ai.next_profit_time) = TO_DAYS(NOW())
+		AND ai.invest_status IN (0, 3)
+		AND ai.account_id > 0
+	</select>
+	
+	<!-- 修改投资记录  月结 -->
+	<update id="updateInvestInfoByMonth" parameterType="accountInvest">
+		UPDATE mm_account_invest
+		SET last_profit_time = #{nextProfitTime},
+			<if test="investStatus != '1' and isGold != '1'.toString() ">
+				next_profit_time = date_add(invest_time,INTERVAL #{apartMonth} MONTH),
+			</if>
+			<if test="investStatus != '1' and isGold != '0'.toString() ">
+				next_profit_time = date_add(full_time,INTERVAL #{apartMonth} MONTH),
+			</if>
+			invest_status = #{investStatus},
+			surplus_money = #{surplusMoney},
+			coupon_money = #{couponMoney}
+		WHERE
+			invest_id = #{investId}
+	</update>
+	
+	<!-- 修改投资记录  日结 -->
+	<update id="updateInvestInfoByDay" parameterType="accountInvest">
+		UPDATE mm_account_invest
+		SET last_profit_time = #{nextProfitTime},
+			<if test="investStatus != '1'">
+				next_profit_time = date_add(#{nextProfitTime},INTERVAL 1 DAY),
+			</if>
+			invest_status = #{investStatus},
+			surplus_money = #{surplusMoney},
+			coupon_money = #{couponMoney}
+		WHERE
+			invest_id = #{investId}
+	</update>
+	
+	<!-- 更改账户资金 -->
+	<update id="changeFunds" parameterType="accountCapital">
+		update mm_account_capital
+		<trim prefix="set" suffixOverrides=",">
+			<if test="investmentMoney != null and investmentMoney != '' ">
+				investment_money=#{investmentMoney},
+			</if>
+			<if test="freezeMoney != null and freezeMoney != '' ">
+				freeze_money=#{freezeMoney},
+			</if>
+			<if test="withdrawMoney != null and withdrawMoney != '' ">
+				withdraw_money=#{withdrawMoney},
+			</if>
+			<if test="noWithdrawMoney != null and noWithdrawMoney != '' ">
+				no_withdraw_money=#{noWithdrawMoney},
+			</if>
+			<if test="freedomMoney != null and freedomMoney != '' ">
+				freedom_money=#{freedomMoney},
+			</if>
+			<if test="nowWithdrawMoney != null and nowWithdrawMoney != '' ">
+				now_withdraw_money=#{nowWithdrawMoney},
+			</if>
+		</trim>
+		where
+		account_id=#{accountId}
+	</update>
+	
+	<!-- 查询账户金额 -->
+	<select id="getBalances" parameterType="String" resultType="accountCapital">
+		SELECT
+			account_id accountId,
+			IFNULL(investment_money,'0') investmentMoney,
+			IFNULL(freeze_money,'0') freezeMoney,
+			IFNULL(withdraw_money,'0') withdrawMoney,
+			IFNULL(no_withdraw_money,'0') noWithdrawMoney,
+			IFNULL(freedom_money,'0') freedomMoney,
+			IFNULL(now_withdraw_money,'0') nowWithdrawMoney
+		FROM
+			mm_account_capital
+		WHERE
+			account_id = #{accountId}
+	</select>
+	
+	<!--  通过investId查询当天结算收益的投标信息  -->
+	<select id="getSettlementIncomeInvestInfoById" resultMap="IncomeInvestMap" parameterType="String">
+		SELECT
+			DATE_FORMAT(NOW(),'%Y-%m-%d') currentTime,
+			ai.invest_id AS investId,
+			ai.subject_id AS subjectId,
+			ai.account_id AS accountId,
+			DATE_FORMAT(ai.invest_time,'%Y-%m-%d') AS investTime,
+			ai.full_time AS fullTime,
+			DATE_FORMAT(ai.end_time,'%Y-%m-%d') AS endTime,
+			ai.last_profit_time AS lastProfitTime,
+			ai.next_profit_time AS nextProfitTime,
+			IFNULL(truncate(ai.invest_money/100,0), 0) AS investMoney,
+			IFNULL(truncate(ai.surplus_money/100,0), 0) AS surplusMoney,
+			IFNULL(truncate(ai.coupon_money/100,0), 0) AS couponMoney,
+			ai.subject_rate AS subjectRate,
+			ai.expense_rate AS expenseRate,
+			IFNULL(ai.vip_rate,0) AS vipRate,
+			ai.month_profit AS monthProfit,
+			ai.year_profit AS yearProfit,
+			ai.is_team AS isTeam,
+			ai.is_credit AS isCredit,
+			ai.invest_status AS investStatus,
+			ai.invest_type AS investType,
+			ai.repeat_type AS repeatType,
+			ai.is_day_profit AS isDayProfit,
+			DATE_FORMAT(ai.early_time,'%Y-%m-%d') AS earlyTime,
+			ai.is_early AS  isEarly,
+			IFNULL(truncate(ai.equalize_money/100,2), 0) AS  equalizeMoney,
+			IFNULL(truncate(ai.early_repayment_money/100,2), 0) AS earlyRepaymentMoney,
+			IFNULL(truncate(ai.early_surplus_money/100,2), 0) AS earlySurplusMoney,
+			TO_DAYS(ai.next_profit_time) - TO_DAYS(ai.last_profit_time) AS revenueTime,
+			cd.cou_detail_id AS couDetailId,
+			cd.coupon_id AS couponId,
+			cd.coupon_money AS couponDetailMoney,
+			cd.interest_days AS interestDays,
+			cd.interest_type AS interestType,
+			ci.coupon_type AS couponType,
+			si.subject_name AS subjectName,
+			si.subject_periods AS subjectPeriods,
+			si.subject_rate AS subjectRates,
+			si.subject_status AS subjectStatus,
+			si.subject_type AS subjectType,
+			si.subject_term AS subjectTerm
+		FROM
+			mm_account_invest AS ai
+		LEFT JOIN mm_account_additional AS aa ON aa.invest_id = ai.invest_id
+		LEFT JOIN mm_coupon_detail AS cd ON cd.cou_detail_id = aa.cou_detail_id
+		LEFT JOIN mm_coupon_info AS ci ON ci.coupon_id = cd.coupon_id
+		LEFT JOIN mm_subject_info AS si ON ai.subject_id = si.subject_id 
+		WHERE
+			ai.invest_id=#{investId}
+	</select>
+	
+	<resultMap type="creditRecord" id="CreditRecordInvestMap">
+		<id property="creditId" column="creditId" />
+		<result property="investId" column="investId" />
+		<result property="subjectId" column="subjectId" />
+		<result property="outAccountId" column="outAccountId" />
+		<result property="inAccountId" column="inAccountId" />
+		<result property="creditMoney" column="creditMoney" />
+		<result property="creditType" column="creditType" />
+		<result property="creditRate" column="creditRate" />
+		<result property="dealMoney" column="dealMoney" />
+		<result property="outMoney" column="outMoney" />
+		<result property="dealType" column="dealType" />
+		<result property="creditTime" column="creditTime" />
+		<result property="dealTime" column="dealTime" />
+		<result property="isCancel" column="isCancel" />
+		
+		<association property="accountInvest" javaType="accountInvest">
+			<id property="accountId" column="accountId" />
+			<result property="investTime" column="investTime" />
+			<result property="fullTime" column="fullTime" />
+			<result property="endTime" column="endTime" />
+			<result property="lastProfitTime" column="lastProfitTime" />
+			<result property="nextProfitTime" column="nextProfitTime" />
+			<result property="investMoney" column="investMoney" />
+			<result property="surplusMoney" column="surplusMoney" />
+			<result property="couponMoney" column="couponMoney" />
+			<result property="subjectRate" column="subjectRate" />
+			<result property="monthProfit" column="monthProfit" />
+			<result property="yearProfit" column="yearProfit" />
+			<result property="isTeam" column="isTeam" />
+			<result property="isCredit" column="isCredit" />
+			<result property="investStatus" column="investStatus" />
+			<result property="investType" column="investType" />
+			<result property="repeatType" column="repeatType" />
+			<result property="isDayProfit" column="isDayProfit" />
+		</association>
+	</resultMap>
+	
+	
+	<!-- 查出未撤销is_cancel,标的状态为正常的invest_status,转让中的is_credit -->
+	<select id="getCreditRecords" resultMap="CreditRecordInvestMap">
+		SELECT
+			cr.credit_id AS creditId,
+			cr.invest_id AS investId,
+			cr.subject_id AS subjectId,
+			cr.out_account_id AS outAccountId,
+			cr.in_account_id AS inAccountId,
+			cr.credit_money AS creditMoney,
+			cr.credit_type AS creditType,
+			cr.credit_rate AS creditRate,
+			cr.deal_money AS dealMoney,
+			cr.out_money AS outMoney,
+			cr.deal_type AS dealType,
+			cr.credit_time AS creditTime,
+			cr.deal_time AS dealTime,
+			cr.is_cancel AS isCancel,
+			ai.account_id AS accountId,
+			ai.invest_time AS investTime,
+			ai.full_time AS fullTime,
+			ai.end_time AS endTime,
+			ai.last_profit_time AS lastProfitTime,
+			ai.next_profit_time AS nextProfitTime,
+			ai.invest_money AS investMoney,
+			ai.surplus_money AS surplusMoney,
+			ai.coupon_money AS couponMoney,
+			si.subject_rate AS subjectRate,
+			ai.month_profit AS monthProfit,
+			ai.year_profit AS yearProfit,
+			ai.is_team AS isTeam,
+			ai.is_credit AS isCredit,
+			ai.invest_status AS investStatus,
+			ai.invest_type AS investType,
+			ai.repeat_type AS repeatType,
+			ai.is_day_profit AS isDayProfit
+		FROM
+			mm_credit_record AS cr
+		INNER JOIN mm_account_invest AS ai ON cr.invest_id = ai.invest_id
+		INNER JOIN mm_subject_info si ON si.subject_id = ai.subject_id
+		WHERE
+			cr.is_cancel = '0'
+		AND ai.invest_status = '0'
+		AND ai.is_credit = '1'
+	</select>
+	
+	<!-- 转让债权记录更新转让金额、垫付金额和利率修正金额 -->
+	<update id="updateCreditRecord" parameterType="creditRecord">
+		UPDATE mm_credit_record
+		SET credit_money = #{creditMoney},
+		 deal_money = #{dealMoney},
+		 out_money = #{outMoney}
+		WHERE
+			credit_id = #{creditId}
+	</update>
+	
+	<select id="getNow" resultType="String">
+		SELECT
+			NOW()
+	</select>
+	
+	<!-- 添加交易记录 -->
+	<insert id="addCapital" parameterType="capitalDetail">
+		insert into
+		mm_capital_detail(account_id,money,type,in_expend,deal_time,remark)
+		values(#{accountId},#{money},#{type},#{inExpend},now(),#{remark})
+	</insert>
+	
+	
+	<!-- 修改转让记录 撤销 -->
+	<update id="updateTransferStatus" parameterType="String">
+		UPDATE mm_credit_record
+		SET is_cancel = '1'
+		WHERE
+			invest_id = #{investId}
+	</update>
+	
+	<!-- 查询使用当天为投标7天，并且使用3000体验金的 -->
+	<!-- <select id="selActivitySettlementIncomeInvestInfo" resultType="accountInvest">
+		SELECT
+			distinct ai.invest_id AS investId,
+			ai.subject_id AS subjectId,
+			ai.account_id AS accountId,
+			ai.invest_time AS investTime,
+			ai.full_time AS fullTime,
+			ai.end_time AS endTime,
+			ai.last_profit_time AS lastProfitTime,
+			ai.next_profit_time AS nextProfitTime,
+			IFNULL(ai.invest_money, 0) AS investMoney,
+			IFNULL(ai.surplus_money, 0) AS surplusMoney,
+			IFNULL(ai.coupon_money, 0) AS couponMoney,
+			ai.subject_rate AS subjectRate,
+			ai.month_profit AS monthProfit,
+			ai.year_profit AS yearProfit,
+			ai.is_team AS isTeam,
+			ai.is_credit AS isCredit,
+			ai.invest_status AS investStatus,
+			ai.invest_type AS investType,
+			ai.repeat_type AS repeatType,
+			ai.is_day_profit AS isDayProfit,
+			TO_DAYS(ai.next_profit_time) - TO_DAYS(ai.last_profit_time) AS revenueTime
+		FROM
+			mm_account_invest AS ai
+		INNER JOIN mm_account_additional AS aa ON ai.subject_id = aa.subject_id
+		INNER JOIN mm_coupon_detail AS cd ON aa.cou_detail_id = cd.cou_detail_id
+		WHERE
+			cd.coupon_id = #{couponId}
+		AND ai.invest_status = 0
+		AND TO_DAYS(
+			date_add(
+				ai.invest_time,
+				INTERVAL 7 DAY
+			)
+		) = TO_DAYS(now())
+	</select> -->
+	
+	<!-- 获取前天发放收益的猫咪宝投资记录（用于合并） -->
+	<select id="getSettlementFreedom" resultType="freedomSubjectBean"  >
+		SELECT
+			account_id accountId,
+			GROUP_CONCAT(record_id) recordId,
+			GROUP_CONCAT(freedom_money) freedomMoney,
+			freedom_subject_id freedomSubjectId
+		FROM
+			mm_freedom_record
+		WHERE
+			TO_DAYS(
+				date_add(NOW(), INTERVAL - 2 DAY)
+			) = TO_DAYS(freedom_date)
+			AND is_merge = 0
+		GROUP BY
+			account_id
+	</select>
+	
+	<!-- 获得前天之前未合并的猫咪宝投资记录 -->
+	<select id="getNoMerge" parameterType="freedomSubjectBean" resultType="freedomSubjectBean" >
+		SELECT
+			fr.record_id recordId,
+			fr.freedom_subject_id freedomSubjectId,
+			fr.account_id accountId,
+			fr.freedom_money freedomMoney,
+			fr.freedom_date freedomDate,
+			fr.is_merge isMerge,
+			fr.merge_id mergeId
+		FROM
+			mm_freedom_record AS fr
+		WHERE
+			 <![CDATA[ TO_DAYS(
+				date_add(NOW(), INTERVAL - 2 DAY)
+			) > TO_DAYS(freedom_date) ]]> 
+		AND is_merge = 0
+		AND account_id = #{accountId}
+		AND freedom_subject_id = #{freedomSubjectId}
+	</select>
+	
+	<!-- 修改猫咪宝投资记录 为已合并 -->
+	<update id="updateMergeFreedom" parameterType="freedomSubjectBean">
+		UPDATE mm_freedom_record
+		SET is_merge = '1',
+		 merge_id = #{mergeId}
+		WHERE
+			record_id = #{recordId}
+	</update>
+	
+	
+	<!-- 修改猫咪投资记录 修改投资金额 -->
+	<update id="updateMergeMoneys" parameterType="freedomSubjectBean">
+		UPDATE mm_freedom_record
+		SET freedom_money = #{freedomMoney}
+		WHERE
+			record_id = #{recordId}
+	</update>
+	
+	<!-- 获取昨天之前未合并的记录    根据标ID查询前天的利率  -->
+	<select id="getBeforeLastDayNoMerge" resultType="freedomSubjectBean">
+		SELECT
+			fr.record_id AS recordId,
+			fr.freedom_subject_id AS freedomSubjectId,
+			fr.account_id AS accountId,
+			fr.freedom_money AS freedomMoney,
+			fr.freedom_date AS freedomDate,
+			fr.is_merge AS isMerge,
+			fr.merge_id AS mergeId,
+			rate.rate_id rateId,
+			rate.freedom_rate freedomRate,
+			rate.day_returns dayReturns
+		FROM
+			mm_freedom_record AS fr
+		INNER JOIN mm_freedom_rate AS rate ON fr.freedom_subject_id = rate.freedom_subject_id
+		WHERE
+			<![CDATA[ TO_DAYS(
+				date_add(NOW(), INTERVAL - 1 DAY)
+			) > TO_DAYS(fr.freedom_date) ]]> 
+		AND fr.is_merge = 0
+		AND <![CDATA[ TO_DAYS(
+				date_add(NOW(), INTERVAL - 2 DAY)
+			) = TO_DAYS(rate.freedom_date) ]]> 
+	</select>
+	
+	<!-- 添加猫咪宝收益结算记录 -->
+	<insert id="addFreedomProfit" parameterType="freedomSubjectBean">
+		INSERT INTO mm_freedom_profit (
+			freedom_subject_id,
+			account_id,
+			record_id,
+			profit_money,
+			profit_date,
+			is_balance
+		)
+		VALUES
+			(
+				#{freedomSubjectId},
+				#{accountId},
+				#{recordId},
+				#{profitMoney},
+				NOW(),
+				1
+			)
+	</insert>
+	
+	<!-- 判断该条猫咪宝记录是否今日结算过 -->
+	<select id="checkFreedomProfit" parameterType="freedomSubjectBean" resultType="Integer">
+		SELECT
+			COUNT(1)
+		FROM
+			mm_freedom_profit
+		WHERE
+			account_id = #{accountId}
+		AND TO_DAYS(profit_date) = TO_DAYS(NOW())
+		AND record_id = #{recordId}
+	</select>
+	
+	
+	
+	<!--  查询除了爆款标其他的当日结束的标 
+	<select id="queryEndOthersSubjects" resultType="subjectBean">
+		SELECT
+			si.subject_id subjectId,
+			si.subject_name subjectName,
+			si.subject_money subjectMoney,
+			si.subject_overplus_money subjectOverplusMoney,
+			si.subject_type subjectType,
+			si.subject_periods subjectPeriods,
+			si.subject_rate subjectRate,
+			si.subject_pic subjectPic,
+			si.user_id userId,
+			si.repeat_type repeatType,
+			si.used_purpose usedPurpose,
+			si.used_remark usedRemark,
+			si.is_team isTeam,
+			si.start_time startTime,
+			si.effect_time effectTime,
+			si.full_time fullTime,
+			si.end_time endTime,
+			si.subject_status subjectStatus
+		FROM
+			mm_subject_info AS si
+		WHERE
+			TO_DAYS(si.end_time) = TO_DAYS(NOW())
+		AND si.subject_status = '1'
+		AND si.subject_type != '2'
+	</select>
+	
+	
+	根据标的ID，查出投标信息，除去以转让的债权
+	<select id="selectInvestBySubjectId" parameterType="String" resultType="accountInvest">
+		SELECT
+			ai.invest_id investId,
+			ai.subject_id subjectId,
+			ai.account_id accountId,
+			ai.invest_time investTime,
+			ai.full_time fullTime,
+			ai.invest_money investMoney,
+			IFNULL(ai.coupon_money,0) couponMoney,
+			ai.subject_rate subjectRate,
+			ai.month_profit monthProfit,
+			ai.year_profit yearProfit,
+			ai.is_team isTeam,
+			ai.is_credit isCredit,
+			ai.invest_status investStatus
+		FROM
+			mm_account_invest AS ai
+		WHERE
+			ai.subject_id = #{subjectId}
+		AND ai.invest_status = '0'
+	</select>
+	
+	查询爆款标到期的投标记录
+	<select id="queryEndGoodsInvest" resultType="accountInvest">
+		SELECT
+			ai.invest_id investId,
+			ai.subject_id subjectId,
+			ai.account_id accountId,
+			ai.invest_time investTime,
+			ai.full_time fullTime,
+			ai.invest_money investMoney,
+			IFNULL(ai.coupon_money, 0) couponMoney,
+			ai.subject_rate subjectRate,
+			ai.month_profit monthProfit,
+			ai.year_profit yearProfit,
+			ai.is_team isTeam,
+			ai.is_credit isCredit,
+			ai.invest_status investStatus
+		FROM
+			mm_subject_info si,
+			mm_account_invest ai
+		WHERE
+			si.subject_id = ai.subject_id
+		AND si.subject_type = '2'
+		AND si.subject_status = '1'
+		AND ai.invest_status = '0'
+		AND TO_DAYS(date_add(ai.invest_time,INTERVAL si.subject_periods * 30 DAY)) = TO_DAYS(NOW())
+
+	</select>
+	
+	根据投标信息查询所属标的信息
+	<select id="selectSubjectInfoByInvestInfo" parameterType="accountInvest" resultType="subjectBean" >
+		SELECT
+			si.subject_id subjectId,
+			si.subject_name subjectName,
+			si.subject_money subjectMoney,
+			si.subject_overplus_money subjectOverplusMoney,
+			si.subject_type subjectType,
+			si.subject_periods subjectPeriods,
+			si.subject_rate subjectRate,
+			si.subject_pic subjectPic,
+			si.user_id userId,
+			si.repeat_type repeatType,
+			si.used_purpose usedPurpose,
+			si.used_remark usedRemark,
+			si.is_team isTeam,
+			si.start_time startTime,
+			si.effect_time effectTime,
+			si.full_time fullTime,
+			si.end_time endTime,
+			si.subject_status subjectStatus
+		FROM
+			mm_subject_info AS si
+		WHERE
+			si.subject_id = #{subjectId}
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	根据投标ID更改投标状态
+	<update id="updateInvestStatus" parameterType="accountInvest">
+		UPDATE mm_account_invest
+		SET invest_status = #{investStatus}
+		WHERE
+			invest_id = #{investId}
+	</update>
+	
+	根据标的ID更改标的状态
+	<update id="updateSubjectStatus" parameterType="subjectBean">
+		UPDATE mm_subject_info
+		SET subject_status = #{subjectStatus}
+		WHERE
+			subject_id = #{subjectId}
+	</update>
+	 -->
+</mapper>

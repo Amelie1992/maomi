@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xed.financing.wxgzh.mapper.param.ParamMapper">
+
+	<!-- 调取param  根据K找V -->
+	<select id="getParamVal" parameterType="java.lang.String"
+		resultType="java.lang.String">
+		SELECT
+		T.PARAMTER_VALUE AS paramValue
+		from
+		SYSTEM_PARAMETER_INFO T
+		where T.PARAMTER_KEY = #{paramKey}
+	</select>
+	
+	<select id="getCurrentTime" resultType="paramBean">
+		SELECT
+			DATE_FORMAT(NOW(), '%Y-%m-%d') AS nowDay,
+			DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s') AS nowHours
+		FROM
+			DUAL
+	</select>
+	
+	<!-- 刷新access_token -->
+	<update id="refurbishAccessToken" parameterType="java.lang.String">
+		UPDATE system_parameter_info 
+		SET PARAMTER_VALUE = #{accessToken} WHERE PARAMTER_KEY = 'ACCESS_TOKEN'
+	</update>
+	
+	<update id="refurbishAccessTokenExpriseInTime" parameterType="java.lang.String">
+		UPDATE system_parameter_info 
+		SET PARAMTER_VALUE = #{exprise_in_time} WHERE PARAMTER_KEY = 'ACCESS_TOKEN_EXPISE_IN'
+	</update>
+	
+	<!-- 刷新jsapi_ticket -->
+	<update id="refurbishJsapiTicket" parameterType="java.lang.String">
+		UPDATE system_parameter_info 
+		SET PARAMTER_VALUE = #{accessToken} WHERE PARAMTER_KEY = 'JSPAPI_TICKET'
+	</update>
+	
+	<update id="refurbishJsapiTicketExpriseInTime" parameterType="java.lang.String">
+		UPDATE system_parameter_info 
+		SET PARAMTER_VALUE = #{exprise_in_time} WHERE PARAMTER_KEY = 'JSPAPI_TICKET_EXPISE_IN'
+	</update>
+	
+</mapper>

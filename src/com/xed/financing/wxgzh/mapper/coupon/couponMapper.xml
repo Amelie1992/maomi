@@ -1,0 +1,695 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xed.financing.wxgzh.mapper.coupon.CouponMapper">
+
+	<!-- 查看用户优惠券列表 -->
+	<select id="queryCoupon" parameterType="couponBean" resultType="couponBean">
+			SELECT 
+			  a.additional_id AS additionalId,
+			  a.account_id AS accountId,
+			  a.cou_detail_id AS couDetailId,
+			  a.subject_id AS subjectId,
+			  a.is_used AS isUsed,
+			  DATE_FORMAT(a.receive_time, '%Y-%m-%d') AS receiveTime,
+			  DATE_FORMAT(a.used_time, '%Y-%m-%d') AS usedTime,
+			  DATE_FORMAT(a.out_time, '%Y-%m-%d') AS outTime,
+			  <![CDATA[
+			  IF(NOW() <= a.out_time,0,1) AS isBad,
+			  ]]>
+			  c.coupon_id AS couponId,
+			  c.coupon_code AS couponCode,
+			  c.is_receive AS isReceive,
+			  c.is_show AS isShow,
+			  c.validity_days AS validityDays,
+			  c.interest_days AS interestDays,
+  			  c.interest_type AS interestType,
+  			  c.subject_type AS subjectType,
+  			  IFNULL(c.start_money, 0) AS startMoney,
+			  i.coupon_name AS couponName,
+			  IFNULL(c.coupon_money,0) AS couponMoney,
+			  i.coupon_type AS couponType,
+			  DATE_FORMAT(i.add_time, '%Y-%m-%d') AS addTime
+			FROM
+			  mm_account_additional a,
+			  mm_coupon_detail c,
+			  mm_coupon_info i 
+			WHERE c.cou_detail_id = a.cou_detail_id 
+			  AND i.coupon_id = c.coupon_id 
+			  AND a.account_id = #{accountId}
+		<if test="subjectType!=null and subjectType!=''">
+			<if test="subjectType==0">
+			AND
+				c.subject_type in(-1,0,3,4)
+			</if>
+			<if test="subjectType==1">
+			AND	
+				c.subject_type in(-1,1,3,5)
+			</if>
+			<if test="subjectType==4">
+			AND	
+				c.subject_type in(-1,2,4,5)
+			</if>
+		</if>
+		<if test="couponType!=null and couponType!='-1'" >
+			and i.coupon_type=#{couponType}
+		</if>
+		<if test="isUsed!=null and isUsed!=''" >
+			and a.is_used=#{isUsed}
+			<if test="isUsed==0">
+				<if test="isBad==0" >
+				<![CDATA[
+					AND a.out_time >= NOW()
+				]]> 
+				</if>
+				<if test="isBad==1" >
+				<![CDATA[
+					AND a.out_time < NOW()
+				]]> 
+				</if>
+			</if>
+		</if>	
+		order by a.is_used,isBad,a.receive_time DESC
+	</select>
+	
+	<!-- 查询我的优惠券数量（体验金，增值券，加息券） -->
+	<select id="countNewMyCoupon" parameterType="couponBean" resultType="java.lang.Integer">
+		SELECT 
+			 count(1)
+			FROM
+			  mm_account_additional a,
+			  mm_coupon_detail c,
+			  mm_coupon_info i 
+			WHERE c.cou_detail_id = a.cou_detail_id 
+			  AND i.coupon_id = c.coupon_id 
+			  AND a.account_id = #{accountId}
+			  and i.coupon_type in(0,1,2<if test="couponType!=null and couponType!=''" >,5</if>)
+		 <if test="subjectType!=null and subjectType!=''">
+			<if test="subjectType==0">
+			AND
+				c.subject_type in(-1,0,3,4)
+			</if>
+			<if test="subjectType==1">
+			AND	
+				c.subject_type in(-1,1,3,5)
+			</if>
+			<if test="subjectType==4">
+			AND	
+				c.subject_type in(-1,2,4,5)
+			</if>
+		</if>
+		<if test="isUsed!=null and isUsed!=''" >
+			and a.is_used=#{isUsed}
+			<if test="isUsed==0">
+				<if test="isBad==0" >
+				<![CDATA[
+					AND a.out_time >= NOW()
+				]]> 
+				</if>
+				<if test="isBad==1" >
+				<![CDATA[
+					AND a.out_time < NOW()
+				]]> 
+				</if>
+			</if>
+		</if>	
+		<if test="flag!=null and flag!=''" >
+			<if test="flag==11">
+			 AND (
+			(
+			  c.interest_days IN(SELECT interest_days FROM mm_subject_coupon WHERE subject_id=#{subjectId})
+ 	 		  AND 
+ 	 		  c.interest_type IN(SELECT interest_type FROM mm_subject_coupon WHERE subject_id=#{subjectId})
+ 	 		 )OR c.interest_days=-1
+ 	 		 )
+			</if>
+			
+			<if test="flag==12">
+ 	 		  AND  (c.interest_days=-1 OR c.interest_type=(SELECT subject_term FROM mm_subject_info WHERE subject_id=#{subjectId}))
+			</if>
+		</if>
+	</select>
+	
+	<!-- 查询我的优惠券数量 -->
+	<select id="countMyCoupon" parameterType="couponBean" resultType="java.lang.Integer">
+		select 
+			count(1)
+		FROM
+			  mm_account_additional a,
+			  mm_coupon_detail c,
+			  mm_coupon_info i 
+			WHERE c.cou_detail_id = a.cou_detail_id 
+			  AND i.coupon_id = c.coupon_id 
+			  AND a.account_id = #{accountId}
+			  AND i.coupon_type !=2
+			  AND i.coupon_type !=3
+			  AND i.coupon_type !=4
+		<if test="isUsed!=null and isUsed!=''" >
+			and a.is_used=#{isUsed}
+			 <![CDATA[
+			 	and a.out_time > a.receive_time
+			 ]]>   
+		</if>	
+	</select>
+	
+	<!-- 查询优惠券可用数量 -->
+	<select id="countCapitalCoupon" parameterType="couponBean" resultType="java.lang.Integer">
+			select 
+			count(1)
+		FROM
+			  mm_account_additional a,
+			  mm_coupon_detail c,
+			  mm_coupon_info i 
+			WHERE c.cou_detail_id = a.cou_detail_id 
+			  AND i.coupon_id = c.coupon_id 
+			  AND a.account_id = #{accountId}
+		<if test="isUsed!=null and isUsed!=''" >
+			and a.is_used=#{isUsed}
+			<if test="isUsed==0">
+				<if test="isBad==0" >
+				<![CDATA[
+					AND a.out_time >= NOW()
+				]]> 
+				</if>
+				<if test="isBad==1" >
+				<![CDATA[
+					AND a.out_time < NOW()
+				]]> 
+				</if>
+			</if>
+		</if>
+	</select>
+	
+	<!-- 查看用户优惠券列表  不含体验金和现金券 -->
+	<select id="queryCoupons" parameterType="couponBean" resultType="couponBean">
+		SELECT 
+			  a.additional_id AS additionalId,
+			  a.account_id AS accountId,
+			  a.cou_detail_id AS couDetailId,
+			  a.subject_id AS subjectId,
+			  a.is_used AS isUsed,
+			  DATE_FORMAT(a.receive_time, '%Y-%m-%d') AS receiveTime,
+			  DATE_FORMAT(a.used_time, '%Y-%m-%d') AS usedTime,
+			  DATE_FORMAT(a.out_time, '%Y-%m-%d') AS outTime,
+			  <![CDATA[
+			  IF(NOW() <= a.out_time,0,1) AS isBad,
+			  ]]>
+			  c.coupon_id AS couponId,
+			  c.coupon_code AS couponCode,
+			  c.is_receive AS isReceive,
+			  c.is_show AS isShow,
+			  c.validity_days AS validityDays,
+			  c.interest_days AS interestDays,
+  			  c.interest_type AS interestType,
+			  c.subject_type AS subjectType,
+			   IFNULL(c.start_money, 0) AS startMoney,
+			  i.coupon_name AS couponName,
+			  IFNULL(c.coupon_money,0) AS couponMoney,
+			  i.coupon_type AS couponType,
+			  DATE_FORMAT(i.add_time, '%Y-%m-%d') AS addTime
+			FROM
+			  mm_account_additional a,
+			  mm_coupon_detail c,
+			  mm_coupon_info i 
+			WHERE c.cou_detail_id = a.cou_detail_id 
+			  AND i.coupon_id = c.coupon_id 
+			  AND a.account_id = #{accountId}
+			  and i.coupon_type in(0,1,2<if test="couponType!=null and couponType!=''" >,5</if>)
+		<if test="subjectType!=null and subjectType!=''">
+			<if test="subjectType==0">
+			AND
+				c.subject_type in(-1,0,3,4)
+			</if>
+			<if test="subjectType==1">
+			AND	
+				c.subject_type in(-1,1,3,5)
+			</if>
+			<if test="subjectType==4">
+			AND	
+				c.subject_type in(-1,2,4,5)
+			</if>
+		</if>
+		<if test="isUsed!=null and isUsed!=''" >
+			and a.is_used=#{isUsed}
+			<if test="isUsed==0">
+				<if test="isBad==0" >
+				<![CDATA[
+					AND a.out_time >= NOW()
+				]]> 
+				</if>
+				<if test="isBad==1" >
+				<![CDATA[
+					AND a.out_time < NOW()
+				]]> 
+				</if>
+			</if>
+		</if>	
+		<if test="flag!=null and flag!=''" >
+			<if test="flag==11">
+			 AND (
+			(
+			  c.interest_days IN(SELECT interest_days FROM mm_subject_coupon WHERE subject_id=#{subjectId})
+ 	 		  AND 
+ 	 		  c.interest_type IN(SELECT interest_type FROM mm_subject_coupon WHERE subject_id=#{subjectId})
+ 	 		 )OR c.interest_days=-1
+ 	 		 )
+			  ORDER BY isUsed,isBad,couponMoney,receiveTime DESC
+			</if>
+			
+			<if test="flag==12">
+ 	 		  AND  (c.interest_days=-1 OR c.interest_type=(SELECT subject_term FROM mm_subject_info WHERE subject_id=#{subjectId}))
+			  ORDER BY isUsed,isBad,couponMoney,receiveTime DESC
+			</if>
+		</if>
+		
+	</select>
+	
+	
+	<!-- 优惠券详情 -->
+	<select id="queryCouponById" parameterType="couponBean" resultType="couponBean">
+		SELECT 
+		  a.additional_id AS additionalId,
+		  a.account_id AS accountId,
+		  a.cou_detail_id AS couDetailId,
+		  a.subject_id AS subjectId,
+		  a.is_used AS isUsed,
+		  DATE_FORMAT(a.receive_time, '%Y-%m-%d') AS receiveTime,
+		  DATE_FORMAT(a.used_time, '%Y-%m-%d') AS usedTime,
+		  DATE_FORMAT(a.out_time, '%Y-%m-%d') AS outTime,
+		  c.coupon_id AS couponId,
+		  c.coupon_code AS couponCode,
+		  c.is_receive AS isReceive,
+		  c.is_show AS isShow,
+		  c.validity_days AS validityDays,
+		  c.interest_days AS interestDays,
+  		  c.interest_type AS interestType,
+  		  c.subject_type AS subjectType,
+  		  IFNULL(c.start_money, 0) AS startMoney,
+		  i.coupon_name AS couponName,
+		  IFNULL(c.coupon_money, 0) AS couponMoney,
+		  i.coupon_type AS couponType,
+		  DATE_FORMAT(i.add_time, '%Y-%m-%d') AS ADDTIME
+		FROM
+		  mm_account_additional a,
+		  mm_coupon_detail c,
+		  mm_coupon_info i 
+		WHERE c.cou_detail_id = a.cou_detail_id 
+		  AND i.coupon_id = c.coupon_id 
+		  AND a.account_id = #{accountId} 
+		  AND additional_id = #{additionalId}
+	</select>
+	
+	<!-- 标记优惠券已使用 -->
+	<update id="updateCouponStatus" parameterType="couponBean">
+		UPDATE 
+		  mm_account_additional 
+		SET
+		  <if test="subjectId!=null and subjectId!=''">
+		  	subject_id = #{subjectId},
+		  </if>
+		  <if test="investId!=null and investId!=''">
+		  	invest_id = #{investId},
+		  </if>
+		  is_used = 1,
+		  used_time = NOW() 
+		WHERE additional_id = #{additionalId} 
+	</update>
+	
+	<!-- 修改优惠券概述信息 -->
+	<update id="updateCouponInfo" parameterType="couponInfoBean">
+		UPDATE mm_coupon_info
+		SET coupon_quantity = #{couponQuantity}
+		WHERE
+			coupon_id = #{couponId}
+	</update>
+	
+	<!-- 添加优惠券详情 -->
+	<insert id="addCouponDetail" parameterType="couponDetailBean" keyProperty="couDetailId" useGeneratedKeys="true">
+		INSERT INTO mm_coupon_detail (
+			coupon_id,
+			coupon_code,
+			coupon_money,
+			is_receive,
+			is_show,
+			receive_time,
+			validity_days,
+			interest_days,
+			interest_type,
+			subject_type
+		)
+		VALUES
+			(
+				#{couponId},
+				#{couponCode},
+				#{couponMoney},
+				#{isReceive},
+				#{isShow},
+				NOW(),
+				#{validityDays},
+				#{interestDays},
+				#{interestType},
+				#{subjectType}
+			)
+	</insert>
+	
+	<!-- 添加优惠券领取信息 -->
+	<insert id="addAdditional" parameterType="couponBean">
+		INSERT INTO mm_account_additional (
+			account_id,
+			cou_detail_id,
+			receive_time,
+			out_time
+		)
+		VALUES
+			(
+				#{accountId},
+				#{couDetailId},
+				NOW(),
+				<if test="outTime == '-1'">
+					str_to_date('2099-12-31 23:59:59','%Y-%m-%d %H:%i:%s')
+				</if>
+				<if test="outTime == '-2'">
+					str_to_date('2017-08-06 23:59:59','%Y-%m-%d %H:%i:%s')
+				</if>
+				<if test="outTime != '-1' and outTime != '-2'">
+					DATE_ADD(NOW(),INTERVAL #{outTime} DAY)
+				</if>
+			)
+	</insert>
+	
+	<select id="selectCouponInfo" resultType="couponInfoBean" parameterType="String">
+		SELECT
+			ci.coupon_id couponId,
+			ci.coupon_name couponName,
+			cd.coupon_money couponMoney,
+			ci.coupon_type couponType,
+			ci.coupon_quantity couponQuantity,
+			ci.add_time addTime,
+			ci.validity_days validityDays
+		FROM
+			mm_coupon_info AS ci
+		LEFT JOIN 
+			mm_coupon_detail cd
+		ON 
+			ci.coupon_id=cd.coupon_id
+		WHERE
+			ci.coupon_id = #{couponId}
+		limit 0,1	
+	</select>
+	
+	
+	<select id="interestRateCoupon" parameterType="int" resultType="String">
+		SELECT
+			substring_index(spi.PARAMTER_VALUE, "=", 1)
+		FROM
+			system_parameter_info spi
+		WHERE
+			spi.PARAMTER_DESCRIBE LIKE '邀请好友投标奖励加息券利率%'
+		 <![CDATA[ AND #{money} >= substring_index(substring_index(spi.PARAMTER_VALUE, "=" ,-1),"-",1)
+		 AND #{money} <= substring_index(substring_index(spi.PARAMTER_VALUE, "=" ,-1),"-" ,-1)]]>
+	</select>
+	
+	<select id="selectCouponInfoByRate" resultType="couponInfoBean" parameterType="String">
+		SELECT
+			ci.coupon_id couponId,
+			ci.coupon_name couponName,
+			ci.coupon_type couponType,
+			ci.coupon_quantity couponQuantity,
+			ci.add_time addTime,
+			ci.validity_days validityDays
+		FROM
+			mm_coupon_info AS ci
+		WHERE
+			ci.coupon_id = 'CIInvitingFriends_'
+	</select>
+	
+	<select id="selectCouponInfoByParam" resultType="couponInfoBean" parameterType="couponBean">
+		SELECT
+			ci.coupon_id couponId,
+			ci.coupon_name couponName,
+			ci.coupon_type couponType,
+			ci.coupon_quantity couponQuantity,
+			ci.add_time addTime,
+			ci.validity_days validityDays
+		FROM
+			mm_coupon_info AS ci
+		WHERE 1 = 1
+		<if test="couponId != null and couponId != ''" >
+			AND ci.coupon_id = #{couponId}
+		</if>
+		<if test="couponName != null and couponName != ''" >
+			AND ci.coupon_name = #{couponName}
+		</if>
+		<if test="couponType != null and couponType != ''" >
+			AND ci.coupon_type = #{couponType}
+		</if>
+		<if test="couponQuantity != null and couponQuantity != ''" >
+			AND ci.coupon_quantity = #{couponQuantity}
+		</if>
+		<if test="validityDays != null and validityDays != ''" >
+			AND ci.validity_days = #{validityDays}
+		</if>
+	</select>
+	
+	<!-- 查询无限期优惠券数量（体验金，加息券，体验金） -->
+	<select id="queryNoValidityCoupon" resultType="java.lang.Integer" parameterType="couponBean">
+		SELECT 
+		  count(1)
+		FROM
+		  mm_account_additional a,
+		  mm_coupon_detail c,
+		  mm_coupon_info i 
+		WHERE c.cou_detail_id = a.cou_detail_id 
+		  AND i.coupon_id = c.coupon_id 
+		  AND a.account_id = #{accountId}
+		  AND c.interest_days=-1
+		  and i.coupon_type in(0,1,2<if test="couponType!=null and couponType!=''" >,5</if>)
+		  <if test="isUsed!=null and isUsed!=''" >
+			and a.is_used=#{isUsed}
+			<if test="isUsed==0">
+				<if test="isBad==0" >
+				<![CDATA[
+					AND a.out_time >= NOW()
+				]]> 
+				</if>
+				<if test="isBad==1" >
+				<![CDATA[
+					AND a.out_time < NOW()
+				]]> 
+				</if>
+			</if>
+		</if>	
+	</select>
+	
+	<!-- 查询融合优惠券 -->
+	<select id="queryFuseCouponList" parameterType="couponBean" resultType="couponBean" >
+		SELECT
+			a.additional_id AS additionalId,
+			a.account_id AS accountId,
+			a.cou_detail_id AS couDetailId,
+			a.subject_id AS subjectId,
+			a.is_used AS isUsed,
+			DATE_FORMAT(a.receive_time, '%Y-%m-%d') AS receiveTime,
+			DATE_FORMAT(a.used_time, '%Y-%m-%d') AS usedTime,
+			DATE_FORMAT(a.out_time, '%Y-%m-%d') AS outTime,
+			<![CDATA[
+			IF (NOW() <= a.out_time, 0, 1) AS isBad,
+			]]> c.coupon_id AS couponId,
+			c.coupon_code AS couponCode,
+			c.is_receive AS isReceive,
+			c.is_show AS isShow,
+			c.validity_days AS validityDays,
+			c.interest_days AS interestDays,
+			c.interest_type AS interestType,
+			c.subject_type AS subjectType,
+			IFNULL(c.start_money, 0) AS startMoney,
+			i.coupon_name AS couponName,
+			IFNULL(c.coupon_money, 0) AS couponMoney,
+			i.coupon_type AS couponType,
+			DATE_FORMAT(i.add_time, '%Y-%m-%d') AS addTime
+		FROM
+			mm_account_additional a,
+			mm_coupon_detail c,
+			mm_coupon_info i
+		WHERE
+			c.cou_detail_id = a.cou_detail_id
+		AND i.coupon_id = c.coupon_id
+		AND a.account_id = #{accountId}
+		AND i.coupon_type = #{couponType}
+		AND a.is_used = 0
+		<![CDATA[ 
+			AND CONVERT(c.coupon_money, DECIMAL(10,2)) <= #{couponMoney} 
+			AND a.out_time >= NOW() 
+		]]>
+		ORDER BY
+			isBad,
+			CONVERT(c.coupon_money, DECIMAL(10,2)),
+			a.receive_time DESC
+	</select>
+	
+	
+	<!--检查融合优惠券  -->
+	<select id="checkCoupon" parameterType="java.util.Map" resultType="Integer">
+		SELECT
+			COUNT(1)
+		FROM
+			mm_account_additional a,
+			mm_coupon_detail c,
+			mm_coupon_info i
+		WHERE
+			c.cou_detail_id = a.cou_detail_id
+		AND i.coupon_id = c.coupon_id
+		AND a.account_id = #{accountId}
+		AND i.coupon_type = #{couponType}
+		AND a.is_used = 0
+		<![CDATA[
+		AND NOW() <= a.out_time
+		]]>
+		AND a.additional_id IN 
+			<foreach item="couponId" collection="couponId" open="(" separator="," close=")">
+				#{couponId}
+			</foreach>
+	</select>
+	
+	<!-- 查询优惠券金额 -->
+	<select id="getFuseCoupons" parameterType="java.util.Map" resultType="couponBean">
+		SELECT
+			a.additional_id AS additionalId,
+			IFNULL(c.coupon_money, 0) AS couponMoney
+		FROM
+			mm_account_additional a,
+			mm_coupon_detail c,
+			mm_coupon_info i
+		WHERE
+			c.cou_detail_id = a.cou_detail_id
+		AND i.coupon_id = c.coupon_id
+		AND a.account_id = #{accountId}
+		AND i.coupon_type = #{couponType}
+		AND a.is_used = 0
+		<![CDATA[
+		AND NOW() <= a.out_time
+		]]>
+		AND a.additional_id IN 
+			<foreach item="couponId" collection="couponId" open="(" separator="," close=")">
+				#{couponId}
+			</foreach>
+	</select>
+	
+	<!-- 用于融合优惠券修改状态 -->
+	<update id="fuseCoupon" parameterType="java.util.Map">
+		UPDATE 
+		  mm_account_additional 
+		SET
+		  is_used = 1,
+		  used_time = NOW() 
+		WHERE additional_id  IN 
+			<foreach item="couponId" collection="couponId" open="(" separator="," close=")">
+				#{couponId}
+			</foreach>
+			AND account_id = #{accountId}
+	</update>
+	
+	<!-- 查询使用的是否是8.8注册现金劵 -->
+	<select id="checkUserCoupon" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT 
+		c.`coupon_id`
+		FROM
+		  mm_account_additional a,
+		  mm_coupon_detail c,
+		  mm_coupon_info i 
+		WHERE c.cou_detail_id = a.cou_detail_id 
+		  AND i.coupon_id = c.coupon_id 
+		  AND a.account_id = #{accountId}
+		  AND additional_id = #{additionalId}
+		  AND c.`coupon_money` = 880
+	</select>
+	
+	<!-- 添加注册体验金详情 -->
+	<insert id="addRegisterCoupom" parameterType="couponDetailBean" keyProperty="couDetailId" useGeneratedKeys="true">
+		INSERT INTO mm_coupon_detail (
+			coupon_id,
+			coupon_code,
+			coupon_money,
+			is_receive,
+			is_show,
+			receive_time,
+			validity_days,
+			interest_days,
+			interest_type,
+			subject_type,
+			start_money
+		)
+		VALUES
+			(
+				#{couponId},
+				#{couponCode},
+				#{couponMoney},
+				#{isReceive},
+				#{isShow},
+				NOW(),
+				#{validityDays},
+				#{interestDays},
+				#{interestType},
+				#{subjectType},
+				IFNULL(#{startMoney},0)
+			)
+	</insert>
+	
+	<!-- 根据id查询用户拥有几张优惠券 -->
+	<select id="countIsOwnerById" parameterType="couponBean" resultType="java.lang.Integer">
+		SELECT 
+		  count(1) 
+		FROM
+		  mm_account_additional a,
+		  mm_coupon_detail c,
+		  mm_coupon_info i 
+		WHERE c.cou_detail_id = a.cou_detail_id 
+		  AND i.coupon_id = c.coupon_id 
+		  AND a.account_id = #{accountId} 
+		  and i.coupon_id = #{couponId} 
+	</select>
+	
+	<!-- 查询用户未使用优惠券数量，按找类型查询 -->
+	<select id="countNotUsedByType" parameterType="couponBean" resultType="Integer">
+		SELECT
+			count(1)
+		FROM
+			mm_account_additional a,
+			mm_coupon_detail c,
+			mm_coupon_info i
+		WHERE
+			c.cou_detail_id = a.cou_detail_id
+		AND i.coupon_id = c.coupon_id
+		AND a.account_id = #{accountId} 
+		AND i.coupon_type = #{couponType}
+		AND a.is_used = 0
+	</select>
+	
+	<!-- 查找一张未使用的优惠券，按照类型查询 -->
+	<select id="selectNotUsedByType" parameterType="couponBean" resultType="couponBean">
+		SELECT
+			a.cou_detail_id couDetailId,
+			a.receive_time receiveTime,
+			account_id accountId,
+			a.additional_id additionalId
+		FROM
+			mm_account_additional a,
+			mm_coupon_detail c,
+			mm_coupon_info i
+		WHERE
+			c.cou_detail_id = a.cou_detail_id
+		AND i.coupon_id = c.coupon_id
+		AND a.account_id = #{accountId} 
+		AND i.coupon_type = #{couponType}
+		AND a.is_used = 0
+		ORDER BY
+			a.receive_time
+		LIMIT 0,
+		 1
+		
+	</select>
+	
+	
+</mapper>

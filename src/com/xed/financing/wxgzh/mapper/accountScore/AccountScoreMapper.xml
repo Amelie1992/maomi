@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.accountScore.AccountScoreMapper">
+	
+	<!-- 查询用户经验和积分 -->
+	<select id="findScoreAndExp" parameterType="String" resultType="accountInfo" >
+		SELECT
+			al.account_id accountId,
+			al.account_score accountScore,
+			al.account_exp accountExp,
+			al.account_level accountLevel
+		FROM
+			mm_account_level al
+		WHERE
+			al.account_id = #{accountId}
+	</select>
+	
+	<!-- 修改用户经验和积分 -->
+	<update id="changeScoreAndExp" parameterType="accountInfo" >
+		UPDATE mm_account_level
+		SET account_id = #{accountId}
+			<if test="accountScore != null and accountScore != '' ">
+				,account_score = #{accountScore}
+			</if>
+			<if test="accountExp != null and accountExp != '' ">
+				,account_exp = #{accountExp}
+			</if>
+		WHERE
+			account_id = #{accountId}
+	</update>
+	
+	<!-- 添加积分变更明细 -->
+	<insert id="addAccountScoreInfo" parameterType="accountScoreBean">
+		INSERT INTO mm_account_score_info (
+			account_id,
+			score,
+			in_expend,
+			score_type,
+			mod_time,
+			mod_reason
+		)
+		VALUES
+			(
+				#{accountId},
+				#{score},
+				#{inExpend},
+				#{scoreType},
+				now(),
+				#{modReason}
+			)
+	</insert>
+	
+	<!-- 查询鱼干明细  -->
+	<select id="queryAccountScore" resultType="accountScoreBean" parameterType="accountScoreBean">
+		SELECT
+			si.score_id AS scoreId,
+			si.account_id AS accountId,
+			si.score AS score,
+			si.in_expend AS inExpend,
+			si.score_type AS scoreType,
+			DATE_FORMAT(si.mod_time,'%Y-%m-%d %h:%i:%s') AS modTime,
+			si.mod_reason AS modReason
+		FROM mm_account_score_info si
+		where 1=1  
+		<if test="accountId!=null and accountId!=''">
+			and si.account_id = #{accountId}
+		</if>
+		<if test="inExpend!=null and inExpend!=''" >
+			and si.in_expend = #{inExpend}
+		</if>
+		order by si.mod_time desc
+	</select>
+</mapper>

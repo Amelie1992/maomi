@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.loginregister.LoginRegisterMapper">
+	
+	<!-- 检查手机号唯一 -->
+	<select id="checkTelephoneOnly" parameterType="String" resultType="java.lang.Integer">
+		select count(1) from mm_account_info where telephone=#{telephone}
+	</select>
+	
+	<!-- 登录 -->
+	<select id="checkLogin" parameterType="accountInfo" resultType="String">
+		select a.account_id accountId from (select `password`,`status`,account_id from mm_account_info where telephone=#{telephone} or account_name = #{accountName}) a 
+		where a.`password`=#{password} and a.`status`='0'
+	</select>
+	
+	<!-- 新注册用户 -->
+	<insert id="addAccountInfo" parameterType="accountInfo" keyProperty="accountId" useGeneratedKeys="true">
+		insert into mm_account_info(account_name,password,deal_password,telephone,reg_time,recommend_telephone,recommend_code,account_wx,unionid) 
+		values(
+			#{accountName},#{password},#{dealPassword},#{telephone},now(),#{recommendTelephone},#{recommendCode},#{accountWX},#{unionid}
+		)
+	</insert>
+	
+	<!-- 检查用户名是否存在 -->
+	<select id="checkAccountName" parameterType="String" resultType="java.lang.Integer">
+		select count(1) from mm_account_info where account_name=#{accountName} or telephone=#{accountName}
+	</select>
+	
+	<!-- 根据账户ID查询账户信息 -->
+	<select id="getAccountInfoById" parameterType="String" resultType="accountInfo">
+		SELECT 
+  			ai.account_id AS accountId,
+  			ai.account_name AS accountName,
+  			ai.`password` AS `password`,
+ 			ai.telephone AS telephone,
+  			ai.id_card AS idCard,
+  			al.account_score AS accountScore,
+  			al.account_exp AS accountExp,
+  			al.account_level AS accountLevel,
+  			ai.account_qq AS accountQQ,
+  			ai.account_wx AS accountWX,
+  			ai.account_wb AS accountWB,
+  			ai.account_email AS accountEmail,
+  			ai.is_email_validate AS isEmailValidate,
+  			ai.reg_time AS regTime,
+  			ai.login_time AS loginTime,
+  			ai.`status` AS `status`,
+  			ai.recommend_telephone AS recommendTelephone,
+  			ai.is_change_name AS isChangeName,
+  			ai.unionid AS unionid 
+		FROM
+  			mm_account_info AS ai left join mm_account_level al
+  		ON 
+  			ai.account_id=al.account_id
+		WHERE 
+			ai.account_id = #{accountId} 
+	</select>
+	
+	<!-- 更改登录时间 -->
+	<update id="updateLoginTime" parameterType="accountInfo" >
+		UPDATE mm_account_info
+		SET login_time = NOW()
+		where telephone=#{telephone} or account_name = #{accountName}
+	</update>
+	
+	<!-- 查询邀请的好友数-->
+	<select id="queryFriendsCount" parameterType="accountInfo" resultType="String">
+		select count(1) as friendsCount from mm_account_info ai where ai.recommend_telephone = #{telephone}
+	</select>
+	
+	<!-- 查询邀请的好友总投资额-->
+	<select id="queryFriendsInvest" parameterType="accountInfo" resultType="String">
+		select IFNULL(TRUNCATE(sum(ai.invest_money) / 100, 2),0) as friendsInvest from mm_account_invest ai,mm_account_info ia
+		where ai.account_id = ia.account_id
+		and ia.recommend_telephone = #{telephone}
+	</select>
+	
+		<!-- 查询获得的好友奖励次数-->
+	<select id="queryFriendsMoney" parameterType="accountInfo" resultType="String">
+		select IFNULL(TRUNCATE(sum(cd.money) / 100, 2),0) as friendsMoney from mm_capital_detail cd
+		where cd.type = 17 and cd.account_id = #{accountId}
+	</select>
+	
+	<!-- 查询获得的好友奖励次数-->
+	<select id="queryFriendsCoupon" parameterType="accountInfo" resultType="String">
+		select count(1) as friendsCoupon from mm_account_additional aa,mm_account_info ia,mm_coupon_detail cd
+		where aa.account_id = ia.account_id and aa.cou_detail_id = cd.cou_detail_id
+		and cd.coupon_id = 'CIInvitingFriends_'
+		and ia.telephone = #{telephone}
+	</select>
+	
+	<!-- 查询获得的好友奖励总额-->
+	<select id="queryFriendsPercent" parameterType="accountInfo" resultType="String">
+		select cast(sum(cd.coupon_money) as decimal(10,2)) as friendsPercent from mm_account_additional aa,mm_account_info ia,mm_coupon_detail cd
+		where aa.account_id = ia.account_id and aa.cou_detail_id = cd.cou_detail_id
+		and cd.coupon_id = 'CIInvitingFriends_'
+		and ia.telephone = #{telephone}
+	</select>
+	
+	<!-- 检查账户是否为冻结 -->
+	<select id="checkLoginIsFrozen" parameterType="accountInfo" resultType="Integer">
+		SELECT
+			count(1)
+		FROM
+			mm_account_info
+		WHERE
+			`status` != 0
+		AND telephone = #{telephone}
+	</select>
+	
+	<!--注册添加用户等级信息-->
+	<insert id="addAccountLevel" parameterType="accountInfo">
+		INSERT INTO 
+			mm_account_level
+			(
+			account_id
+			)
+		VALUES
+			(
+			#{accountId}
+			)
+	</insert>
+	
+	<!-- 检查微信号唯一 -->
+	<select id="checkAccountWXOnly" parameterType="String" resultType="java.lang.Integer">
+		select count(1) from mm_account_info where account_wx=#{accountWx}
+	</select>
+	
+	<!--通过账户ID查询邀请人相同的账号id  -->
+	<select id="getFriendsList" resultType="accountInfo">
+		SELECT 
+		    account_id as accountId
+		  FROM
+		    mm_account_info 
+		  WHERE recommend_telephone =
+		  (select recommend_telephone from mm_account_info where account_id = #{accountId}) 
+		  <![CDATA[
+		    AND DATE_FORMAT(reg_time, '%Y-%m-%d') >= #{regBegin} 
+		    AND DATE_FORMAT(reg_time, '%Y-%m-%d') <= #{regEnd}
+		  ]]> 
+	</select>
+	
+	<select id="getFriendsCount" resultType="java.lang.Integer">
+		SELECT 
+		    count(1)
+		  FROM
+		    mm_account_info 
+		  WHERE recommend_telephone =
+		  (select recommend_telephone from mm_account_info where account_id = #{accountId}) 
+		  <![CDATA[
+		    AND DATE_FORMAT(reg_time, '%Y-%m-%d') >= #{regBegin} 
+		    AND DATE_FORMAT(reg_time, '%Y-%m-%d') <= #{regEnd}
+		  ]]> 
+	</select>
+	
+	<select id="checkFriends" parameterType="accountInfo" resultType="accountInfo">
+		SELECT
+			INSERT(telephone,4,4,'****') telephone,
+			real_name realName,
+			account_sex accountSex,
+			<!-- ab.bank_card accountQQ, -->
+			iv.invest_id accountWX
+		FROM
+			mm_account_info ai
+		<!-- LEFT JOIN mm_account_bankcard ab ON ab.account_id = ai.account_id -->
+		LEFT JOIN mm_account_invest iv ON ai.account_id = iv.account_id
+		AND invest_money > 0
+		WHERE
+			ai.recommend_telephone = #{telephone}
+		GROUP BY
+			ai.account_id
+	</select>
+</mapper>

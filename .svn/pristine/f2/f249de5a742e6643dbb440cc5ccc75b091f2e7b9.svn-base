@@ -1,0 +1,175 @@
+.wrap{
+				width: 100%;
+				background-color: #F2F2F2;
+			}
+			.wrap .navigation {
+				width: 100%;
+				background-color: #E5E5E5;
+			}
+			.no-zc-record{
+				text-align: center;
+				padding: 80px 0 20px 0;
+			}
+			.no-zc-record p{
+				padding: 20px 0;
+			}
+			
+			.swiper-container {
+				width: 100%;
+				height: 50px;
+			}
+			
+			.swiper-slide {
+				text-align: center;
+				font-size: 16px;
+				background: #fff;
+				display: -webkit-box;
+				display: -ms-flexbox;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-pack: center;
+				-ms-flex-pack: center;
+				-webkit-justify-content: center;
+				justify-content: center;
+				-webkit-box-align: center;
+				-ms-flex-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+			}
+			
+			.swiper-button-next,
+			.swiper-button-prev {
+				position: absolute;
+				top: 78%;
+				width: 14px;
+				height: 14px;
+				z-index: 10;
+				cursor: pointer;
+				background-size: 100% 100%;
+				background-position: center;
+				background-repeat: no-repeat;
+			}
+			
+			.swiper-button-prev,
+			.swiper-container-rtl .swiper-button-next {
+				background-image: url(../../images/backdark.png);
+				left: 0px;
+				right: auto
+			}
+			
+			.swiper-button-prev.swiper-button-black,
+			.swiper-container-rtl .swiper-button-next.swiper-button-black {
+				background-image: url(../../images/backdark.png);
+			}
+			
+			.swiper-button-prev.swiper-button-white,
+			.swiper-container-rtl .swiper-button-next.swiper-button-white {
+				background-image: url(../../images/backlight.png);
+			}
+			
+			.swiper-button-next,
+			.swiper-container-rtl .swiper-button-prev {
+				background-image: url(../../images/nextdark.png);
+				right: 0px;
+				left: auto
+			}
+			
+			.swiper-button-next.swiper-button-black,
+			.swiper-container-rtl .swiper-button-prev.swiper-button-black {
+				background-image: url(../../images/nextdark.png);
+			}
+			
+			.swiper-button-next.swiper-button-white,
+			.swiper-container-rtl .swiper-button-prev.swiper-button-white {
+				background-image: url(../../images/nextlight.png);
+			}
+			
+			.currentChose_head {
+				color: #FC7831;
+				border-bottom: 2px solid #FC7831;
+			}
+			.crowdfundingBox {
+				width: 100%;
+				background-color: white;
+				border-bottom: 1px solid #E0E0E0;
+				margin-bottom: 20px;
+				margin-top: 20px;
+			}
+			
+			.crowdfunding-title {
+				font-size: 18px;
+				line-height: 50px;
+				width: 100%;
+				height: 50px;
+				text-align: left;
+				text-indent: 20px;
+				border-bottom: 1px solid #EEEEEE;
+			}
+			
+			.crowdfunding-title span {
+				display: inline-block;
+				height: 27px;
+				width: 6px;
+				background-color: purple;
+				vertical-align: middle;
+				margin-right: 15px;
+			}
+			
+			.crowdfunding-content {
+				padding: 10px;
+				overflow: hidden;
+			}
+			
+			.crowdfunding-content-left {
+				float: left;
+				width: 40%;
+			}
+			
+			.crowdfunding-content-left img {
+				width: 100%;
+			}
+			
+			.crowdfunding-content-right {
+				width: 50%;
+				float: left;
+				margin-left: 10px;
+			}
+			
+			.crowdfunding-content-right ul {
+				padding: 10px;
+				line-height: 30px;
+			}
+			
+			.crowdfunding-content-right ul li {
+				color: #888888;
+				font-size: 14px;
+				line-height: 30px;
+				
+			}
+			
+			.crowdfunding-content-right ul li:nth-child(1) {
+				font-size: 16px;
+				color: #212121;
+			}
+			.layui-progress-text{
+				top: 0px;
+			}
+			.footer {
+				background-color: #fafafa;
+				/*height: 80px;*/
+				position: fixed;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+				border-top: 1px solid #EEEEEE;
+			}
+			
+			.footer table {
+				width: 100%;
+				text-align: center;
+				font-size: 14px;
+			}
+			
+			.footer table img {
+				width: 30%;
+			}

@@ -1,0 +1,232 @@
+.rank {
+	width: 100%;
+}
+
+.rankbox {
+	width: 100%;
+	height: 100%;
+	background: white;
+	background: url(../../images/activity/fiveoneight/risk/lcj-rank-bg.png) no-repeat;
+	background-size: contain;
+	padding: 15px 18px 0px;
+	box-sizing: border-box;
+}
+
+@media only screen and (min-width: 414px) {
+	.rankbox {
+		padding-top: 22px;
+	}
+}
+
+.rank_kind {
+	width: 48%;
+	margin: 0 auto;
+	text-align: center;
+	font-size: 14px;
+}
+
+.rich {
+	display: inline-block;
+	width: 50%;
+	height: 100%;
+	border: 2px solid white;
+	border-top-left-radius: 17.5px;
+	border-bottom-left-radius: 17.5px;
+	background: white;
+	color: #29a1ff;
+	box-sizing: border-box;
+	line-height: 36px;
+}
+
+@media only screen and (min-width: 100px) and (max-width: 320px) {
+	.top_three .silver,
+	.top_three .gold,
+	.top_three .copper {
+		width: 28%;
+	}
+}
+
+.animated {
+	-webkit-animation-duration: 0.5s;
+	animation-duration: 0.5s;
+	-webkit-animation-fill-mode: both;
+	animation-fill-mode: both;
+}
+
+.connection {
+	display: inline-block;
+	float: right;
+	width: 50%;
+	height: 100%;
+	border: 2px solid white;
+	border-top-right-radius: 17.5px;
+	border-bottom-right-radius: 17.5px;
+	background: #29a1ff;
+	color: white;
+	box-sizing: border-box;
+	line-height: 36px;
+}
+
+@media only screen and (min-width: 100px) and (max-width: 320px) {
+	.rich,
+	.connection {
+		line-height: 28px;
+	}
+}
+
+.rank_list {
+	width: 100%;
+	margin-top: 17px;
+	overflow: hidden;
+}
+
+@media only screen and (min-width: 414px) {
+	.rank_list {
+		margin-top: 22px;
+	}
+}
+
+@media only screen and (max-width: 320px) {
+	.rank_list {
+		margin-top: 6px;
+	}
+}
+
+.rank_box {
+	overflow: hidden;
+	position: relative;
+	top: 0;
+	left: 0;
+}
+
+.rank_connection {
+	display: none;
+}
+
+.top_three {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	padding-bottom: 20px;
+}
+
+.top_three .silver,
+.top_three .gold,
+.top_three .copper {
+	display: inline-block;
+	width: 24%;
+	font-size: 12px;
+	text-align: center;
+}
+
+@media only screen and (min-width: 100px) and (max-width: 320px) {
+	.top_three .silver,
+	.top_three .gold,
+	.top_three .copper {
+		width: 28%;
+	}
+}
+
+.top_three .rank_photo {
+	width: 85px;
+	margin: 0 auto;
+	margin-bottom: 8px;
+	background-size: 100% 100%;
+	background-position: center;
+	position: relative;
+
+}
+.top_three .rank_photo_1{
+	width: 74px;
+	height: 92px;
+	background-image: url(../../images/activity/fiveoneight/risk/lcj-rank-1.png);
+}
+.top_three .rank_photo_2{
+	width: 64px;
+	height: 82px;
+	background-image: url(../../images/activity/fiveoneight/risk/lcj-rank-2.png);
+}
+.top_three .rank_photo_3{
+	width: 64px;
+	height: 82px;
+	background-image: url(../../images/activity/fiveoneight/risk/lcj-rank-3.png);
+}
+
+
+.top_three .rank_photo img {
+	display: block;
+	width: 60px;
+	height: 60px;
+	margin: 0 auto;
+	border-radius: 50%;
+	position: absolute;
+	top: 20px;
+	left: 2px;
+	
+}
+.top_three .rank_photo_1 img{
+	width: 70px;
+	height: 70px;
+	/*padding-top: 10px;*/
+}
+.top_three .rank_name {
+	color: #ffffff;
+}
+
+.top_three .money {
+	color: #fffc00;
+	margin-top: 5px;
+}
+
+.top_others {
+	width: 100%;
+	margin-top: 18px;
+}
+
+.top_box {
+	width: 100%;
+}
+
+.rank_person {
+	font-size: 12px;
+	margin-bottom: 20px;
+}
+
+.rank_person div {
+	display: inline-block;
+	line-height: 40px;
+	margin-right: 15px;
+}
+
+.rank_person .rank_num {
+	width: 18px;
+	height: 100%;
+}
+
+.rank_person .rank_num img {
+	width: auto;
+	height: 20px;
+	vertical-align: middle;
+
+}
+
+.rank_person .headshot {
+	/*overflow: hidden;*/
+	width: 40px;
+	height: 40px;
+	background: yellow;
+	border-radius: 50%;
+}
+.rank_person .headshot img{
+	width: 100%;
+}
+.rank_person .rank_name {
+	color: #757575;
+}
+
+.rank_person .rank_money {
+	float: right;
+	margin: 0;
+	color: #299fff;
+}

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.subjectpic.SubjectPicMapper">
+	<resultMap type="subjectPicBean" id="subjectPicBeanMap">
+		<result property="picId" column="pic_id"/>
+		<result property="subjectId" column="subject_id"/>
+		<result property="picName" column="pic_name"/>
+		<result property="picUrl" column="pic_url"/>
+		<result property="picType" column="pic_type"/>
+		<result property="uploadTime" column="upload_time"/>
+		<result property="modTime" column="mod_time"/>
+		<result property="remark" column="remark"/>
+	</resultMap>
+	
+	<!-- 查询所有图片 -->
+	<select id="querySubjectPic" resultType="subjectPicBean" parameterType="subjectPicBean">
+		SELECT 
+		  sp.pic_id AS picId,
+		  sp.subject_id AS subjectId,
+		  sp.pic_name AS picName,
+		  sp.pic_url AS picUrl,
+		  sp.pic_type AS picType,
+		  sp.upload_time AS uploadTime,
+		  sp.mod_time AS modTime,
+		  sp.remark AS remark
+		 FROM mm_subject_pic sp
+			<if test="subjectId != null and subjectId != '' " >
+				where sp.subject_id = #{subjectId}
+			</if> 
+	</select>
+	
+	<!-- 获取标图片 -->
+	<select id="getSubjectPic" parameterType="subjectPicBean" resultMap="subjectPicBeanMap">
+		SELECT
+			subject_id,
+			pic_id,
+			pic_url
+		FROM
+			mm_subject_pic
+		WHERE
+			subject_id = #{subjectId} 
+	</select>
+	
+	<!-- 删除标图片 -->
+	<delete id="deleteSubjectPic" parameterType="subjectBean">
+		DELETE 
+		FROM
+		  mm_subject_pic 
+		WHERE 
+		  subject_id = #{subjectId}
+	</delete>
+	
+	<!-- 添加图片 -->
+	<insert id="insertSubjectPic" parameterType="java.util.List">
+		INSERT INTO mm_subject_pic (
+			subject_id,
+			pic_url
+		)
+		VALUES
+		<foreach collection="list" item="i" index="index" separator=",">
+			(
+				#{i.subjectId},
+				#{i.picUrl}
+			)
+		</foreach>
+	</insert>
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xed.financing.wxgzh.mapper.userCapital.UserCapitalMapper">
+
+	<select id="getUserTelephone" parameterType="String" resultType="String">
+		select telephone from
+		mm_user_info where user_id = #{userId}
+	</select>
+
+
+	<!-- 根据userId查询借款人资金 -->
+	<select id="queryUserCapital" parameterType="java.lang.String" resultType="userCapitalBean">
+		SELECT
+			capital_id capitalId,
+			user_phone userPhone,
+			balance balance
+		FROM
+			mm_user_capital
+		WHERE
+			user_phone = #{userPhone}
+	</select>
+	
+	<!-- 根据userId修改余额 -->
+	<update id="updateUserCapital" parameterType="userCapitalBean">
+		UPDATE 
+			mm_user_capital
+		SET 
+			balance = #{balance}
+		WHERE
+			user_phone = #{userPhone}
+	</update>
+</mapper>

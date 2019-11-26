@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.material.MaterialMapper">
+	
+<!-- 判断用户是否有材料表数据 -->
+<select id="countIsExById" parameterType="java.lang.String" resultType="java.lang.Integer">
+SELECT 
+  COUNT(1) 
+FROM
+  mm_account_material 
+WHERE account_id = #{accountId}
+</select>
+
+<!-- 添加材料表 -->
+<insert id="addMaterial" parameterType="materialBean">
+INSERT INTO mm_account_material (
+  account_id,
+  material_count,
+  add_time
+) 
+VALUES
+  (
+    #{accountId},
+    #{materialCount},
+    NOW()
+  )
+</insert>
+
+<!-- 根据用户id查询材料数量 -->
+<select id="queryMaterialCountById" parameterType="java.lang.String" resultType="java.lang.Integer">
+SELECT 
+  material_count 
+FROM
+  mm_account_material
+WHERE account_id = #{accountId}
+</select>
+
+<!-- 根据用户查询消耗材料明细 -->
+<select id="queryMaterialDetailById" parameterType="materialBean" resultType="materialBean">
+SELECT 
+  am.material_count AS materialCount,
+  md.material_detail_id AS materialDetailId,
+  md.account_id AS accountId,
+  md.material AS material,
+  md.in_expend AS inExpend,
+  md.is_discount AS isDiscount,
+  md.material_type AS materialType,
+  date_format(md.add_time,"%Y-%m-%d %H:%i:%s") AS ADDTIME,
+  md.remark AS remark 
+FROM
+  mm_account_material am
+LEFT JOIN 
+  mm_material_detail md
+ON
+  am.account_id=md.account_id
+WHERE
+  am.account_id = #{accountId}
+and
+  md.in_expend=#{inExpend}
+</select>
+
+<!-- 修改材料表 -->
+<update id="editMaterialById" parameterType="materialBean">
+UPDATE 
+  mm_account_material 
+SET
+  material_count = #{materialCount}
+WHERE account_id = #{accountId}
+</update>
+
+<!-- 添加材料明细表 -->	
+<insert id="addMaterialDetailById" parameterType="materialBean">
+INSERT INTO mm_material_detail (
+  account_id,
+  material,
+  in_expend,
+  is_discount,
+  material_type,
+  add_time,
+  remark
+) 
+VALUES
+  (
+    #{accountId},
+    #{material},
+    #{inExpend},
+    '0',
+    #{materialType},
+    NOW(),
+    #{remark}
+  ) 
+</insert>
+
+<!-- 折现 -->
+<update id="editIsDiscountBy" parameterType="materialBean">
+UPDATE 
+  mm_material_detail 
+SET 
+  is_discount = #{isDiscount}
+WHERE material_detail_id = #{materialDetailId}
+</update>
+</mapper>

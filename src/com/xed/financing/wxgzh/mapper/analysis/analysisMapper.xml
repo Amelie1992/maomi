@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.analysis.AnalysisMapper">
+
+	<!-- 添加ios用户分析 -->
+	<insert id="addAccountAnalysis" parameterType="analysisBean">
+		INSERT INTO mm_account_analysis (
+		  account_id,
+		  ver_code,
+		  begin_time,
+		  end_time
+		) 
+		VALUES
+		  (
+		    #{accountId},
+		    #{verCode},
+		    #{beginTime},
+		    #{endTime}
+		  ) 
+	</insert>
+</mapper>

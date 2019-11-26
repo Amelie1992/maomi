@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.datasplit.DataSplitMapper">
+	
+	<!-- 获取猫咪宝当前所有投资人的投资时间和投资总金额 -->
+	<select id="getFreedomInvestInfo" resultType="freedomSubjectBean">
+		SELECT
+			account_id AS accountId,
+			Sum(freedom_money)*100 AS freedomMoney,
+			freedom_date AS freedomDate,
+			freedom_subject_id AS freedomSubjectId
+		FROM
+			mm_freedom_record
+		WHERE
+			is_merge = 0
+		GROUP BY
+			account_id
+	</select>
+
+	<!-- 删除投资用户的分团记录 -->
+	<delete id="deleteDispersedRecord" parameterType="freedomSubjectBean">
+		DELETE
+		FROM
+			mm_dispersed_record_info
+		WHERE
+			<foreach item="freedomSubjectBeans" collection="list" open="account_id in (" separator="," close=")">
+	            #{freedomSubjectBeans.accountId}
+			</foreach>
+	</delete>
+
+	<!-- 查询所有未满标的分散标 -->
+	<select id="getSubjectDispersed" resultType="subjectDispersedBean">
+		SELECT
+			subject_id subjectId
+		FROM
+			mm_dispersed_subject_info dsi
+		WHERE
+			dsi.subject_id NOT IN (
+				SELECT
+					ds.subject_id
+				FROM
+					mm_dispersed_subject_info AS ds,
+					(
+						SELECT
+							subject_id,
+							SUM(money) money
+						FROM
+							mm_dispersed_record_info
+						GROUP BY
+							subject_id
+					) dr
+				WHERE
+					dr.subject_id = ds.subject_id
+				<![CDATA[ AND ds.subject_money <= dr.money ]]>
+			)
+	</select>
+
+	<!-- 添加分散标投资记录 -->
+	<insert id="addSubjectDispersed" parameterType="subjectDispersedBean">
+		INSERT INTO mm_dispersed_record_info (
+			account_id,
+			subject_id,
+			money,
+			in_time
+		)
+		VALUES
+			(
+				#{accountId},
+				#{subjectId},
+				#{money},
+				#{inTime}
+			)
+	</insert>
+
+
+</mapper>

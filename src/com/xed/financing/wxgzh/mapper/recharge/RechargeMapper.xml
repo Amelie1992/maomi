@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xed.financing.wxgzh.mapper.recharge.RechargeMapper">
+
+	<select id="queryRechargeAll" resultType="bankBean">
+		select 
+			a.bank_id as bankId,
+			a.bank_name as bankName,
+			a.bank_code as bankCode,
+			a.bank_pic as bankPic
+		from base_bank_info a
+	</select>
+	<select id="queryByCode" resultType="bankBean" parameterType="java.lang.String">
+		select 
+			a.bank_id as bankId,
+			a.bank_name as bankName,
+			a.bank_code as bankCode,
+			a.bank_pic as bankPic
+		from base_bank_info a
+		where a.bank_code LIKE #{rcd}
+	</select>
+</mapper>

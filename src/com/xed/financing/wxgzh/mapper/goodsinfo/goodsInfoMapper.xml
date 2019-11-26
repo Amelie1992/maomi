@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.goodsinfo.GoodsInfoMapper">
+	
+	<!-- 查询商品列表 -->	
+	<select id="queryGoodsInfo" resultType="goodsInfoBean" parameterType="goodsInfoBean">
+		SELECT 
+		  g.goods_id as goodsId,
+		  g.goods_name as goodsName,
+		  <if test="addType != null and addType != '2' " >
+		  g.goods_money as goodsMoney,
+		  g.sale_money as saleMoney,
+		  </if>
+		  <if test="addType != null and addType == '2' " >
+		  IFNULL(TRUNCATE(g.goods_money / 100, 2),0) goodsMoney,
+		  IFNULL(TRUNCATE(g.sale_money / 100, 2),0) saleMoney,
+		  </if>
+		  g.goods_stock as goodsStock,
+		  g.real_stock as realStock,
+		  g.goods_specs as goodsSpecs,
+		  g.remark as remark,
+		  g.add_type as addType,
+		  g.goods_pic as goodsPic,
+		  g.status as status,
+		  DATE_FORMAT(
+		    g.add_time,
+		    '%Y-%m-%d'
+		  ) AS addTime,
+		  DATE_FORMAT(
+		    g.mod_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS modTime
+		FROM
+		  mm_goods_info AS g
+		<if test="addType != null and addType != '' " >
+			WHERE g.add_type = #{addType} 
+		</if>
+		ORDER BY g.add_time DESC
+	</select>
+	
+	<!-- 商品信息  -->
+	<select id="queryGoodsInfoById" resultType="goodsInfoBean" parameterType="goodsInfoBean">
+		SELECT 
+		  g.goods_id as goodsId,
+		  g.goods_name as goodsName,
+		  <if test="addType != null and addType != '2' " >
+		  g.goods_money as goodsMoney,
+		  g.sale_money as saleMoney,
+		  </if>
+		  <if test="addType != null and addType == '2' " >
+		  IFNULL(TRUNCATE(g.goods_money / 100, 2),0) goodsMoney,
+		  IFNULL(TRUNCATE(g.sale_money / 100, 2),0) saleMoney,
+		  </if>
+		  g.goods_stock as goodsStock,
+		  g.real_stock as realStock,
+		  g.goods_specs as goodsSpecs,
+		  g.remark as remark,
+		  g.add_type as addType,
+		  g.goods_pic as goodsPic,
+		  g.status as status,
+		  DATE_FORMAT(
+		    g.add_time,
+		    '%Y-%m-%d'
+		  ) AS addTime,
+		  DATE_FORMAT(
+		    g.mod_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS modTime
+		FROM
+		  mm_goods_info AS g
+		WHERE g.goods_id = #{goodsId}
+		<if test="addType != null and addType != '' " >
+			and g.add_type = #{addType} 
+		</if>
+		ORDER BY g.add_time DESC
+	</select>
+	
+	<!-- 更新商品库存以及状态-->
+	<update id="updateGoodsInfo" parameterType="goodsInfoBean">
+		UPDATE 
+		  mm_goods_info 
+		SET
+		  goods_id = #{goodsId}
+		  <if test="realStock != null and realStock != '' " >
+		  	,real_stock = #{realStock}
+		  </if>
+		  <if test="modTime != null and modTime != '' " >
+		  	,mod_time = now()
+		  </if>
+		  <if test="status != null and status != '' " >
+		  	,status = #{status} 
+		  </if>
+		  ,mod_time = now()
+		WHERE goods_id = #{goodsId}
+	</update>
+</mapper>

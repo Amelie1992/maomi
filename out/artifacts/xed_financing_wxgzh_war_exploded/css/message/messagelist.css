@@ -1,0 +1,101 @@
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			html,
+			body {
+				width: 100%;
+				background-color: #E5E5E5;
+				
+			}
+			
+			a {
+				text-decoration: none;
+			}
+			
+			li {
+				list-style: none;
+			}
+			
+			.back {
+				position: absolute;
+				left: 20px;
+				top: 15px;
+				width: 10px;
+				height: 15px;
+			}
+			
+			#wrap p:nth-child(1) {
+				font-size: 16px;
+				color: #333333;
+				font-weight: bold;
+				background-color: #F7F7F7;
+				text-align: center;
+				padding: 10px;
+			}
+			.set{
+				padding:10px 0px;
+				padding-left:15px;
+				font-size:14px;
+				color:#888;
+			}
+			.noReader
+			{
+				font-size:15px;
+				color:#F95D18;
+			}
+			.reader {
+				font-size: 12px;
+				float: right;
+				color:#F95D18;
+				padding-right:20px;
+			}
+			.clear {
+				color: #ffad2c;
+				font-size: 12px;
+				float: right;
+				padding-right:20px;
+			}
+			
+			
+			#wrap ul{
+				background-color: white;
+			}
+			#wrap ul li{
+				width: 100%;
+				position: relative;
+				overflow: hidden;
+				height: 40px;
+				line-height: 20px;
+				font-size: 14px;
+				color: #555555;
+				border-bottom: 1px solid #EEEEEE;
+				padding: 5px 0;
+			}
+			.messagePic{
+				width: 24px;
+				height: 24px;
+				position: absolute;
+				top: 15px;
+				left: 20px;
+			}
+			.messagePic img{
+				width: 100%;
+			}
+			#wrap ul li p{
+				margin-left: 70px;
+			}
+			
+			.go {
+				position: absolute;
+				width: 15px;
+				height: 20px;
+				top: 15px;
+				right: 15px;
+			}
+			h6{
+				text-align: center;
+				padding: 15px 0;
+				font-weight: normal;
+			}

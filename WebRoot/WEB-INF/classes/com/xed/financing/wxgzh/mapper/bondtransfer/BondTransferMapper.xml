@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.bondtransfer.BondTransferMapper">
+
+	<!-- 查询排序债权集合(未承接) -->
+	<select id="getSortingList" parameterType="creditRecord"
+		resultType="creditRecord">
+		SELECT
+		cr.credit_id creditId,
+		si.subject_name subjectId,
+		IFNULL(TRUNCATE(cr.credit_money/100,2),0) creditMoney,
+		ai.account_id outAccountId,
+		cr.credit_rate creditRate,
+		cr.credit_type creditType,
+		DATE_FORMAT(ai.end_time, '%Y-%m-%d') creditTime,
+		ai.invest_status dealType
+		FROM
+		mm_credit_record cr
+		INNER JOIN mm_subject_info si ON si.subject_id = cr.subject_id
+		INNER JOIN mm_account_invest ai ON cr.invest_id = ai.invest_id
+		AND
+		ai.is_credit = '1'
+		AND ai.invest_status in ('0')
+		AND cr.is_cancel = '0'
+		order by cr.credit_type
+		desc,
+		<if test="creditMoney != null and creditMoney != '' ">
+			<if test="creditMoney == 0 ">
+				cr.credit_money desc,
+			</if>
+			<if test="creditMoney != 0 ">
+				cr.credit_money asc,
+			</if>
+		</if>
+		<if test="creditRate != null and creditRate != '' ">
+			<if test="creditRate == 0 ">
+				cr.credit_rate desc,
+			</if>
+			<if test="creditRate != 0 ">
+				cr.credit_rate asc,
+			</if>
+		</if>
+		<if test="creditTime != null and creditTime != '' ">
+			<if test="creditTime == 0 ">
+				ai.end_time desc,
+			</if>
+			<if test="creditTime != 0 ">
+				ai.end_time asc,
+			</if>
+		</if>
+		cr.credit_time desc
+	</select>
+
+	<!-- 查询排序债权集合(已承接) -->
+	<select id="getSortingListTransfer" parameterType="creditRecord"
+		resultType="creditRecord">
+		SELECT
+		cr.credit_id creditId,
+		si.subject_name subjectId,
+		IFNULL(TRUNCATE(cr.credit_money/100,2),0) creditMoney,
+		ai.account_id outAccountId,
+		cr.credit_rate creditRate,
+		cr.credit_type creditType,
+		DATE_FORMAT(ai.end_time, '%Y-%m-%d') creditTime,
+		ai.invest_status dealType
+		FROM
+		mm_credit_record cr
+		INNER JOIN mm_subject_info si ON si.subject_id = cr.subject_id
+		INNER JOIN mm_account_invest ai ON cr.invest_id = ai.invest_id
+		AND
+		ai.is_credit = '1'
+		AND ai.invest_status in ('2')
+		AND cr.is_cancel = '0'
+		order by cr.credit_type
+		desc,
+		<if test="creditMoney != null and creditMoney != '' ">
+			<if test="creditMoney == 0 ">
+				cr.credit_money desc,
+			</if>
+			<if test="creditMoney != 0 ">
+				cr.credit_money asc,
+			</if>
+		</if>
+		<if test="creditRate != null and creditRate != '' ">
+			<if test="creditRate == 0 ">
+				cr.credit_rate desc,
+			</if>
+			<if test="creditRate != 0 ">
+				cr.credit_rate asc,
+			</if>
+		</if>
+		<if test="creditTime != null and creditTime != '' ">
+			<if test="creditTime == 0 ">
+				ai.end_time desc,
+			</if>
+			<if test="creditTime != 0 ">
+				ai.end_time asc,
+			</if>
+		</if>
+		cr.credit_time desc
+	</select>
+
+
+	<!-- 查询债权总数量 -->
+	<select id="getBondCount" resultType="int">
+		select
+		count(1)
+		FROM
+		mm_credit_record cr
+		INNER JOIN mm_subject_info si ON si.subject_id = cr.subject_id
+		INNER JOIN mm_account_invest ai ON cr.invest_id = ai.invest_id
+		AND ai.is_credit = '1'
+		AND ai.invest_status = '0'
+	</select>
+
+	<!-- 查询债权总金额 -->
+	<select id="getBondMoneySUM" resultType="int">
+		select
+		IFNULL (TRUNCATE(SUM(cr.credit_money)/100,2),0)
+		FROM
+		mm_credit_record cr
+		INNER JOIN mm_subject_info si ON si.subject_id = cr.subject_id
+		INNER JOIN mm_account_invest ai ON cr.invest_id = ai.invest_id
+		AND ai.is_credit = '1'
+		AND ai.invest_status = '0'
+
+	</select>
+
+	<!-- 根据债权转让条目ID查询转让信息 -->
+	<select id="getCreditRecordByCreditId" parameterType="String"
+		resultType="creditRecord">
+		SELECT
+		cr.invest_id AS investId,
+		cr.out_account_id AS outAccountId,
+		cr.credit_id AS creditId,
+		cr.subject_id AS subjectId,
+		cr.in_account_id AS inAccountId,
+		cr.credit_money AS creditMoney,
+		cr.credit_type AS creditType,
+		cr.credit_rate AS creditRate,
+		cr.deal_money AS dealMoney,
+		cr.credit_time AS creditTime,
+		cr.deal_time AS dealTime,
+		cr.out_money AS outMoney,
+		cr.deal_type AS dealType,
+		cr.is_cancel AS isCancel
+		FROM
+		mm_credit_record cr
+		WHERE
+		credit_id = #{creditId}
+	</select>
+
+	<!-- 根据投标ID更改投标状态，改为以转让债权 -->
+	<update id="updateInvestStatus" parameterType="String">
+		update
+		mm_account_invest set invest_status=2 where invest_id = #{investId}
+	</update>
+
+	<!-- 修改投标金额，年化收益，月化收益 -->
+	<update id="updateInvestIncome" parameterType="accountInvest">
+		UPDATE
+		mm_account_invest
+		SET invest_money = #{investMoney},
+		month_profit = #{monthProfit},
+		year_profit = #{yearProfit}
+		WHERE
+		invest_id = #{investId}
+	</update>
+
+
+	<!-- 根据投标ID查询投标信息 -->
+	<select id="getInvestByID" parameterType="String" resultType="accountInvest">
+		SELECT
+		ai.invest_id AS investId,
+		ai.subject_id AS subjectId,
+		ai.account_id AS accountId,
+		ai.invest_time AS investTime,
+		ai.full_time AS fullTime,
+		ai.invest_money AS investMoney,
+		IFNULL(ai.coupon_money, '0') AS couponMoney,
+		ai.subject_rate AS subjectRate,
+		ai.month_profit AS monthProfit,
+		ai.year_profit AS yearProfit,
+		ai.is_team AS isTeam,
+		ai.is_credit AS isCredit,
+		ai.invest_status AS investStatus,
+		ai.end_time AS endTime,
+		ai.last_profit_time AS lastProfitTime,
+		ai.next_profit_time AS nextProfitTime,
+		ai.surplus_money AS surplusMoney,
+		ai.coupon_money AS couponMoney,
+		ai.invest_type AS investType,
+		ai.repeat_type AS repeatType,
+		ai.is_day_profit AS isDayProfit,
+		ai.contract_url AS contractUrl
+		FROM
+		mm_account_invest AS ai
+		WHERE
+		ai.invest_id = #{investId}
+	</select>
+
+	<!-- 添加投标信息 -->
+	<insert id="addInvest" parameterType="accountInvest"
+		useGeneratedKeys="true" keyProperty="investId">
+		INSERT INTO mm_account_invest (
+		subject_id,
+		account_id,
+		invest_time,
+		full_time,
+		end_time,
+		last_profit_time,
+		next_profit_time,
+		invest_money,
+		surplus_money,
+		subject_rate,
+		month_profit,
+		year_profit,
+		is_team,
+		is_credit,
+		invest_status,
+		invest_type,
+		repeat_type,
+		is_day_profit
+		)
+		VALUES
+		(
+		#{subjectId},
+		#{accountId},
+		#{investTime},
+		#{fullTime},
+		#{endTime},
+		#{lastProfitTime},
+		#{nextProfitTime},
+		#{investMoney},
+		#{surplusMoney},
+		#{subjectRate},
+		#{monthProfit},
+		#{yearProfit},
+		#{isTeam},
+		#{isCredit},
+		#{investStatus},
+		#{investType},
+		#{repeatType},
+		#{isDayProfit}
+		)
+	</insert>
+
+	<!-- 添加交易记录 -->
+	<insert id="addCapital" parameterType="capitalDetail" keyProperty="id" useGeneratedKeys="true" >
+		insert into
+		mm_capital_detail(account_id,money,`type`,in_expend,deal_time,remark)
+		values(#{accountId},#{money},#{type},#{inExpend},now(),#{remark})
+	</insert>
+
+	<!-- 更改账户资金 -->
+	<update id="changeFunds" parameterType="accountCapital">
+		update mm_account_capital
+		<trim prefix="set" suffixOverrides=",">
+			<if test="investmentMoney != null and investmentMoney != '' ">
+				investment_money=#{investmentMoney},
+			</if>
+			<if test="freezeMoney != null and freezeMoney != '' ">
+				freeze_money=#{freezeMoney},
+			</if>
+			<if test="withdrawMoney != null and withdrawMoney != '' ">
+				withdraw_money=#{withdrawMoney},
+			</if>
+			<if test="noWithdrawMoney != null and noWithdrawMoney != '' ">
+				no_withdraw_money=#{noWithdrawMoney},
+			</if>
+		</trim>
+		where
+		account_id=#{accountId}
+	</update>
+
+	<!-- 查询账户金额 -->
+	<select id="getBalances" parameterType="String" resultType="accountCapital">
+		SELECT
+		account_id accountId,
+		IFNULL(investment_money,'0') investmentMoney,
+		IFNULL(freeze_money,'0') freezeMoney,
+		IFNULL(withdraw_money,'0') withdrawMoney,
+		IFNULL(no_withdraw_money,'0') noWithdrawMoney
+		FROM
+		mm_account_capital
+		WHERE
+		account_id = #{accountId}
+	</select>
+
+	<!-- 获得债权转让承接金额 -->
+	<select id="getBondAmount" parameterType="String" resultType="Integer">
+		SELECT
+		IFNULL(credit_money,0) + IFNULL(deal_money,0) AS creditMoney
+		FROM
+		mm_credit_record
+		WHERE
+		credit_id = #{creditId}
+	</select>
+
+	<!-- 查询标的信息 -->
+	<select id="getSubjectInfo" parameterType="String" resultType="subjectBean">
+		SELECT
+		si.subject_id subjectId,
+		si.subject_name subjectName,
+		si.subject_money subjectMoney,
+		si.subject_overplus_money subjectOverplusMoney,
+		si.subject_type subjectType,
+		si.subject_periods subjectPeriods,
+		si.subject_rate subjectRate,
+		si.user_id userId,
+		si.repeat_type repeatType,
+		si.used_purpose usedPurpose,
+		si.used_remark usedRemark,
+		si.is_team isTeam,
+		si.start_time startTime,
+		si.effect_time effectTime,
+		si.full_time fullTime,
+		si.end_time endTime,
+		si.subject_status subjectStatus
+		FROM
+		mm_subject_info AS si
+		WHERE
+		si.subject_id = #{subjectId}
+	</select>
+
+	<!-- 修改转让信息 -->
+	<update id="changeCreditRecord" parameterType="creditRecord">
+		UPDATE mm_credit_record
+		SET in_account_id = #{inAccountId},
+		deal_money = #{dealMoney},
+		deal_time = NOW()
+		WHERE
+		credit_id = #{creditId}
+	</update>
+
+	<!-- 获得转让记录详情 -->
+	<select id="getCreditRecordDetail" parameterType="String"
+		resultMap="CreditRecordMap">
+		SELECT
+		cr.credit_id,
+		cr.invest_id,
+		si.subject_name,
+		cr.credit_rate,
+		DATE_FORMAT(ai.end_time, '%Y-%m-%d') end_time,
+		IFNULL(TRUNCATE(cr.deal_money / 100, 2),0) deal_money,
+		IFNULL(TRUNCATE(cr.credit_money / 100, 2),0) credit_money,
+		ai.subject_rate,
+		ai.repeat_type,
+		ai.is_day_profit,
+		cr.out_account_id,
+		ai.invest_status
+		FROM
+		mm_credit_record AS cr
+		INNER JOIN mm_account_invest AS ai ON cr.invest_id =
+		ai.invest_id
+		INNER JOIN mm_subject_info AS si ON cr.subject_id =
+		si.subject_id
+		WHERE
+		cr.credit_id = #{creditId}
+	</select>
+
+	<resultMap type="creditRecord" id="CreditRecordMap">
+		<id property="creditId" column="credit_id" />
+		<result property="investId" column="invest_id" />
+		<result property="subjectName" column="subject_name" />
+		<result property="creditRate" column="credit_rate" />
+		<result property="dealMoney" column="deal_money" />
+		<result property="creditMoney" column="credit_money" />
+		<result property="outAccountId" column="out_account_id" />
+		<association property="accountInvest" javaType="accountInvest">
+			<result property="endTime" column="end_time" />
+			<result property="subjectRate" column="subject_rate" />
+			<result property="repeatType" column="repeat_type" />
+			<result property="isDayProfit" column="is_day_profit" />
+			<result property="investStatus" column="invest_status"/>
+		</association>
+	</resultMap>
+
+	<select id="checkTransferStatus" parameterType="String" resultType="Integer">
+		SELECT
+			Count(1)
+		FROM
+			mm_credit_record AS cr
+		INNER JOIN mm_account_invest AS ai ON cr.invest_id = ai.invest_id
+		WHERE
+			cr.credit_id = #{creditId}
+		AND cr.is_cancel = '0'
+		AND invest_status = '0'
+	</select>
+
+</mapper>

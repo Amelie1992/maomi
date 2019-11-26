@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.capitaldetail.CapitaldetailMapper">
+
+	<!-- 查询用户积分明细 -->
+	<select id="getAll" resultType="capitalDetail" parameterType="capitalDetail">
+		SELECT
+			mm_capital_detail.ID AS id,
+			mm_capital_detail.account_id AS accountId,
+			mm_capital_detail.capital_code AS capitalCode,
+			IFNULL(TRUNCATE(money / 100, 2),0) AS money,
+			mm_capital_detail.type AS type,
+			mm_capital_detail.in_expend AS inExpend,
+			DATE_FORMAT(deal_time,'%Y-%m-%d') AS dealTime,
+			mm_capital_detail.remark AS remark
+		FROM mm_capital_detail		
+		where
+			account_id=#{accountId}		
+		order by deal_time desc
+		
+		
+	</select>
+	
+	<!-- 根据需求排序 -->
+	<select id="getTypeQuery" resultType="capitalDetail" parameterType="capitalDetail">
+		SELECT
+		c.ID AS id,
+		c.account_id AS accountId,
+		c.capital_code AS capitalCode,
+		IFNULL(TRUNCATE(c.money / 100, 2),0) AS money,
+		c.type AS type,
+		c.in_expend AS inExpend,
+		DATE_FORMAT(c.deal_time,'%Y-%m-%d') AS dealTime,
+		c.remark AS remark
+		FROM mm_capital_detail c	
+		where 1=1  
+		<if test="accountId!=null and accountId!=''">
+			and c.account_id = #{accountId}
+		</if>
+		<if test="type!=null and type!=''" >
+			<if test="type==0" >
+			and type in (0,1,2)
+			</if>
+			<if test="type!=0" >
+			and type in (#{type})
+			</if>
+		</if>
+		order by deal_time desc
+		
+	</select>
+	
+	<!-- 查询用户累计收益金额(元) -->
+	<select id="selAccumulatedIncomeById" parameterType="String" resultType="String">
+		SELECT
+			IFNULL(TRUNCATE(sum(cd.money) / 100, 2),0)
+		FROM
+			mm_capital_detail AS cd
+		WHERE
+			cd.account_id = #{accountId}
+		AND cd.type in (#{type})
+	</select>
+	
+	<!-- 查询用户当月收益金额(元) -->
+	<select id="selAccumulatedIncomeMonthById" parameterType="String" resultType="String">
+		SELECT
+			IFNULL(TRUNCATE(sum(cd.money) / 100, 2),0)
+		FROM
+			mm_capital_detail AS cd
+		WHERE
+			cd.account_id = #{accountId}
+		AND cd.type in (#{type})
+		AND date_format(cd.deal_time,'%Y-%m') = date_format(NOW(),'%Y-%m')
+	</select>
+	
+	<select id="queryUserDraw" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT
+			COUNT(1)
+		FROM
+			mm_capital_detail AS cd
+		WHERE
+			cd.account_id = #{accountId}
+		AND cd.type = 5
+	</select>
+	
+	<!-- 查询猫咪宝明细 -->
+	<select id="getAllByType" resultType="capitalDetail" parameterType="capitalDetail">
+		SELECT
+			mm_capital_detail.ID AS id,
+			mm_capital_detail.account_id AS accountId,
+			mm_capital_detail.capital_code AS capitalCode,
+			IFNULL(TRUNCATE(money / 100, 2),0) AS money,
+			mm_capital_detail.type AS type,
+			mm_capital_detail.in_expend AS inExpend,
+			DATE_FORMAT(deal_time,'%Y-%m-%d') AS dealTime,
+			mm_capital_detail.remark AS remark
+		FROM mm_capital_detail		
+		where
+			account_id=#{accountId}	
+		<if test="type!=null and type!=''" >
+			<if test="type==0" >
+				and type in (12,13,14,15)
+			</if>
+			<if test="type==13" >
+				and type in (13,15)
+			</if>
+			<if test="type==12" >
+				and type in (12)
+			</if>
+			<if test="type==14" >
+				and type in (14)
+			</if>
+		</if>	
+		order by deal_time desc
+	</select>
+	
+	<!-- 投团明细 -->
+	<select id="queryDetailByType" resultType="capitalDetail" parameterType="capitalDetail">
+		SELECT
+			d.ID AS id,
+			d.account_id AS accountId,
+			d.capital_code AS capitalCode,
+			IFNULL(TRUNCATE(d.money / 100, 2),0) AS money,
+			d.type AS type,
+			d.in_expend AS inExpend,
+			DATE_FORMAT(deal_time,'%Y-%m-%d') AS dealTime,
+			d.remark AS remark,
+			a.account_name AS accountName 
+		FROM 
+			mm_capital_detail d	
+		LEFT JOIN  
+ 			mm_account_info a
+  		ON 
+  			a.account_id=d.account_id	
+		where
+			1=1
+		<if test="type!=null and type!=''" >
+			and type = #{type}
+		</if>	
+		order by deal_time desc
+	</select>
+	
+	<!-- 猫咪宝投资总金额 -->
+	<select id="countSumFreedomSubjectMoney" resultType="java.lang.String" parameterType="capitalDetail">
+		SELECT 
+		  SUM(IFNULL(TRUNCATE(d.money / 100, 2), 0)) 
+		FROM
+		  mm_capital_detail d 
+		WHERE d.type =#{type}
+	</select>	
+	
+	<!-- 添加交易记录 -->
+	<insert id="addCapital" parameterType="capitalDetail">
+		insert into
+		mm_capital_detail(account_id,money,`type`,in_expend,deal_time,remark)
+		values(#{accountId},#{money},#{type},#{inExpend},now(),#{remark})
+	</insert>
+</mapper>

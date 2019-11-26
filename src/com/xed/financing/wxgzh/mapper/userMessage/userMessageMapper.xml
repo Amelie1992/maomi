@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xed.financing.wxgzh.mapper.userMessage.UserMessageMapper">
+	
+	<!-- 添加借款用户消息 -->
+	<insert id="addUserMessage" parameterType="userMessageBean">
+		INSERT INTO mm_user_message (
+			user_id,
+			msg_title,
+			msg_content,
+			is_read,
+			add_time,
+			is_out
+		)
+		VALUES (
+			#{userId},
+			#{msgTitle},
+			#{msgContent},
+			'0',
+			NOW(),
+			'0'
+		)
+	</insert>
+</mapper>

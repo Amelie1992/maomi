@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.accountwithdraw.AccountWithdrawMapper">
+	
+	<select id="addAccountWithdraw" resultType="accountWithdrawBean">
+		INSERT INTO mm_account_withdraw (
+			capital_detail_id,
+			account_id,
+			money,
+			type,
+			add_time
+		)
+		VALUES
+			(
+				#{capitalDetailId},
+				#{accountId},
+				#{money},
+				#{type},
+				NOW()
+			)
+	</select>
+	
+</mapper>

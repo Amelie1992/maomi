@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper 
+	namespace="com.xed.financing.wxgzh.mapper.category.CategoryMapper">
+	
+	<resultMap type="categoryBean" id="categoryBeanMap">
+		<result property="categoryId" column="categoryId" />
+		<result property="categoryKey" column="categoryKey" />
+		<result property="categoryName" column="categoryName" />
+		<result property="supCategoryType" column="supCategoryType" />
+		<result property="status" column="status" />
+	</resultMap>
+
+	<resultMap type="categoryBean" id="categoryTreeMap">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="pId" column="pId" />
+	</resultMap>
+	
+	<!-- 查询所有Invite_code -->
+	<select id="queryInviteCodeList" resultMap="categoryBeanMap">
+		SELECT
+			T.CATEGORY_KEY AS categoryKey,
+			T.CATEGORY_NAME AS categoryName
+		FROM system_category_info t
+		WHERE 
+			T.sup_category_key = 'Invite_code'
+		AND 
+			T.status = 0
+	</select>
+</mapper>

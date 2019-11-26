@@ -1,0 +1,396 @@
+.wrap {
+	width: 100%;
+	background-image: url(../../images/savings/cxg-bg-top.png);
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+	position: relative;
+	margin-bottom: 45px;
+}
+
+.layui-tab-title {
+	position: relative;
+	width: 60%;
+	margin: 0 auto;
+	left: 0;
+	height: 40px;
+	white-space: nowrap;
+	font-size: 0;
+	border-bottom: none;
+	transition: all .2s;
+	-webkit-transition: all .2s;
+	border-radius: 20px;
+	border: 1px solid #f6f0e4;
+}
+
+.layui-tab-title li {
+	display: inline-block;
+	vertical-align: middle;
+	font-size: 14px;
+	transition: all .2s;
+	-webkit-transition: all .2s;
+	position: relative;
+	line-height: 40px;
+	width: 50%;
+	min-width: 50%;
+	padding: 0;
+	text-align: center;
+	cursor: pointer;
+	/*background-color: #FE5655;*/
+	color: #F6F0E4;
+	border-radius: 17px;
+}
+
+.layui-tab-brief>.layui-tab-more li.layui-this:after, .layui-tab-brief>.layui-tab-title .layui-this:after
+	{
+	border: none;
+	border-radius: 0;
+	border-bottom: none;
+}
+
+.layui-tab-brief>.layui-tab-title .layui-this {
+	color: #fe5655;
+	background-color: #f6f0e4;
+}
+
+#main {
+	width: 80%;
+	margin: 0 auto;
+	height: 300px;
+	background-color: #f6f2e4;
+}
+
+.head-infor {
+	position: absolute;
+	width: 100%;
+	top: 130px;
+	text-align: center;
+}
+
+.head-infor div:nth-child(1) img {
+	width: 55%;
+}
+
+.head-infor div:nth-child(2) {
+	position: relative;
+	top: -15px;
+}
+
+.head-infor div:nth-child(2) img {
+	width: 30%;
+}
+
+.head-infor div:nth-child(3) {
+	position: relative;
+	top: -147px;
+	font-size: 30px;
+	color: #FFEE66;
+}
+
+.content {
+	padding-top: 55px;
+	background-image: url(../../images/savings/cxg-bg-bot.png);
+	background-size: 100% 300px;
+	background-repeat: no-repeat;
+	background-position: top;
+}
+
+.layui-tab-item {
+	padding: 10px 10px;
+}
+
+.layui-tab {
+	margin: 0;
+}
+
+.layui-tab-content {
+	background-color: #FE5655;
+}
+
+@media only screen and (min-width: 319px) and (max-width: 321px) {
+	.layui-tab-item {
+		padding: 10px 10px;
+		min-height: 150px;
+	}
+}
+
+@media only screen and (min-width: 374px) and (max-width: 376px) {
+	.layui-tab-item {
+		padding: 10px 10px;
+		min-height: 240px;
+	}
+}
+
+@media only screen and (min-width: 413px) and (max-width: 415px) {
+	.layui-tab-item {
+		padding: 10px 10px;
+		min-height: 300px;
+	}
+}
+
+@media only screen and (min-height: 811px) and (max-height: 813px) {
+	.layui-tab-item {
+		padding: 10px 10px;
+		min-height: 380px;
+	}
+}
+
+.content-detail {
+	position: relative;
+	height: 90px;
+	background-color: #F6F0E4;
+	border-radius: 10px;
+	margin-bottom: 20px;
+}
+
+.content-detail div {
+	display: inline-block;
+	height: 100%;
+}
+
+.content-detail-pic {
+	position: absolute;
+	top: 7px;
+	left: 8px;
+}
+
+.content-detail-pic img {
+	width: 60px;
+	vertical-align: middle;
+}
+
+.content-detail-text {
+	width: 40%;
+	margin-left: 90px;
+	line-height: 45px;
+}
+
+.content-detail-text p:nth-child(1) {
+	font-size: 24px;
+	color: #FE5655;
+	position: relative;
+	top: 5px;
+}
+
+.content-detail-text p:nth-child(2) {
+	font-size: 12px;
+	color: #FE5655;
+	position: relative;
+	top: 0px;
+}
+
+.content-detail-btn {
+	margin-right: 10px;
+	position: absolute;
+	top: 20px;
+	right:12px;
+}
+
+.content-detail-btn p {
+	width: 90px;
+	height: 25px;
+	border-radius: 15px;
+	font-size: 14px;
+	color: white;
+	text-align: center;
+	padding: 2px 0;
+	line-height: 25px;
+}
+
+.content-detail-btn p:nth-child(1) {
+	background-color: #FE5655;
+	position: relative;
+	top: -10px;
+}
+
+.content-detail-btn p:nth-child(2) {
+	background-color: #ffad2c;
+}
+
+@media only screen and (min-width: 319px) and (max-width: 321px) {
+	.head-infor {
+		position: absolute;
+		width: 100%;
+		top: 130px;
+		text-align: center;
+	}
+	.content-detail-text {
+		width: 34%;
+		margin-left: 20px;
+		line-height: 45px;
+	}
+	.content-detail-text p:nth-child(2) {
+		font-size: 12px;
+		color: #FE5655;
+		position: relative;
+		top: 0px;
+	}
+	.content-detail-pic {
+		position: relative;
+		top: -66px;
+		left: 8px;
+	}
+	.head-infor div:nth-child(2) {
+		position: relative;
+		top: 0px;
+	}
+	.head-infor div:nth-child(3) {
+		position: relative;
+		top: -128px;
+		font-size: 30px;
+		color: #FFEE66;
+	}
+}
+/*plus*/
+@media only screen and (min-width: 413px) and (max-width: 415px) {
+	.head-infor div:nth-child(3) {
+		position: relative;
+		top: -155px;
+		font-size: 30px;
+		color: #FFEE66;
+	}
+	.head-infor div:nth-child(2) img {
+		width: 25%;
+	}
+}
+
+.layui-tab-item ul {
+	padding: 10px;
+	border-radius: 10px;
+	background-color: #F6F0E4;
+}
+
+.layui-tab-item ul li {
+	line-height: 40px;
+	height: 40px;
+	font-size: 14px;
+	color: #FE5655;
+}
+
+.layui-tab-item ul li table {
+	width: 100%;
+	text-align: center;
+}
+
+.layui-tab-item ul li table th {
+	width: 33.3%;
+}
+
+.redPacket-in {
+	color: #FE5655;
+}
+
+.redPacket-out {
+	color: #ffad2c;
+}
+
+.redPacket-extract {
+	color: #babdc5;
+}
+
+#norecord {
+	text-align: center;
+}
+
+#noredpackage {
+	height: 250px;
+}
+
+.redP-mask {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #BDbdbd;
+	opacity: 0.8;
+	display: none;
+}
+
+.redP-content {
+	width: 80%;
+	margin: 0 auto;
+	height: 285px;
+	text-align: center;
+	background-image: url(../../images/savings/tz-redp-bg.png);
+	background-position: center;
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	padding-top: 125px;
+	position: absolute;
+	left: 10%;
+	top: 20%;
+	display: none;
+}
+
+.wrap .redP-content .redli {
+	height: 45px;
+	line-height: 42px;
+	margin: 20px 0;
+}
+
+.wrap .redP-content .redli:nth-child(2) p {
+	color: #ee423f;
+	background-color: #ffe448;
+	font-size: 16px;
+}
+
+.wrap .redP-content p {
+	width: 90%;
+	margin: 0 auto;
+	border-radius: 10px;
+}
+
+.wrap .redP-content .redli input {
+	width: 90%;
+	margin: 0 auto;
+	height: 40px;
+	background-color: white;
+	border-radius: 10px;
+	font-size: 12px;
+	text-indent: 20px;
+	border: none;
+	outline: none;
+}
+
+.close-redp {
+	width: 40px;
+	height: 40px;
+	margin-top: 20px;
+}
+
+.wrap p:nth-child(2) span{
+				float: right;
+				color: #FF5555;
+				padding: 10px 10px;
+				
+			}
+			.cxg-q{
+				position: absolute;
+				width: 16px;
+				height: 16px;
+				top: 12px;
+				right: -12px;
+			}
+			
+#cxq{
+	position: absolute;
+}
+
+.title {
+	width: 100%;
+	position: relative;
+	text-align: center;
+	font-size: 20px;
+	color: white;
+	font-weight: 600;
+	height: 50px;
+	line-height: 50px;
+}
+
+.back {
+	position: absolute;
+	left: 20px;
+	top: 20px;
+	width: 10px;
+}

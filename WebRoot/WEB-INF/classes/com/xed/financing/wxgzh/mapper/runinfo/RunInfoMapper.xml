@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xed.financing.wxgzh.mapper.runinfo.RunInfoMapper">
+
+	<!-- 交易总额 -->
+	<select id="getTotaltransaction" resultType="java.lang.String" parameterType="java.lang.String">
+		SELECT 
+		SUM(d.money) money
+		FROM mm_capital_detail d WHERE d.type in(3,7,12,18)
+			<![CDATA[
+			AND DATE_FORMAT( d.deal_time, '%y-%m' ) <= DATE_FORMAT( DATE_ADD(now(),INTERVAL -1 MONTH), '%y-%m' )
+			]]> 
+	</select>
+	
+	<!-- 查询虚拟用户投资金额 -->
+	<select id="queryXuNiUserMoney" resultType="java.lang.String" parameterType="java.lang.String">
+		SELECT 
+		SUM(surplus_money) money 
+		FROM mm_account_invest
+		WHERE next_profit_time IS NOT NULL 
+		<![CDATA[
+		and account_id<0
+		]]>
+			<![CDATA[
+				AND DATE_FORMAT( invest_time, '%y-%m' ) <= DATE_FORMAT( DATE_ADD(NOW(),INTERVAL -1 MONTH), '%y-%m' )
+			]]>
+		
+	</select>
+	
+	<!-- 累计交易贷款笔数 -->
+	<select id="getAccumulativeTransaction" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT COUNT(*) FROM mm_account_invest WHERE 1=1
+		
+			<![CDATA[
+			AND DATE_FORMAT( invest_time, '%y-%m' ) <= DATE_FORMAT( DATE_ADD(NOW(),INTERVAL -1 MONTH), '%y-%m' )
+			]]> 
+		
+	</select>
+	
+	<!-- 借贷余额 -->
+	<select id="getLoanBalance" resultType="java.lang.String" parameterType="java.lang.String">
+		SELECT 
+		SUM(surplus_money) money 
+		FROM mm_account_invest
+		WHERE next_profit_time IS NOT NULL 
+		and invest_status=0 
+			<![CDATA[
+			AND DATE_FORMAT( invest_time, '%y-%m' ) <= DATE_FORMAT( DATE_ADD(now(),INTERVAL -1 MONTH), '%y-%m' )
+			]]> 
+		
+	</select>
+	
+	<!--  累计借款人数量(个) -->
+	<select id="getAccumulativeBorrower" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT COUNT(*) FROM  mm_user_info WHERE 1=1
+	</select>	
+	
+	<!-- 累计出借人数量(个) -->
+	<select id="getAccumulativeLenders" resultType="java.lang.Integer" parameterType="java.lang.String">
+		<!-- SELECT COUNT(*) FROM  mm_account_info WHERE 1=1 -->
+		select COUNT(sa.account) from (SELECT COUNT(account_id) account,account_id FROM mm_capital_detail  where 
+		<![CDATA[
+		DATE_FORMAT( deal_time, '%y-%m' ) <= DATE_FORMAT( DATE_ADD(now(),INTERVAL -1 MONTH), '%y-%m' )
+		]]> 
+		and type in (3,7,12,18) and money>0 group BY account_id ORDER BY COUNT(account_id) desc ) sa
+	</select>
+	
+	<!-- 借贷余额笔数(个) -->
+	<select id="getLoanBalanceCount" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT COUNT(*)  
+		FROM mm_account_invest
+		WHERE next_profit_time IS NOT NULL 
+		and invest_status = 0
+		
+			<![CDATA[
+			AND DATE_FORMAT( invest_time, '%y-%m' ) <= DATE_FORMAT( DATE_ADD(now(),INTERVAL -1 MONTH), '%y-%m' )
+			]]> 
+		
+	</select>
+	
+	<!--  当前借款人数量(个) -->
+	<select id="getCurrentBorrowerCount" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT COUNT(DISTINCT(s.user_id)) FROM mm_subject_info s LEFT JOIN mm_user_info u ON s.user_id =u.user_id WHERE 1=1
+		and s.subject_status in (0,1)
+		
+		<![CDATA[
+			AND DATE_FORMAT( effect_time, '%y-%m' ) <= DATE_FORMAT( DATE_ADD(now(),INTERVAL -1 MONTH), '%y-%m' )
+		]]> 
+		
+	</select>
+	
+	<!--  当前出借人数量(个) -->
+	<select id="getCurrentLendersCount" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT count(DISTINCT(account_id))
+		FROM mm_account_invest
+		WHERE invest_status = 0
+		
+			<![CDATA[
+				AND DATE_FORMAT( invest_time, '%y-%m' ) <= DATE_FORMAT( DATE_ADD(now(),INTERVAL -1 MONTH), '%y-%m' )
+			]]>
+		
+		
+	</select>
+	
+	<!--  关联关系借款余额 -->
+	<select id="getRelatedLoanBalance" resultType="java.lang.String" parameterType="java.lang.String">
+		select count(1) from mm_account_info where
+		telephone=now()
+	</select>
+	
+	<!-- 最大单一借款人待还金额占比 -->
+	<select id="geTheProportionOne" resultType="java.lang.String" parameterType="java.lang.String">
+		SELECT
+			SUM(ai.surplus_money)
+		FROM
+			(
+				SELECT
+					SUM(subject_money) s_money,
+					user_id
+				FROM
+					mm_subject_info
+				WHERE
+				<![CDATA[
+					DATE_FORMAT(effect_time, '%y-%m') <= DATE_FORMAT(
+						DATE_ADD(now(), INTERVAL - 1 MONTH),
+						'%y-%m'
+					)
+				]]>
+				AND subject_status IN (0, 1)
+				GROUP BY
+					user_id
+				ORDER BY
+					SUM(subject_money) DESC
+				LIMIT 0,
+				1
+			) ss,
+			mm_subject_info si,
+			mm_account_invest ai
+		WHERE
+			ss.user_id = si.user_id
+			<![CDATA[
+		AND DATE_FORMAT(si.effect_time, '%y-%m') <= DATE_FORMAT(
+			DATE_ADD(now(), INTERVAL - 1 MONTH),
+			'%y-%m'
+		)
+		]]>
+		AND si.subject_status IN (0, 1)
+		AND ai.subject_id = si.subject_id
+		<![CDATA[
+		AND DATE_FORMAT(ai.invest_time, '%y-%m') <= DATE_FORMAT(
+			DATE_ADD(now(), INTERVAL - 1 MONTH),
+			'%y-%m'
+		)
+		]]>
+	</select>
+	
+	<!-- 前十借款人待还金额占比 -->
+	<select id="geTheProportionTen" resultType="java.lang.String" parameterType="java.lang.String">
+		
+			SELECT
+				SUM(ai.surplus_money)
+			FROM
+				(
+					SELECT
+						SUM(subject_money) s_money,
+						user_id
+					FROM
+						mm_subject_info
+					WHERE
+					<![CDATA[
+						DATE_FORMAT(effect_time, '%y-%m') <= DATE_FORMAT(
+							DATE_ADD(now(), INTERVAL - 1 MONTH),
+							'%y-%m'
+						)
+					]]>
+					AND subject_status IN (0, 1)
+					GROUP BY
+						user_id
+					ORDER BY
+						SUM(subject_money) DESC
+					LIMIT 0,
+					10
+				) ss,
+				mm_subject_info si,
+				mm_account_invest ai
+			WHERE
+				ss.user_id = si.user_id
+				<![CDATA[
+			AND DATE_FORMAT(si.effect_time, '%y-%m') <= DATE_FORMAT(
+				DATE_ADD(now(), INTERVAL - 1 MONTH),
+				'%y-%m'
+			)
+			]]>
+			AND si.subject_status IN (0, 1)
+			AND ai.subject_id = si.subject_id
+			<![CDATA[
+			AND DATE_FORMAT(ai.invest_time, '%y-%m') <= DATE_FORMAT(
+				DATE_ADD(now(), INTERVAL - 1 MONTH),
+				'%y-%m'
+			)
+			]]>
+	</select>
+	
+	<!-- 借款总额 -->
+	<select id="getLoanBalances" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT
+			SUM(ai.surplus_money)
+		FROM
+			mm_subject_info si,
+			mm_account_invest ai
+		WHERE
+			<![CDATA[
+			DATE_FORMAT(si.effect_time, '%y-%m') <= DATE_FORMAT(
+				DATE_ADD(now(), INTERVAL - 1 MONTH),
+				'%y-%m'
+			)
+			]]>
+		AND si.subject_status IN (0, 1)
+		AND ai.subject_id = si.subject_id
+		<![CDATA[
+		AND DATE_FORMAT(ai.invest_time, '%y-%m') <= DATE_FORMAT(
+			DATE_ADD(now(), INTERVAL - 1 MONTH),
+			'%y-%m'
+		)
+		]]>
+		
+	</select>
+	
+	<!-- 累计借款人数 -->
+	<select id="getRegistrationsCount" resultType="java.lang.String">
+		SELECT COUNT(1) FROM mm_account_info WHERE account_id>0
+	</select>
+	
+	<!-- 累计借贷数 -->
+	<select id="getTransactionCount" resultType="java.lang.Integer">
+	SELECT COUNT(1) FROM mm_account_invest WHERE account_id>0
+	AND invest_status in (0,3)
+	AND surplus_money>0
+	</select>
+	
+	<!-- 累计收益 -->
+	<select id="getAllProfit" resultType="java.lang.String">
+	 SELECT SUM(IFNULL(d.money,0))/100 m 
+	 FROM mm_capital_detail d LEFT JOIN mm_account_info a  ON d.account_id=a.account_id 
+	 WHERE d.type IN(4,14)  AND a.status=0
+	</select>
+	
+	<!-- 添加记录 -->
+	<insert id="addRunInfo" parameterType="runInfoBean">
+		insert into system_runinfo
+		(date,
+		total_transaction,
+		accumulative_transaction,
+		loan_balance,
+		accumulative_borrower,
+		accumulative_lenders,
+		loan_balance_count,
+		current_borrower_count,
+		current_lenders_count,
+		related_loan_balance,
+		the_proportionOne,
+		the_proportionTen,
+		loan_balances,
+		registrations,
+		transaction_count,
+		all_profit
+		)
+		values(
+		#{date},#{totaltransaction},#{accumulativeTransaction},#{loanBalance},#{accumulativeBorrower},#{accumulativeLenders},
+		#{loanBalanceCount},#{currentBorrowerCount},#{currentLendersCount},#{relatedLoanBalance},#{theProportionOne},
+		#{theProportionTen},#{loanBalances},#{registrations},#{transactionCount},#{allProfit}
+		)
+	</insert>
+</mapper>

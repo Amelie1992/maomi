@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.version.VersionMapper">
+
+	<!-- 查询最新版本号-->
+	<select id="queryNewVersion" parameterType="versionBean" resultType="versionBean">
+		SELECT 
+		  id AS id,
+		  ver_code AS verCode,
+		  ver_desc AS verDesc,
+		  down_type AS downType,
+		  ver_type AS verType,
+		  down_url AS downUrl,
+		  add_time AS addTime,
+		  edit_time AS editTime,
+		  status AS status 
+		FROM
+		  version_info 
+		WHERE
+		  ver_type=#{verType}
+		ORDER BY add_time DESC 
+		LIMIT 1
+	</select>
+</mapper>

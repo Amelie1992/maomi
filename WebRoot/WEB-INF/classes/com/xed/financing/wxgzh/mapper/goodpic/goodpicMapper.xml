@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.goodpic.GoodPicMapper">
+
+	<!-- 查询图片集合 -->
+	<select id="queryGoodPic" parameterType="goodPicBean" resultType="goodPicBean">
+		SELECT 
+		  pic_id AS picId,
+		  goods_id AS goodsId,
+		  pic_name AS picName,
+		  pic_url AS picUrl,
+		  pic_type AS picType,
+		  upload_time AS uploadTime,
+		  mod_time AS modTime,
+		  remark AS remark
+		FROM
+		  mm_goods_pic 
+		WHERE 
+		  1=1
+		<if test="picType != null and picType != '' " >
+		AND
+		  pic_type=#{picType}
+		</if>
+		<if test="goodsId != null and goodsId != '' " >
+		AND
+		  goods_id=#{goodsId}
+		</if>
+	</select>
+	
+	
+	<!-- 查询单张图片集合 -->
+	<select id="queryGoodPicById" parameterType="goodPicBean" resultType="goodPicBean">
+		SELECT 
+		  pic_id AS picId,
+		  goods_id AS goodsId,
+		  pic_name AS picName,
+		  pic_url AS picUrl,
+		  pic_type AS picType,
+		  upload_time AS uploadTime,
+		  mod_time AS modTime,
+		  remark AS remark
+		FROM
+		  mm_goods_pic 
+		WHERE 
+		  1=1
+		<if test="picType != null and picType != '' " >
+		AND
+		  pic_type=#{picType}
+		</if>
+		<if test="goodsId != null and goodsId != '' " >
+		AND
+		  goods_id=#{goodsId}
+		</if>		
+	</select>
+	
+</mapper>

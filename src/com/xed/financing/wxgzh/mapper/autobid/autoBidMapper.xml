@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.autobid.AutoBidMapper">
+
+	<!-- 获取用户最新的一条自动投资记录 -->
+	<select id="getAccountAutobid" resultType="autobidBean" parameterType="String">
+		SELECT
+			ai.auto_id autoId,
+			ai.account_id accountId,
+			ai.add_time addTime,
+			ai.update_time updateTime,
+			TRUNCATE(ai.money / 100, 2) money,
+			IFNULL(ai.autobid_gold_money,0) autobidGoldMoney,
+			ai.upper_limit upperLimit,
+			ai.lower_limit lowerLimit,
+			ai.`status`
+		FROM
+			mm_autobid_info AS ai
+		WHERE
+			ai.account_id = #{accountId}
+		AND ai.`status` = 1
+		ORDER BY
+			ai.add_time
+	</select>
+	
+	<!-- 添加自动投标 -->
+	<insert id="addAutobidInfo" parameterType="autobidBean">
+		INSERT INTO mm_autobid_info (
+			account_id,
+			add_time,
+			money,
+			autobid_gold_money,
+			upper_limit,
+			lower_limit,
+			`status`
+		)
+		VALUES
+			(
+				#{accountId},
+				NOW(),
+				#{money},
+				#{autobidGoldMoney},
+				#{upperLimit},
+				#{lowerLimit},
+				1
+			)
+	</insert>
+	
+	<!-- 取消自动投标 -->
+	<update id="cancelAutobid" parameterType="autobidBean">
+		UPDATE mm_autobid_info
+		SET `status` = 2,
+		update_time = now()
+		WHERE
+			auto_id = #{autoId}
+	</update>
+
+
+</mapper>

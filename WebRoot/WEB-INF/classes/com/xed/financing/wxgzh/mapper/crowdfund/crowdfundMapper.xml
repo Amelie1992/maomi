@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.crowdfund.CrowdfundMapper">
+	<!-- 查询众筹集合 -->
+	<select id="queryCrowfundList" parameterType="crowdfundBean" resultType="crowdfundBean">
+		SELECT 
+		  s.crowd_id crowdId,
+		  s.crowd_name crowdName,
+		  IFNULL(TRUNCATE(s.crowd_money / 100, 0),0) crowdMoney,
+		  s.crowd_rate crowdRate,
+		  IFNULL(TRUNCATE(s.each_money / 100, 0),0)  eachMoney,
+		  s.min_each minEach,
+		  s.max_each maxEach,
+		  s.crowd_grade crowdGrade,
+		  DATE_FORMAT(s.add_date,'%Y-%m-%d') addDate,
+		  DATE_FORMAT(s.begin_date,'%Y-%m-%d') beginDate,
+		  DATE_FORMAT(s.group_date,'%Y-%m-%d') groupDate,
+		  (TO_DAYS(s.group_date) - TO_DAYS(NOW())) as overDay,
+		  DATE_FORMAT(s.end_date,'%Y-%m-%d') endDate,
+		  s.activity_day activityDay,
+		  s.goods_id goodsId,
+		  s.crowd_status crowdStatus,
+		  s.remark remark, 
+		  g.goods_name goodsName,
+		  g.goods_money goodsMoney,
+		  g.sale_money saleMoney,
+		  g.add_time addTime,
+		  g.mod_time modTime,
+		  g.goods_stock goodsStock,
+		  g.real_stock realStock,
+		  g.goods_specs goodsSpecs,
+		  g.add_type addType,
+		  g.status status,
+		  FLOOR(IFNULL(r.hasI,0)*100/s.max_each) per
+			,gp.pic_url picUrl
+		FROM
+		  (mm_goods_info g,mm_crowdfunding_subject s)
+			LEFT JOIN mm_goods_pic gp on gp.goods_id = g.goods_id and gp.pic_type='0'
+		  LEFT JOIN (SELECT crowd_id,COUNT(1) AS hasI FROM mm_crowdfunding_record GROUP BY crowd_id) r
+		ON r.crowd_id=s.crowd_id
+			
+		WHERE 
+		  s.goods_id=g.goods_id
+		AND
+		  g.add_type=3
+		AND
+		  g.status=0
+		ORDER BY
+		   s.crowd_status =1 DESC,s.crowd_status =0 DESC,s.crowd_status =5 DESC,s.add_date DESC
+		<if test="limit != null and limit != '' " >
+		  limit 0,1
+		</if>	
+	</select>
+	
+	<!-- 查询众筹数量 -->
+	<select id="countCrowfund" parameterType="crowdfundBean" resultType="java.lang.Integer">
+		SELECT 
+		  count(1)
+		FROM
+		  mm_crowdfunding_subject s,mm_goods_info g
+		WHERE 
+		  s.goods_id=g.goods_id
+		AND
+		  g.add_type=3
+		AND
+		  g.status=0
+	</select>
+	
+	<!-- 查看众筹详情 -->
+	<select id="queryCrowfundById" parameterType="crowdfundBean" resultType="crowdfundBean">
+		SELECT 
+		  s.crowd_id crowdId,
+		  s.crowd_name crowdName,
+		  IFNULL(TRUNCATE(s.crowd_money / 100, 0),0) crowdMoney,
+		  s.crowd_rate crowdRate,
+		  IFNULL(TRUNCATE(s.each_money / 100, 0),0)  eachMoney,
+		  s.min_each minEach,
+		  s.max_each maxEach,
+		  IFNULL(TRUNCATE(s.crowd_grade/ 100, 0),0) crowdGrade,
+		  DATE_FORMAT(s.add_date,'%Y-%m-%d') addDate,
+		  DATE_FORMAT(s.begin_date,'%Y-%m-%d') beginDate,
+		  DATE_FORMAT(s.group_date,'%Y-%m-%d') groupDate,
+		  (TO_DAYS(s.group_date) - TO_DAYS(NOW())) as overDay,
+		  DATE_FORMAT(s.end_date,'%Y-%m-%d') endDate,
+		  s.activity_day activityDay,
+		  s.goods_id goodsId,
+		  s.crowd_status crowdStatus,
+		  s.remark remark, 
+		  g.goods_name goodsName,
+		  IFNULL(TRUNCATE(g.goods_money / 100, 0),0) goodsMoney,
+		  IFNULL(TRUNCATE(g.sale_money / 100, 0),0) saleMoney,
+		  g.add_time addTime,
+		  g.mod_time modTime,
+		  g.goods_stock goodsStock,
+		  g.real_stock realStock,
+		  g.goods_specs goodsSpecs,
+		  g.add_type addType,
+		  g.status status 
+		FROM
+		  mm_crowdfunding_subject s,mm_goods_info g
+		WHERE 
+		  s.goods_id=g.goods_id
+		AND
+		  s.crowd_id=#{crowdId}
+	</select>
+	
+	<!-- 添加众筹记录 -->
+	<insert id="addCrowdfundingRecord" parameterType="crowdfundBean" >
+		INSERT INTO mm_crowdfunding_record (
+		  crowd_id,
+		  account_id,
+		  crowd_date,
+		  crowd_num,
+		  is_winning,
+		  is_reward,
+		  crowd_gold_invest_money
+		) 
+		VALUES
+		<foreach item="item" collection="list" index="index" separator="," >
+	      (
+		    #{item.crowdId},
+		    #{item.accountId},
+		   	NOW(),
+		   	#{item.crowdNum},
+		    3,
+		    0,
+		    #{item.crowdGoldInvestMoney}
+		  ) 
+		</foreach>
+		  
+	</insert>
+	
+	<!-- 查询用户投了几次众筹 -->
+	<select id="countCrowdfundingRecordById" parameterType="crowdfundBean" resultType="java.lang.Integer">
+		SELECT 
+		  COUNT(1)
+		FROM
+		  mm_crowdfunding_record 
+		WHERE
+		  crowd_id=#{crowdId}
+		<if test="accountId != null and accountId != '' " >
+		AND
+		  account_id=#{accountId}
+		</if>
+	</select>
+	
+	<!-- 修改众筹状态 -->
+	<update id="editCrowdfundingById" parameterType="crowdfundBean" >
+		UPDATE 
+		  mm_crowdfunding_subject 
+		SET
+		  crowd_status = #{crowdStatus}
+		WHERE crowd_id = #{crowdId} 
+	</update>
+	
+	<!-- 定时器筛选 -->
+	<select id="queryCrowfundListByStatus" parameterType="crowdfundBean" resultType="crowdfundBean">
+		SELECT 
+		  s.crowd_id crowdId,
+		  s.crowd_name crowdName,
+		  s.crowd_money crowdMoney,
+		  s.crowd_rate crowdRate,
+		  s.each_money eachMoney,
+		  s.min_each minEach,
+		  s.max_each maxEach,
+		  s.crowd_grade crowdGrade,
+		  s.add_date addDate,
+		  s.begin_date beginDate,
+		  s.group_date groupDate,
+		  s.end_date endDate,
+		  s.activity_day activityDay,
+		  s.goods_id goodsId,
+		  s.crowd_status crowdStatus,
+		  s.remark remark
+		FROM
+		  mm_crowdfunding_subject s
+		WHERE 
+		  1=1
+		<if test="crowdStatus != null and crowdStatus != '' " >
+		AND
+		  crowd_status=#{crowdStatus}
+		</if>
+		<if test="beginDate != null and beginDate != '' " >
+		  	and <![CDATA[DATE_FORMAT(s.begin_date,'%Y-%m-%d')= DATE_FORMAT(NOW(),'%Y-%m-%d')]]>  
+		</if> 
+		<if test="groupDate != null and groupDate != '' " >
+		  	and <![CDATA[DATE_FORMAT(s.group_date,'%Y-%m-%d')= DATE_FORMAT(NOW(),'%Y-%m-%d')]]>  
+		  	and crowd_status not in (4,5)
+		</if> 
+		<if test="endDate != null and endDate != '' " >
+		  	and <![CDATA[DATE_FORMAT(s.end_date,'%Y-%m-%d')= DATE_FORMAT(NOW(),'%Y-%m-%d')]]>  
+		</if> 
+	</select>
+	
+	<!-- 修改中奖记录 -->
+	<update id="editCrowdfundingRecord" parameterType="crowdfundBean" >
+		UPDATE 
+		  mm_crowdfunding_record 
+		SET
+		  is_winning = #{isWinning}
+		WHERE 
+			crowd_id = #{crowdId} 
+		<if test="crowdNum != null and crowdNum != '' " >
+		AND
+			crowd_num=#{crowdNum}
+		</if>
+		<if test="isWinning =='0'.toString() " >
+		AND
+			is_winning !=1
+		</if>
+	</update>
+	
+	<!-- 通过众筹ID获取该笔众筹的众筹人对应的数量 -->
+	<select id="findCrowdfundCount" parameterType="String" resultType="crowdfundBean">
+		SELECT
+			cr.account_id accountId,
+			COUNT(1) crowdfundCount,
+			ai.telephone telephone
+		FROM
+			mm_crowdfunding_record cr
+		LEFT JOIN mm_account_info ai ON cr.account_id = ai.account_id
+		WHERE
+			cr.crowd_id = #{crowdId} 
+		GROUP BY
+			cr.account_id
+	</select>
+	
+	<!-- 查询众筹记录列表 -->
+	<select id="selCrowdfundingRecord" parameterType="crowdfundBean" resultType="crowdfundBean">
+		SELECT
+			r.record_id AS recordId,
+			r.crowd_id AS crowdId,
+			r.account_id AS accountId,		
+			DATE_FORMAT(r.crowd_date,'%Y-%m-%d') AS crowdDate,
+			r.crowd_num AS crowdNum,
+			r.is_winning AS isWinning,
+			r.is_reward AS isReward,
+			r.reward_date AS rewardDate,
+			r.remark AS remark,
+			a.telephone AS telephone
+		FROM
+			mm_crowdfunding_record r LEFT JOIN mm_account_info a
+			ON r.account_id=a.account_id
+		WHERE
+			crowd_id = #{crowdId}
+		<if test="accountId != null and accountId != '' " >
+		AND 
+			r.account_id = #{accountId}
+		</if>
+	</select>
+	
+	<!-- 查询中奖数量 -->
+	<select id="queryIsWinningBy" parameterType="crowdfundBean" resultType="crowdfundBean">
+		SELECT
+			record_id AS recordId,
+			crowd_id AS crowdId,
+			account_id AS accountId,
+			DATE_FORMAT(crowd_date,'%Y-%m-%d') AS crowdDate,
+			crowd_num AS crowdNum,
+			is_winning AS isWinning,
+			is_reward AS isReward,
+			reward_date AS rewardDate,
+			remark AS remark
+		FROM
+			mm_crowdfunding_record
+		WHERE
+			is_winning=1
+		<if test="crowdId != null and crowdId != '' " >
+		AND
+			crowd_id = #{crowdId}
+		</if>
+		<if test="accountId != null and accountId != '' " >
+		AND 
+			account_id = #{accountId}
+		</if>
+	</select>
+	
+	<!-- 查询中奖数量 -->
+	<select id="countIsWinning" parameterType="crowdfundBean" resultType="java.lang.Integer">
+		SELECT
+			COUNT(1)
+		FROM
+			mm_crowdfunding_record
+		WHERE
+			is_winning=1
+		<if test="crowdId != null and crowdId != '' " >
+		AND
+			crowd_id = #{crowdId}
+		</if>
+		<if test="accountId != null and accountId != '' " >
+		AND 
+			account_id = #{accountId}
+		</if>
+	</select>
+	
+	<!-- 查询我的众筹 -->
+	<select id="queryMyCrowdfund" parameterType="crowdfundBean" resultType="crowdfundBean">
+		SELECT 
+		  s.crowd_id crowdId,
+		  s.crowd_name crowdName,
+		  IFNULL(TRUNCATE(s.crowd_money / 100, 0), 0) crowdMoney,
+		  s.crowd_rate crowdRate,
+		  IFNULL(TRUNCATE(s.each_money / 100, 0), 0) eachMoney,
+		  s.min_each minEach,
+		  s.max_each maxEach,
+		  s.crowd_grade crowdGrade,
+		  DATE_FORMAT(s.add_date, '%Y-%m-%d') ADDDATE,
+		  DATE_FORMAT(s.begin_date, '%Y-%m-%d') beginDate,
+		  DATE_FORMAT(s.group_date, '%Y-%m-%d') groupDate,
+		  (TO_DAYS(s.group_date) - TO_DAYS(NOW())) AS overDay,
+		  DATE_FORMAT(s.end_date, '%Y-%m-%d') endDate,
+		  s.activity_day activityDay,
+		  s.goods_id goodsId,
+		  s.crowd_status crowdStatus,
+		  s.remark remark,
+		  rc.crowdfundCount,
+		  gp.pic_url picUrl,
+		  g.`goods_name` goodsName, 
+		  g.`sale_money` saleMoney
+		FROM
+		  (SELECT 
+		    account_id,
+		    crowd_id,
+		    COUNT(1) AS crowdfundCount 
+		  FROM
+		    mm_crowdfunding_record 
+		  WHERE account_id = #{accountId} 
+		  GROUP BY crowd_id) rc 
+		  LEFT JOIN (
+		      mm_goods_info g,
+		      mm_crowdfunding_subject s
+		    ) 
+		    ON rc.crowd_id = s.crowd_id 
+		  LEFT JOIN mm_goods_pic gp 
+		    ON gp.goods_id = g.goods_id 
+		    AND gp.pic_type = '0' 
+		  LEFT JOIN 
+		    (SELECT 
+		      crowd_id,
+		      COUNT(1) AS hasI 
+		    FROM
+		      mm_crowdfunding_record 
+		    GROUP BY crowd_id) r 
+		    ON r.crowd_id = s.crowd_id 
+		WHERE s.goods_id = g.goods_id 
+	</select>
+	<!-- 获取获奖用户 -->
+	<select id="getWinningUser" parameterType="java.util.Map" resultType="crowdfundBean">
+		SELECT
+			account_id AS accountId,
+			count(1) crowdfundCount
+		FROM
+			mm_crowdfunding_record
+		WHERE
+			crowd_id = #{crowdId}
+		AND crowd_num IN 
+			<foreach item="arr" collection="arr" open="(" separator="," close=")">
+				#{arr}
+			</foreach>
+		GROUP BY
+			account_id
+	</select>
+	
+</mapper>

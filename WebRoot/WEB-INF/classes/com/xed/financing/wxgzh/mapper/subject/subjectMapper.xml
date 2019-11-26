@@ -1,0 +1,1086 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.subject.SubjectMapper">
+	
+	<!-- 首页标类型数据展示 -->
+	<select id="queryFontPageSubject" resultType="subjectBean" parameterType="subjectBean">
+		SELECT 
+		  S.subject_id as subjectId,
+		  S.subject_code as subjectCode,
+		  S.subject_name as subjectName,
+		  IFNULL(TRUNCATE(S.subject_money / 100, 2),0) subjectMoney,
+		  S.subject_code as subjectCode,
+		  IFNULL(TRUNCATE(S.subject_overplus_money / 100, 2),0) subjectOverplusMoney,
+		  IFNULL(TRUNCATE(S.subject_starting_money / 100, 2),0) AS subjectStartingMoney,
+		    <![CDATA[
+			 IF(((S.subject_money-S.subject_overplus_money)/S.subject_money *100<1) AND ((S.subject_money-S.subject_overplus_money)/S.subject_money *100>0),1,FLOOR((S.subject_money-S.subject_overplus_money)/S.subject_money *100)) AS perSubject,
+		  ]]> 
+		  S.subject_type as subjectType,
+		  S.subject_term as subjectTerm,
+		  S.subject_periods as subjectPeriods,
+		  S.subject_rate as subjectRate,
+		  S.user_id as userId,
+		  S.repeat_type as repeatType,
+		  S.used_purpose as usedPurpose,
+		  S.used_remark as usedRemark,
+		  S.is_team isTeam,
+		  DATE_FORMAT(
+		    S.start_time,
+		    '%Y-%m-%d'
+		  ) AS startTime,
+		  DATE_FORMAT(
+		    S.effect_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS effectTime,
+		  DATE_FORMAT(S.end_time, '%Y-%m-%d %H:%i:%s') AS endTime,
+		  DATE_FORMAT(
+		    S.full_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS fullTime,
+		  S.subject_status as subjectStatus 
+		FROM
+		  mm_subject_info AS S 
+		WHERE 
+			S.subject_status  NOT IN (-1, 4)
+			AND S.subject_type = #{subjectType} 
+		ORDER BY
+			perSubject,S.effect_time DESC,S.subject_rate DESC
+		limit 1
+	</select>
+	
+	<!-- 查询首页次日标 -->
+	<select id="queryFontNextSubject" resultType="subjectBean" parameterType="subjectBean">
+		SELECT 
+		  S.subject_id as subjectId,
+		  S.subject_code as subjectCode,
+		  S.subject_name as subjectName,
+		  IFNULL(TRUNCATE(S.subject_money / 100, 2),0) subjectMoney,
+		  S.subject_code as subjectCode,
+		  IFNULL(TRUNCATE(S.subject_overplus_money / 100, 2),0) subjectOverplusMoney,
+		  IFNULL(TRUNCATE(S.subject_starting_money / 100, 2),0) AS subjectStartingMoney,
+		   <![CDATA[
+			 IF(((S.subject_money-S.subject_overplus_money)/S.subject_money *100<1) AND ((S.subject_money-S.subject_overplus_money)/S.subject_money *100>0),1,FLOOR((S.subject_money-S.subject_overplus_money)/S.subject_money *100)) AS perSubject,
+		  ]]> 
+		  S.subject_type as subjectType,
+		  S.subject_term as subjectTerm,
+		  S.subject_periods as subjectPeriods,
+		  S.subject_rate as subjectRate,
+		  S.user_id as userId,
+		  S.repeat_type as repeatType,
+		  S.used_purpose as usedPurpose,
+		  S.used_remark as usedRemark,
+		  S.is_team isTeam,
+		  DATE_FORMAT(
+		    S.start_time,
+		    '%Y-%m-%d'
+		  ) AS startTime,
+		  DATE_FORMAT(
+		    S.effect_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS effectTime,
+		  DATE_FORMAT(S.end_time, '%Y-%m-%d %H:%i:%s') AS endTime,
+		  DATE_FORMAT(
+		    S.full_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS fullTime,
+		   DATE_FORMAT(now(), '%Y-%m-%d %H:%i:%s') AS currentTime,
+		  S.next_type as nextType,
+		  S.subject_status as subjectStatus 
+		FROM
+		  mm_subject_info AS S 
+		WHERE 
+			S.subject_status = '-1'
+			AND S.subject_type = #{subjectType} 
+			<![CDATA[
+			AND DATE_FORMAT(S.effect_time,'%Y-%m-%d %H')<=DATE_ADD(DATE_FORMAT(NOW(),'%Y-%m-%d %H'),INTERVAL 16 HOUR)
+			]]>
+		ORDER BY
+			S.effect_time 
+	</select>
+	
+	<!-- 首页实物标-->
+	<select id="queryFontHotSubject" resultType="subjectBean" parameterType="subjectBean">
+		SELECT 
+		  S.subject_id AS subjectId,
+		  S.subject_code as subjectCode,
+		  S.subject_name AS subjectName,
+		  IFNULL(
+		    TRUNCATE(S.subject_money / 100, 2),
+		    0
+		  ) subjectMoney,
+		  IFNULL(
+		    TRUNCATE(S.subject_overplus_money / 100, 2),
+		    0
+		  ) subjectOverplusMoney,
+		  S.subject_type AS subjectType,
+		  S.subject_periods AS subjectPeriods,
+		  S.subject_rate AS subjectRate,
+		  S.user_id AS userId,
+		  S.repeat_type AS repeatType,
+		  S.used_purpose AS usedPurpose,
+		  S.used_remark AS usedRemark,
+		  S.is_team isTeam,
+		  DATE_FORMAT(S.start_time, '%Y-%m-%d') AS startTime,
+		  DATE_FORMAT(
+		    S.effect_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS effectTime,
+		  DATE_FORMAT(S.end_time, '%Y-%m-%d %H:%i:%s') AS endTime,
+		  DATE_FORMAT(
+		    S.full_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS fullTime,
+		  S.subject_status AS subjectStatus,
+		  i.real_stock  AS realStock,
+  		  i.goods_name AS goodsName,
+  		  IFNULL(TRUNCATE(i.goods_money / 100, 2),0) AS goodsMoney,
+  		  IFNULL(TRUNCATE(i.sale_money / 100, 2),0) AS saleMoney,
+  		  IFNULL(TRUNCATE(g.piece_money / 100, 2),0) AS pieceMoney
+		FROM
+		  mm_subject_info AS S ,mm_subject_goods g,mm_goods_info i
+		WHERE
+		 S.subject_id = g.subject_id
+		AND
+ 		 g.goods_id = i.goods_id
+		AND
+		 S.subject_type = '2' 
+		 AND S.subject_status NOT IN (-1, 4)
+		ORDER BY S.start_time DESC 
+		limit 1
+	</select>
+	
+	<!-- 根据类型查询标 -->	
+	<select id="querySubject" resultType="subjectBean" parameterType="subjectBean">
+		SELECT 
+		  S.subject_id as subjectId,
+		  S.subject_code as subjectCode,
+		  S.subject_name as subjectName,
+		  IFNULL(TRUNCATE(S.subject_money / 100, 2),0) subjectMoney,
+		  IFNULL(TRUNCATE(S.subject_overplus_money / 100, 2),0) subjectOverplusMoney,
+		  IFNULL(TRUNCATE(S.subject_starting_money / 100, 2),0) AS subjectStartingMoney,
+		  <![CDATA[
+			 IF(((S.subject_money-S.subject_overplus_money)/S.subject_money *100<1) AND ((S.subject_money-S.subject_overplus_money)/S.subject_money *100>0),1,FLOOR((S.subject_money-S.subject_overplus_money)/S.subject_money *100)) AS perSubject,
+		  ]]> 
+		  S.subject_type as subjectType,
+		  S.subject_term as subjectTerm,
+		  S.subject_periods as subjectPeriods,
+		  S.subject_rate as subjectRate,
+		  S.user_id as userId,
+		  S.repeat_type as repeatType,
+		  S.used_purpose as usedPurpose,
+		  S.used_remark as usedRemark,
+		  S.is_team isTeam,
+		  DATE_FORMAT(
+		    S.start_time,
+		    '%Y-%m-%d'
+		  ) AS startTime,
+		  DATE_FORMAT(
+		    S.effect_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS effectTime,
+		  DATE_FORMAT(S.end_time, '%Y-%m-%d %H:%i:%s') AS endTime,
+		  DATE_FORMAT(
+		    S.full_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS fullTime,
+		  S.subject_status as subjectStatus,
+		  S.own_type as ownType,
+		  S.is_limit as isLimit 
+		FROM
+		  mm_subject_info AS S 
+		WHERE 
+			S.subject_status NOT IN (-1, 4)
+			AND S.subject_type = #{subjectType} 
+			ORDER BY
+			<if test="subjectRate != null and subjectRate != '' " >
+			  	S.subject_rate DESC,
+			</if> 
+			<if test="subjectOverplusMoney != null and subjectOverplusMoney != '' " >
+			  	S.subject_overplus_money DESC,
+			</if> 
+			<if test="subjectPeriods != null and subjectPeriods != '' " >
+			  	S.subject_term,S.subject_periods,
+			</if> 
+			perSubject,S.effect_time DESC
+	</select>
+	
+	<select id="querySubjectLimit" resultType="subjectBean" parameterType="subjectBean">
+		SELECT 
+		  S.subject_id as subjectId,
+		  S.subject_code as subjectCode,
+		  S.subject_name as subjectName,
+		  IFNULL(TRUNCATE(S.subject_money / 100, 2),0) subjectMoney,
+		  IFNULL(TRUNCATE(S.subject_overplus_money / 100, 2),0) subjectOverplusMoney,
+		  IFNULL(TRUNCATE(S.subject_starting_money / 100, 2),0) AS subjectStartingMoney,
+		  <![CDATA[
+			 IF(((S.subject_money-S.subject_overplus_money)/S.subject_money *100<1) AND ((S.subject_money-S.subject_overplus_money)/S.subject_money *100>0),1,FLOOR((S.subject_money-S.subject_overplus_money)/S.subject_money *100)) AS perSubject,
+		  ]]> 
+		  S.subject_type as subjectType,
+		  S.subject_term as subjectTerm,
+		  S.subject_periods as subjectPeriods,
+		  S.subject_rate as subjectRate,
+		  S.user_id as userId,
+		  S.repeat_type as repeatType,
+		  S.used_purpose as usedPurpose,
+		  S.used_remark as usedRemark,
+		  S.is_team isTeam,
+		  DATE_FORMAT(
+		    S.start_time,
+		    '%Y-%m-%d'
+		  ) AS startTime,
+		  DATE_FORMAT(
+		    S.effect_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS effectTime,
+		  DATE_FORMAT(S.end_time, '%Y-%m-%d %H:%i:%s') AS endTime,
+		  DATE_FORMAT(
+		    S.full_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS fullTime,
+		  S.subject_status as subjectStatus,
+		  S.own_type as ownType,
+		  S.is_limit as isLimit 
+		FROM
+		  mm_subject_info AS S 
+		WHERE 
+			S.subject_status NOT IN (-1, 4)
+			AND S.subject_type = #{subjectType} 
+			ORDER BY
+			<if test="subjectRate != null and subjectRate != '' " >
+			  	S.subject_rate DESC,
+			</if> 
+			<if test="subjectOverplusMoney != null and subjectOverplusMoney != '' " >
+			  	S.subject_overplus_money DESC,
+			</if> 
+			<if test="subjectPeriods != null and subjectPeriods != '' " >
+			  	S.subject_term,S.subject_periods,
+			</if> 
+			perSubject,S.effect_time DESC
+			limit #{fromNum},#{pagenum}
+	</select>
+	
+	<!-- 根据次日标 -->	
+	<select id="queryNextSubject" resultType="subjectBean" parameterType="subjectBean">
+		SELECT 
+		  S.subject_id as subjectId,
+		  S.subject_code as subjectCode,
+		  S.subject_name as subjectName,
+		  IFNULL(TRUNCATE(S.subject_money / 100, 2),0) subjectMoney,
+		  IFNULL(TRUNCATE(S.subject_overplus_money / 100, 2),0) subjectOverplusMoney,
+		  IFNULL(TRUNCATE(S.subject_starting_money / 100, 2),0) AS subjectStartingMoney,
+		  S.subject_type as subjectType,
+		  S.subject_term as subjectTerm,
+		  S.subject_periods as subjectPeriods,
+		  S.subject_rate as subjectRate,
+		  S.user_id as userId,
+		  S.repeat_type as repeatType,
+		  S.used_purpose as usedPurpose,
+		  S.used_remark as usedRemark,
+		  S.is_team isTeam,
+		  DATE_FORMAT(
+		    S.start_time,
+		    '%Y-%m-%d'
+		  ) AS startTime,
+		  DATE_FORMAT(
+		    S.effect_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS effectTime,
+		  DATE_FORMAT(S.end_time, '%Y-%m-%d %H:%i:%s') AS endTime,
+		  DATE_FORMAT(
+		    S.full_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS fullTime,
+		  S.subject_status as subjectStatus,
+		  S.next_type as nextType,
+		  S.own_type as ownType,
+		  S.is_limit as isLimit  
+		FROM
+		  mm_subject_info AS S 
+		WHERE 
+			S.subject_status = '-1'
+			AND S.subject_type = '3'
+			AND DATE_FORMAT(S.effect_time,'%Y-%m-%d')=DATE_ADD(DATE_FORMAT(NOW(),'%Y-%m-%d'),INTERVAL 1 DAY)
+			ORDER BY
+			<if test="subjectRate != null and subjectRate != '' " >
+			  	S.subject_rate DESC,
+			</if> 
+			<if test="subjectOverplusMoney != null and subjectOverplusMoney != '' " >
+			  	S.subject_overplus_money DESC,
+			</if> 
+			<if test="subjectPeriods != null and subjectPeriods != '' " >
+			  	S.subject_term,S.subject_periods,
+			</if> 
+			S.start_time DESC
+	</select>
+	
+	<!-- 查询标定时器 -->
+	<select id="querySubjectByQuartz" resultType="subjectBean" parameterType="Map">
+		SELECT 
+		  S.subject_id as subjectId,
+		  S.subject_code as subjectCode,
+		  S.subject_name as subjectName,
+		  IFNULL(TRUNCATE(S.subject_money / 100, 2),0) subjectMoney,
+		  IFNULL(TRUNCATE(S.subject_overplus_money / 100, 2),0) subjectOverplusMoney,
+		  IFNULL(TRUNCATE(S.subject_starting_money / 100, 2),0) AS subjectStartingMoney,
+		  S.subject_type as subjectType,
+		  S.subject_periods as subjectPeriods,
+		  S.subject_rate as subjectRate,
+		  S.user_id as userId,
+		  S.repeat_type as repeatType,
+		  S.used_purpose as usedPurpose,
+		  S.used_remark as usedRemark,
+		  S.is_team isTeam,
+		  DATE_FORMAT(
+		    S.start_time,
+		    '%Y-%m-%d'
+		  ) AS startTime,
+		  DATE_FORMAT(
+		    S.effect_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS effectTime,
+		  DATE_FORMAT(S.end_time, '%Y-%m-%d %H:%i:%s') AS endTime,
+		  DATE_FORMAT(
+		    S.full_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS fullTime,
+		  S.subject_status as subjectStatus 
+		FROM
+		  mm_subject_info AS S 
+		WHERE 
+		S.subject_type = "1"
+		<if test="minRate != null and minRate != '' " >
+		  	and <![CDATA[S.subject_rate >= #{minRate} ]]>  
+		</if> 
+		<if test="maxRate != null and maxRate != '' " >
+		  	and <![CDATA[S.subject_rate <= #{maxRate} ]]>  
+		</if> 
+		<if test="minDuration != null and minDuration != '' " >
+		  	and <![CDATA[S.subject_periods >= #{minDuration} ]]>  
+		</if> 
+		<if test="maxDuration != null and maxDuration != '' " >
+		  	and <![CDATA[S.subject_periods <= #{maxDuration} ]]>  
+		</if> 
+			and <![CDATA[S.subject_overplus_money > 0 ]]>  
+	</select>
+	<!-- 查看标的详情 -->
+	<select id="querySubjectById" resultType="subjectBean" parameterType="subjectBean">
+			SELECT 
+			  DATE_FORMAT(now(),'%Y-%m-%d %H:%i:%s') AS currentTime,
+			  S.subject_id as subjectId,
+			  S.subject_code as subjectCode,
+			  S.subject_name as subjectName,
+			  IFNULL(TRUNCATE(S.subject_money / 100, 2),0) subjectMoney,
+			  IFNULL(TRUNCATE(S.subject_overplus_money / 100, 2),0) subjectOverplusMoney,
+			  IFNULL(TRUNCATE(S.subject_starting_money / 100, 2),0) AS subjectStartingMoney,
+			  <![CDATA[
+			  IF(((S.subject_money-S.subject_overplus_money)/S.subject_money *100<1) AND ((S.subject_money-S.subject_overplus_money)/S.subject_money *100>0),1,FLOOR((S.subject_money-S.subject_overplus_money)/S.subject_money *100)) AS perSubject,
+			  ]]> 
+			  S.subject_type as subjectType,
+			  S.subject_term as subjectTerm,
+			  S.subject_periods as subjectPeriods,
+			  S.subject_rate as subjectRate,
+			  S.repayment_rate as repaymentRate,
+			  S.user_id as userId,
+			  S.repeat_type as repeatType,
+			  S.used_purpose as usedPurpose,
+			  S.used_remark as usedRemark,
+			  S.is_team isTeam,
+			  DATE_FORMAT(
+			    S.start_time,
+			    '%Y-%m-%d %H:%i:%s'
+			  ) AS startTime,
+			  DATE_FORMAT(
+			    S.effect_time,
+			    '%Y-%m-%d'
+			  ) AS effectTime,
+			  DATE_FORMAT(S.end_time, '%Y-%m-%d %H:%i:%s') AS endTime,
+			  DATE_FORMAT(
+			    S.full_time,
+			    '%Y-%m-%d %H:%i:%s'
+			  ) AS fullTime,
+			  S.subject_status as subjectStatus,
+			  S.own_type as ownType,
+		  	  S.is_limit as isLimit,
+			  u.user_name as userName,
+			  u.user_sex as userSex,
+			  u.user_age as userAge,
+			  u.telephone as telephone,
+			  u.security_rating as securityRating,
+			  u.house_type as houseType,
+			  u.car_type as carType,
+			  u.id_card as idCard,
+			  u.is_loan as isLoan,
+			  u.borrower_type as borrowerType,
+			  IFNULL(TRUNCATE(u.loan_money/100,2),0) as loanMoney,
+			  (SELECT c.city_name FROM mm_city_info c LEFT JOIN mm_user_info u ON c.city_code = u.province LEFT JOIN mm_subject_info AS S  ON s.user_id =u.user_id WHERE s.subject_id =#{subjectId}) AS province,
+ 			  (SELECT c.city_name FROM mm_city_info c LEFT JOIN mm_user_info u ON c.city_code = u.city LEFT JOIN mm_subject_info AS S  ON s.user_id =u.user_id WHERE s.subject_id =#{subjectId}) AS city,
+ 			  (SELECT c.city_name FROM mm_city_info c LEFT JOIN mm_user_info u ON c.city_code = u.classify LEFT JOIN mm_subject_info AS S  ON s.user_id =u.user_id WHERE s.subject_id =#{subjectId}) AS classify,
+			  u.remark as remark,
+			  c.car_brand as carBrand,
+			  c.car_color as carColor,
+			  c.car_tag as carTag,
+			  IFNULL(TRUNCATE(c.car_money/100,2),0) as carMoney,
+			  IFNULL(TRUNCATE(c.car_expect_money/100,2),0) as carExpectMoney,
+			  c.car_mileage as carMileage,
+			  c.is_overhaul as isOverhaul,
+			  c.is_second as isSecond,
+			  c.car_limit as carLimit,
+			  s.loan_type as loanType
+			FROM
+			  mm_subject_info AS S 
+			LEFT JOIN
+			  mm_user_info u
+			ON s.user_id =u.user_id
+			LEFT JOIN 
+			  mm_user_car c 
+    		ON c.user_id = u.user_id 
+			WHERE
+			s.subject_id = #{subjectId}
+	</select>
+	
+	<!-- 立即投标  修改标信息 -->
+	<update id="updateSubjectInfo" parameterType="subjectBean">
+		UPDATE 
+		  mm_subject_info 
+		SET
+		  subject_id = #{subjectId}
+		  <if test="subjectOverplusMoney != null and subjectOverplusMoney != '' " >
+		  	,subject_overplus_money = #{subjectOverplusMoney}
+		  </if>
+		  <if test="effectTime != null and effectTime != '' " >
+		  	,effect_time = now()
+		  </if>
+		  <if test="fullTime != null and fullTime != '' " >
+		  	,full_time = now()
+		  	<if test="fullTime =='0'.toString()" >
+		  		,end_time = DATE_ADD(now(),INTERVAL #{subjectPeriods} DAY)
+		  	</if>
+		  	<if test="fullTime =='1'.toString()" >
+		  		,end_time = DATE_ADD(NOW(),INTERVAL  #{subjectPeriods} MONTH)
+		  	</if>
+		  	<if test="fullTime =='2'.toString()" >
+		  		,end_time = DATE_ADD(NOW(),INTERVAL  #{subjectPeriods}*12 MONTH)
+		  	</if>
+		  </if>
+		  <if test="subjectStatus != null and subjectStatus != ''" >
+		  	,subject_status = #{subjectStatus} 
+		  </if>
+		WHERE subject_id = #{subjectId}
+	</update>
+	
+	<!-- 立即投标  添加投标信息 -->
+	<insert id="addSubjectInvest" keyProperty="investId" useGeneratedKeys="true"
+	 parameterType="subjectBean">
+		INSERT INTO mm_account_invest 
+		(
+		  subject_id,
+		  account_id,
+		  invest_time,
+		  invest_money,
+		  gold_invest_money,
+		  surplus_money,
+		  subject_rate,
+		  expense_rate,
+		  vip_rate,
+		  year_profit,
+		  month_profit,
+		  invest_status,
+		  coupon_money,
+		  repeat_type,
+		  is_day_profit,
+		  end_time,
+		  next_profit_time,
+		  last_profit_time
+		) 
+		VALUES
+		  (
+		    #{subjectId},
+		    #{accountId},
+		    NOW(),
+		    #{investMoney},
+		    #{goldInvestMoney},
+		    #{investMoney},
+		    #{subjectRate},
+		    #{expenseRate},
+		    #{vipRate},
+		    #{yearProfit},
+		    #{monthProfit},
+		    #{investStatus},
+		    #{realMoney},
+		    #{repeatType},
+		    #{isDayProfit},
+			    <if test="endTime =='0'.toString()" >
+			    	DATE_FORMAT(DATE_ADD(now(),INTERVAL #{subjectPeriods} DAY), '%Y-%m-%d %H:%i:%s'),
+			    	DATE_FORMAT(DATE_ADD(now(),INTERVAL #{subjectPeriods} DAY), '%Y-%m-%d %H:%i:%s'),
+			    	<!-- DATE_FORMAT(DATE_ADD(now(),INTERVAL 1 DAY), '%Y-%m-%d %H:%i:%s'), -->
+			  	</if>
+			  	<if test="endTime =='1'.toString()" >
+			  		DATE_ADD(NOW(),INTERVAL  #{subjectPeriods} MONTH),
+			  		<if test="nextProfitTime =='01'.toString()" >
+			  			DATE_ADD(NOW(),INTERVAL  1 MONTH),
+			  		</if>
+			  		<if test="nextProfitTime =='2'.toString()" >
+			  			DATE_ADD(NOW(),INTERVAL  #{subjectPeriods} MONTH),
+			  		</if>
+			  	</if>
+			  	<if test="endTime =='2'.toString()" >
+			  		DATE_ADD(NOW(),INTERVAL  #{subjectPeriods}*12 MONTH),
+			  		<if test="nextProfitTime =='01'.toString()" >
+			  			DATE_ADD(NOW(),INTERVAL  1 MONTH),
+			  		</if>
+			  		<if test="nextProfitTime =='2'.toString()" >
+			  			DATE_ADD(NOW(),INTERVAL  #{subjectPeriods}*12 MONTH),
+			  		</if>
+			  	</if>
+		  	now()
+		  )
+	</insert>
+	
+	<!-- 查询投资者信息 -->
+	<select id="querySubjectAccount" resultType="subjectBean" parameterType="subjectBean">
+		SELECT 
+		  s.subject_id AS subjectId,
+		  s.subject_name AS subjectName,
+		  IFNULL(TRUNCATE(s.subject_money / 100, 2),0) AS subjectMoney,
+		  IFNULL(TRUNCATE(u.invest_money / 100, 2), 0) AS investMoney,
+		  DATE_FORMAT(u.invest_time, '%Y-%m-%d ') AS investTime,
+		  a.account_name AS accountName,
+		  a.account_sex AS userSex,
+		  IFNULL(TRUNCATE(u.coupon_money / 100, 2), 0) AS realMoney,
+		  u.account_id AS accountId,
+		  a.telephone AS telephone
+		FROM
+		  mm_subject_info s,
+		  mm_account_invest u,
+		  mm_account_info a 
+		WHERE 
+		  s.subject_id = u.subject_id 
+		AND 
+		  u.account_id = a.account_id 
+		AND 
+		  u.invest_status != '2'
+		AND 
+		  s.subject_id = #{subjectId}
+		ORDER BY u.invest_time DESC
+	</select>
+	
+	<!-- 查询已投资金额 -->
+	<select id="queryInvestMoney" resultType="subjectBean" parameterType="subjectBean">
+		SELECT 
+		  IFNULL(TRUNCATE(SUM(u.invest_money) / 100, 2),0) AS investMoney 
+		FROM
+		  mm_subject_info s 
+		LEFT JOIN 
+		  mm_account_invest u 
+		ON 
+		  s.subject_id = u.subject_id 
+		LEFT JOIN 
+		  mm_account_info a
+		ON
+		  u.account_id = a.account_id
+		WHERE s.subject_id = #{subjectId}
+		AND invest_status !='2'
+	</select>
+	
+	<!-- 新手标一个用户投了多少次 -->
+	<select id="countNewSubject" parameterType="subjectBean" resultType="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  mm_account_invest i 
+		LEFT JOIN 
+		  mm_subject_info t 
+		ON 
+		  i.subject_id = t.subject_id 
+		WHERE 
+		  t.subject_type = 0 
+		AND
+		  t.subject_status !=4
+		AND
+		  i.invest_status !=3
+		AND i.account_id = #{accountId} 
+	</select>
+	
+	<!-- 企业用户投了多少次 -->
+	<select id="countCompanySubject" parameterType="subjectBean" resultType="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  mm_account_invest i 
+		WHERE 
+		  	i.invest_status !=3
+		AND 
+			i.account_id = #{accountId} 
+		AND 
+			i.invest_money > 0
+	</select>
+	
+	<!-- 爆款标列表页 -->
+	<select id="queryHotSubject" resultType="subjectBean" parameterType="subjectBean">
+		SELECT 
+		  S.subject_id AS subjectId,
+		  S.subject_name AS subjectName,
+		  IFNULL(
+		    TRUNCATE(S.subject_money / 100, 2),
+		    0
+		  ) subjectMoney,
+		  IFNULL(
+		    TRUNCATE(S.subject_overplus_money / 100, 2),
+		    0
+		  ) subjectOverplusMoney,
+		  S.subject_type AS subjectType,
+		  S.subject_periods AS subjectPeriods,
+		  S.subject_rate AS subjectRate,
+		  S.user_id AS userId,
+		  S.repeat_type AS repeatType,
+		  S.used_purpose AS usedPurpose,
+		  S.used_remark AS usedRemark,
+		  S.is_team isTeam,
+		  DATE_FORMAT(S.start_time, '%Y-%m-%d') AS startTime,
+		  DATE_FORMAT(
+		    S.effect_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS effectTime,
+		  DATE_FORMAT(S.end_time, '%Y-%m-%d %H:%i:%s') AS endTime,
+		  DATE_FORMAT(
+		    S.full_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS fullTime,
+		  S.subject_status AS subjectStatus,
+		  g.real_stock  AS realStock,
+  		  i.goods_name AS goodsName,
+  		  IFNULL(TRUNCATE(i.goods_money / 100, 2),0) AS goodsMoney,
+  		  IFNULL(TRUNCATE(i.sale_money / 100, 2),0) AS saleMoney,
+  		  IFNULL(TRUNCATE(g.piece_money / 100, 2),0) AS pieceMoney
+		FROM
+		  mm_subject_info AS S ,mm_subject_goods g,mm_goods_info i
+		WHERE
+		 S.subject_id = g.subject_id
+		AND
+ 		 g.goods_id = i.goods_id
+		AND
+		 S.subject_type = '2' 
+		 AND S.subject_status NOT IN (-1, 4)
+		ORDER BY S.start_time DESC 
+	</select>
+	
+	<!-- 爆款列表详情 -->
+	<select id="queryHotSubjectById" resultType="subjectBean" parameterType="subjectBean">
+		SELECT 
+		  S.subject_id AS subjectId,
+		  S.subject_name AS subjectName,
+		  IFNULL(
+		    TRUNCATE(S.subject_money / 100, 2),
+		    0
+		  ) subjectMoney,
+		  IFNULL(
+		    TRUNCATE(S.subject_overplus_money / 100, 2),
+		    0
+		  ) subjectOverplusMoney,
+		  S.subject_type AS subjectType,
+		  S.subject_periods AS subjectPeriods,
+		  S.subject_rate AS subjectRate,
+		  S.user_id AS userId,
+		  S.repeat_type AS repeatType,
+		  S.used_purpose AS usedPurpose,
+		  S.used_remark AS usedRemark,
+		  S.is_team isTeam,
+		  DATE_FORMAT(S.start_time, '%Y-%m-%d') AS startTime,
+		  DATE_FORMAT(S.effect_time,'%Y-%m-%d %H:%i:%s') AS effectTime,
+		  DATE_FORMAT(S.end_time, '%Y-%m-%d %H:%i:%s') AS endTime,
+		  DATE_FORMAT(S.full_time,'%Y-%m-%d %H:%i:%s') AS fullTime,
+		  S.subject_status AS subjectStatus,
+		  g.hot_id AS hotId,
+		  g.goods_id AS goodsId,
+		  g.goods_stock AS goodsStock,
+		  g.real_stock AS realStock,
+		  (g.goods_stock -g.real_stock) AS overStock,
+		  IFNULL(
+		    TRUNCATE(g.piece_money / 100, 2),
+		    0
+		  )AS pieceMoney,
+		  DATE_FORMAT(g.add_time, '%Y-%m-%d %H:%i:%s') AS ADDTIME,
+		  g.remark AS remark,
+		  i.goods_name AS goodsName
+		FROM
+		  mm_subject_info AS S ,mm_subject_goods g,mm_goods_info i
+		WHERE
+		 S.subject_id = g.subject_id
+		AND
+ 		 g.goods_id = i.goods_id
+		AND
+		 S.subject_type = '2' 
+		AND
+		 S.subject_id = #{subjectId}
+	</select>
+	
+	<!-- 更新爆款标商品数量 -->
+	<update id="updateHotSubjectGoodsStock" parameterType="subjectBean">
+		UPDATE 
+		  mm_subject_goods 
+		SET
+		  real_stock = #{realStock}
+		WHERE hot_id = #{hotId}
+	</update>
+	
+	<!-- 查询次日标数量和金额 -->
+	<select id="countNextSubject" parameterType="subjectBean" resultType="subjectBean">
+		SELECT 
+		  COUNT(1) AS countNextSubject,
+		  IFNULL(
+		    TRUNCATE(SUM(S.subject_money) / 100, 0),
+		    0
+		  ) AS sumMoney 
+		FROM
+		  mm_subject_info s 
+		WHERE s.subject_type = '3' 
+		AND DATE_FORMAT(S.effect_time,'%Y-%m-%d')=DATE_ADD(DATE_FORMAT(NOW(),'%Y-%m-%d'),INTERVAL 1 DAY)
+	</select>
+	
+	<!-- 查询优惠券权限列表 -->
+	<select id="querySubjectCoupon" parameterType="subjectBean" resultType="subjectBean">
+		SELECT 
+		  available_id as availableId,
+		  subject_id as subjectId,
+		  interest_days as interestDays,
+		  interest_type as interestType
+		FROM
+		  mm_subject_coupon 
+		WHERE
+		  subject_id=#{subjectId}
+		ORDER BY interest_days
+	</select>
+	
+	<!-- 添加投资奖励记录 -->
+	<insert id="addAwardRecord" parameterType="subjectBean" keyProperty="awardId" useGeneratedKeys="true">
+		INSERT INTO mm_account_award (
+		  account_id,
+		  link_account_id,
+		  award_money,
+		  award_type,
+		  goods_id,
+		  award_from,
+		  subject_type,
+		  invest_type,
+		  set_money,
+		  is_send,
+		  add_time,
+		  remark
+		) 
+		VALUES
+		  (
+		    #{accountId},
+		    #{linkAccountId},
+		    #{awardMoney},
+		    #{awardType},
+		    #{goodsId},
+		    #{awardFrom},
+		    #{subjectType},
+		    #{investType},
+		    #{setMoney},
+		    #{isSend},
+			now(),
+		    #{remark}
+		  )
+	</insert>		
+	
+	<!-- 判断有没有获奖 -->
+	<select id="countIsGetAward" parameterType="subjectBean" resultType="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  mm_account_award 
+		WHERE
+		  account_id=#{accountId}
+		AND
+		  award_from=#{awardFrom}
+		<if test="awardType != null and awardType != '' " >
+			<if test="awardType==1" >
+				AND
+				  award_type IN(-3,-1)
+			</if>
+			<if test="awardType==2" >
+				AND
+				  award_type IN(-2,-1)
+			</if>
+			<if test="awardType==3" >
+				AND
+				  award_type IN(-2,6,7,8,9)
+			</if>
+			<if test="awardType==4" >
+				AND
+				  award_type IN(6,7,8,9)
+			</if>
+			<if test="awardType!=1 and awardType!=2 and awardType!=3 and awardType!=4">
+				AND
+				  award_type =#{awardType}
+			</if>
+		</if>
+		<if test="awardMoney != null and awardMoney != '' " >
+		AND
+		  award_money=#{awardMoney}
+		</if>
+		<if test="chooseFlag != null and chooseFlag != '' " >
+			<![CDATA[
+				AND
+				  DATE_FORMAT(add_time,'%Y-%m-%d')>=DATE_FORMAT(#{activityBeginTime},'%Y-%m-%d')
+				AND
+				  DATE_FORMAT(add_time,'%Y-%m-%d')<=DATE_FORMAT(#{activityEndTime},'%Y-%m-%d')
+			]]> 
+		</if>
+	</select>
+	
+	<!-- 修改中奖记录 -->
+	<update id="updateAward" parameterType="subjectBean">
+		UPDATE 
+		  mm_account_award 
+		SET
+		  award_type = #{awardType}
+		<if test="remark != null and remark != '' " >
+		  ,remark=#{remark}
+		</if>
+		WHERE award_id = #{awardId}
+	</update>
+	
+	<!-- 查询用户国庆中间记录 -->
+	<select id="queryAwardById" parameterType="subjectBean" resultType="subjectBean">
+		SELECT 
+		  award_id as awardId,
+		  account_id as accountId,
+		  IFNULL(TRUNCATE(award_money / 100, 2),0) as awardMoney,
+		  award_type as awardType,
+		  award_from as awardFrom,
+		  is_send as isSend,
+		  remark as remark
+		FROM
+		  mm_account_award 
+		WHERE
+		  account_id=#{accountId}
+		AND
+		  award_from=#{awardFrom}
+		<if test="awardType != null and awardType != '' " >
+			<if test="awardType==1" >
+				AND
+				  award_type IN(-3,-1)
+			</if>
+			<if test="awardType==2" >
+				AND
+				  award_type IN(-2,-1)
+			</if>
+			<if test="awardType==3" >
+				AND
+				  award_type IN(-2,6,7,8,9)
+			</if>
+			<if test="awardType==4" >
+				AND
+				  award_type IN(6,7,8,9)
+			</if>
+			<if test="awardType!=1 and awardType!=2 and awardType!=3 and awardType!=4">
+				AND
+				  award_type =#{awardType}
+			</if>
+		</if>
+	</select>
+	
+	<!-- 双十一  查询用户在时间戳内投了多少钱的数量-->
+	<select id="countElevenSubject" parameterType="subjectBean" resultType="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  mm_account_invest i 
+		LEFT JOIN 
+		  mm_subject_info t 
+		ON 
+		  i.subject_id = t.subject_id 
+		WHERE 
+		  t.subject_type = #{subjectType}
+		AND
+		  t.subject_status !=4
+		AND
+		  i.invest_status !=3
+		AND 
+		  i.account_id = #{accountId} 
+		<![CDATA[
+		AND
+		  DATE_FORMAT(i.invest_time,'%Y-%m-%d')>=DATE_FORMAT(#{activityBeginTime},'%Y-%m-%d')
+		AND
+		  DATE_FORMAT(i.invest_time,'%Y-%m-%d')<=DATE_FORMAT(#{activityEndTime},'%Y-%m-%d')
+		]]> 
+		<if test="subjectType =='0'.toString()" >
+		AND
+		   i.invest_money =#{investMoney}
+		</if>
+		<if test="subjectType =='1'.toString() or subjectType =='4'.toString()" >
+		AND
+		   i.invest_money >=#{investMoney}
+		</if>
+	</select>
+	
+	<!-- 双十一活动期间累计投资金额  投资笔数 -->
+	<select id="querySumElevenMoney" parameterType="subjectBean" resultType="subjectBean">
+		SELECT 
+		 IFNULL(TRUNCATE(SUM(i.invest_money) / 100, 0),0) AS investMoney,
+		 count(1) as rn
+		FROM
+		  mm_account_invest i 
+		LEFT JOIN 
+		  mm_subject_info t 
+		ON 
+		  i.subject_id = t.subject_id 
+		WHERE 
+		<![CDATA[
+		  t.subject_term = 1
+		AND
+		  t.subject_periods >3
+		AND 
+		  i.account_id = #{accountId} 
+		
+		AND
+		  DATE_FORMAT(i.invest_time,'%Y-%m-%d')>=DATE_FORMAT(#{activityBeginTime},'%Y-%m-%d')
+		AND
+		  DATE_FORMAT(i.invest_time,'%Y-%m-%d')<=DATE_FORMAT(#{activityEndTime},'%Y-%m-%d')
+		]]> 
+	</select>
+	
+	<!-- 查询当天投资总额 -->
+	<select id="queryTodayInvestAllMoney" parameterType="subjectBean" resultType="java.lang.Integer">
+		SELECT 
+		  IFNULL(
+		    TRUNCATE(SUM(i.invest_money) / 100, 0),
+		    0
+		   )AS todayInvestAllMoney 
+		FROM
+		  mm_account_invest i 
+		WHERE DATE_FORMAT(i.invest_time, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d') 
+		  AND i.account_id = #{accountId}
+	</select>
+	
+	<!-- 根据subjectId查询投资数量 -->
+	<select id="countTwelveActivity" parameterType="subjectBean" resultType="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  mm_account_invest i 
+		WHERE 
+		  i.subject_id = #{subjectId} 
+	</select>
+	
+	<!--查询用户双旦活动是否第一次投资 -->
+	<select id="countChristmas" parameterType="subjectBean" resultType="java.lang.Integer">
+		SELECT 
+		  COUNT(*) 
+		FROM
+		  mm_account_award i 
+		WHERE 
+		  i.account_id = #{accountId} 
+		AND
+		  i.invest_type = 3 
+		AND 
+		  i.set_money = #{setMoney}
+		AND
+		  DATE_FORMAT(i.add_time,'%Y-%m-%d')=DATE_FORMAT(#{addTime},'%Y-%m-%d')
+		  
+	</select>
+	
+	<!--  跨年活动  查询活动时间内达标的次数 -->
+	<select id="countInvestBetweenTime" parameterType="subjectBean" resultType="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  mm_account_invest i 
+		LEFT JOIN 
+		  mm_subject_info t 
+		ON 
+		  i.subject_id = t.subject_id 
+		WHERE 
+		  t.subject_status !=4
+		AND
+		  i.invest_status !=3
+		<if test="accountId != null and accountId != '' " >
+		AND 
+		  i.account_id = #{accountId} 
+		</if>
+		<![CDATA[
+		AND
+		  DATE_FORMAT(i.invest_time,'%Y-%m-%d')>=DATE_FORMAT(#{activityBeginTime},'%Y-%m-%d')
+		AND
+		  DATE_FORMAT(i.invest_time,'%Y-%m-%d')<=DATE_FORMAT(#{activityEndTime},'%Y-%m-%d')
+		AND
+		   i.invest_money >=200000
+		]]> 
+	</select>
+	
+	<!-- 投资金额前10名 -->
+	<select id="rich" resultType="subjectBean" parameterType="subjectBean">
+		SELECT
+		ai.account_icon AS accountIcon,
+		ai.telephone AS telephone,
+		aa.account_id AS accountId,
+		CONVERT(SUM(award_money) / 100, DECIMAL (12, 2)) AS awardMoney
+		FROM
+		mm_account_award aa
+		LEFT JOIN mm_account_info ai
+		ON aa.account_id = ai.account_id
+		WHERE award_type = 0
+		GROUP BY aa.account_id
+		ORDER BY awardMoney DESC
+		limit 10
+	</select>
+	
+	<!-- 邀请好友前10名 -->
+	<select id="connection" resultType="subjectBean" parameterType="subjectBean">
+		SELECT
+		ai.account_icon AS accountIcon,
+		ai.telephone AS telephone,
+		aa.account_id AS accountId,
+		COUNT(1) AS inviterNum
+		FROM
+		mm_account_award aa
+		LEFT JOIN mm_account_info ai
+		ON aa.account_id = ai.account_id
+		WHERE award_type = 0
+		GROUP BY aa.account_id
+		ORDER BY inviterNum DESC
+		limit 10
+	</select>
+	
+	<!-- 查询中奖纪录 -->
+	<select id="queryAwardList" resultType="subjectBean" parameterType="subjectBean">
+		SELECT 
+		  award_id as awardId,
+		  account_id as accountId,
+		  IFNULL(TRUNCATE(award_money / 100, 2),0) as awardMoney,
+		  award_type as awardType,
+		  award_from as awardFrom,
+		  is_send as isSend,
+		  remark as remark
+		FROM
+		  mm_account_award 
+		WHERE
+		  account_id=#{accountId}
+		AND
+		  award_from=7
+		<if test="awardType != null and awardType != '' " >
+			
+			<if test="awardType==1" >
+				AND
+				  award_type IN(-3,-1)
+			</if>
+			<if test="awardType==2" >
+				AND
+				  award_type IN(-2,-1)
+			</if>
+			<if test="awardType==3" >
+				AND
+				  award_type IN(-2,6,7,8,9)
+			</if>
+			<if test="awardType!=1 and awardType!=2 and awardType!=3 and awardType!=4">
+				AND
+				  award_type =#{awardType}
+			</if>
+		</if>
+		
+	</select>
+</mapper>

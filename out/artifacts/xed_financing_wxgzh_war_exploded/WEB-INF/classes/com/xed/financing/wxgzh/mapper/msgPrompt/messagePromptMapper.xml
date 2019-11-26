@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.msgPrompt.MessagePromptMapper">
+	
+	<!-- 查找提前3天的提示的投标信息 -->
+	<select id="advancePrompt" resultType="accountInvest">
+		SELECT
+			date_format(invest.end_time,'%Y-%m-%d') AS endTime,
+			IFNULL(FORMAT(invest.invest_money/100, 2),0) AS surplusMoney,
+			info.telephone AS accountId
+		FROM
+			mm_account_invest AS invest
+		INNER JOIN mm_account_info AS info ON invest.account_id = info.account_id
+		WHERE
+			TO_DAYS(date_add(invest.end_time, INTERVAL -3 DAY)) = TO_DAYS(NOW())
+		AND invest.invest_status IN (0, 3)
+		<![CDATA[ AND TO_DAYS(date_add(info.login_time, INTERVAL 2 DAY)) < TO_DAYS(NOW())
+		and invest.account_id > 0
+		 ]]>
+	</select>
+	
+	<!-- 查找当天提示的投标信息 -->
+	<select id="sameDayPrompt" resultType="accountInvest">
+		SELECT
+			date_format(invest.end_time,'%Y-%m-%d') AS endTime,
+			IFNULL(FORMAT(invest.invest_money/100, 2),0) AS surplusMoney,
+			info.telephone AS accountId
+		FROM
+			mm_account_invest AS invest
+		INNER JOIN mm_account_info AS info ON invest.account_id = info.account_id
+		WHERE
+			TO_DAYS(invest.end_time) = TO_DAYS(NOW())
+		AND invest.is_early = 1
+		AND invest.invest_status IN (0,1,3)
+		<![CDATA[ and invest.account_id > 0  ]]>
+	</select>
+	
+	<!-- 查找结算日后提示的投标信息 -->
+	<select id="afterwardsPrompt" resultType="accountInvest">
+		SELECT
+			date_format(invest.end_time,'%Y-%m-%d') AS endTime,
+			IFNULL(FORMAT(invest.invest_money/100, 2),0) AS surplusMoney,
+			info.telephone AS accountId
+		FROM
+			mm_account_invest AS invest
+		INNER JOIN mm_account_info AS info ON invest.account_id = info.account_id
+		WHERE
+		datediff(NOW(), invest.end_time) in(7,15,30,60)
+		<![CDATA[ AND datediff(invest.end_time, info.login_time) > 0
+		AND invest.is_early = 1
+		AND invest.invest_status IN (0,1,3)
+		and invest.account_id > 0 ]]>
+	</select>
+	
+	
+	<!-- 提前还款 -->
+	<select id="getEarlyPrompt" resultType="subjectBean">
+		SELECT
+			ai.account_id accountId,
+			aii.telephone telephone,
+			si.subject_code subjectCode,
+			aii.real_name realName
+		FROM
+			mm_account_invest ai
+		LEFT JOIN mm_account_info aii ON aii.account_id = ai.account_id
+		LEFT JOIN mm_subject_info si ON si.subject_id = ai.subject_id
+		WHERE
+		<![CDATA[	ai.account_id > 0 ]]>
+		AND ai.early_time BETWEEN concat(
+			date_sub(curdate(), INTERVAL 1 DAY),
+			" 16:40:00"
+		)
+		AND concat(curdate(), " 16:40:00")
+		AND ai.is_early = 2
+		AND ai.invest_status = 1
+		GROUP BY
+			ai.account_id,
+			ai.subject_id
+	</select>
+	
+</mapper>

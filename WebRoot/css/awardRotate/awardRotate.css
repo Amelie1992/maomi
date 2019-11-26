@@ -1,0 +1,228 @@
+.wrap {
+	width: 100%;
+	/*text-align: center;*/
+}
+
+.backbox {
+	text-align: center;
+	line-height: 40px;
+	font-size: 18px;
+}
+
+.getBack {
+	float: left;
+	position: relative;
+	top: 15px;
+	left: 20px;
+	width: 8px;
+	height: 14px;
+}
+
+.content {
+	width: 100%;
+	position: relative;
+}
+
+.cj-bg {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+.cj-title {
+	position: absolute;
+	width: 80%;
+	margin-left: 10%;
+	top: 8%;
+}
+
+.cj-table {
+	position: absolute;
+	width: 90%;
+	margin-left: 5%;
+	top: 38%;
+	z-index: 10;
+}
+
+.cj-plant {
+	position: absolute;
+	width: 75%;
+	margin-left: 12.5%;
+	top: 42%;
+	z-index: 11;
+}
+
+.cj-pointer {
+	position: absolute;
+	width: 20%;
+	margin-left: 40%;
+	top: 54%;
+	z-index: 12;
+}
+
+.cj-base {
+	position: absolute;
+	width: 50%;
+	height: 75px;
+	margin-left: 25%;
+	top: 82%;
+	z-index: 9;
+}
+
+.cj-snow {
+	position: absolute;
+	width: 100%;
+	top: 88%;
+	z-index: 13;
+}
+
+.tips {
+	width: 100%;
+	text-align: center;
+	color: white;
+	position: absolute;
+	top: 97%;
+	font-size: 12px;
+}
+
+.tips p {
+	width: 70%;
+	margin: 0 auto;
+	padding: 15px;
+	background-color: #FF0000;
+	border-radius: 20px;
+}
+
+.bottom {
+	background-color: #FFC924;
+	padding-top: 25px;
+}
+
+.howToGet {
+	width: 100%;
+	text-align: center;
+	font-size: 12px;
+}
+
+.prizeList {
+	width: 90%;
+	height: 200px;
+	margin: 0 auto;
+	position: relative;
+	top: -5px;
+	background-color: #Fef9d9;
+}
+
+.blackBar {
+	width: 96%;
+	margin: 0 auto;
+	height: 10px;
+	background-color: black;
+	border-radius: 10px;
+	margin-top: 20px;
+}
+
+.prizeBox {
+	width: 100%;
+}
+
+.prizeBox-title {
+	height: 30px;
+	border-bottom: 2px solid #F54749;
+}
+
+.prizeBox-lable {
+	position: absolute;
+	left: 35%;
+	top: 15px;
+	width: 30%;
+	margin: 0 auto;
+	height: 30px;
+	color: white;
+	line-height: 30px;
+	text-align: center;
+	background-color: #F54749;
+	border-radius: 20px;
+}
+
+#scrollMessage {
+	width: 100%;
+	text-align: center;
+	overflow: hidden;
+	height: 100px;
+	position: absolute;
+	/*left: 25%;*/
+	top: 30%;
+}
+
+#message_1 li, #message_2 li {
+	height: 25px;
+	list-style: none;
+	color: black;
+	font-size: 14px;
+}
+
+.information {
+	width: 90%;
+	margin: 0 auto;
+}
+
+.information p {
+	line-height: 40px;
+	color: #F54749;
+	font-weight: bold;
+}
+
+.information ul {
+	padding-left: 15px;
+	font-size: 12px;
+}
+
+.information ul li {
+	line-height: 30px;
+}
+/*ipx*/
+@media only screen and (min-height: 800px) and (max-height: 815px) {
+	.cj-plant {
+		position: absolute;
+		width: 75%;
+		margin-left: 12.5%;
+		top: 41.2%;
+		z-index: 11;
+	}
+	.cj-base {
+		position: absolute;
+		width: 50%;
+		height: 75px;
+		margin-left: 25%;
+		top: 70%;
+		z-index: 9;
+	}
+	.cj-snow {
+		position: absolute;
+		width: 100%;
+		top: 80%;
+		z-index: 13;
+	}
+	.tips {
+		width: 100%;
+		text-align: center;
+		color: white;
+		position: absolute;
+		top: 88%;
+		font-size: 12px;
+	}
+	.tips p {
+		width: 70%;
+		margin: 0 auto;
+		padding: 15px;
+		background-color: #FF0000;
+		border-radius: 20px;
+	}
+	.bottom {
+		background-color: #FFC924;
+		padding-top: 0px;
+	}
+}

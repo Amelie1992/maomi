@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xed.financing.wxgzh.mapper.reggold.RegGoldMapper">
+
+	<!-- 添加用户金账户开户记录 -->
+	<insert id="insertRegGold" parameterType="regGoldBean">
+		INSERT INTO mm_reggold_info (
+			account_id,
+			account_name,
+			certif_id,
+			mobile_no,
+			city_id,
+			parent_bank_id,
+			capAcntNo,
+			reg_time,
+			mchnt_txn_ssn,
+			resp_code,
+			resp_desc
+		)
+		VALUES
+			(
+				#{accountId},
+				#{accountName},
+				#{certifId},
+				#{mobileNo},
+				#{cityId},
+				#{parentBankId},
+				#{capAcntNo},
+				NOW(),
+				#{mchntTxnSsn},
+				#{respCode},
+				#{respDesc}
+			)
+	</insert>
+	
+	<!-- 查询用户开户记录 -->
+	<select id="getRegGold" parameterType="String" resultType="regGoldBean">
+		SELECT
+			bmu_id bmuId,
+			account_id accountId,
+			account_name accountName,
+			certif_id certifId,
+			mobile_no mobileNo,
+			city_id cityId,
+			parent_bank_id parentBankId,
+			capAcntNo capAcntNo,
+			reg_time regTime
+		FROM
+			mm_reggold_info
+		WHERE
+			account_id = account_id
+	</select>
+	
+</mapper>

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.accountlevel.AccountLevelMapper">
+
+	<!--查询上个月用户签到次数  -->
+	<select id="queryAccountLastMonthSigns"  resultType="accountInfo">
+		SELECT
+		aa.account_id AS accountId,
+		COUNT(1) signs,
+		IFNULL(al.account_level, 0) AS accountLevel
+		FROM
+			mm_account_signin AS aa
+		LEFT JOIN mm_account_level AS al ON al.`account_id` = aa.account_id
+		WHERE
+			signin_date BETWEEN date_sub(
+				date_sub(
+					date_format(now(), '%y-%m-%d'),
+					INTERVAL extract(DAY FROM now()) - 1 DAY
+				),
+				INTERVAL 1 MONTH
+			)
+		AND date_sub(
+			date_sub(
+				date_format(now(), '%y-%m-%d'),
+				INTERVAL extract(DAY FROM now()) DAY
+			),
+			INTERVAL 0 MONTH
+		)
+		AND <![CDATA[ al.account_level >= 2 ]]>
+		GROUP BY
+			aa.account_id
+	</select>
+	
+	<!--查询前七天用户生日并且这七天内的用户最高投资金额  -->
+	<select id="accountBirthdayGiveCash"  resultType="accountInvest">
+		SELECT 
+			aa.account_id AS accountId,
+			IFNULL(MAX(aa.invest_money),0) AS investMoney,
+			al.account_level AS accountLevel
+		FROM	
+			mm_account_invest aa LEFT JOIN mm_account_info ai
+		ON
+			aa.`account_id`=ai.`account_id` LEFT JOIN mm_account_level al
+		ON
+			aa.`account_id`=al.`account_id`	
+		WHERE
+			DATE_FORMAT(DATE_ADD(NOW(), INTERVAL -7 DAY), '%m%d')=SUBSTRING(ai.id_card,IF(CHARACTER_LENGTH(ai.id_card)=18,11,9),4)
+			AND TO_DAYS(aa.`invest_time`) BETWEEN TO_DAYS(DATE_ADD(NOW(), INTERVAL -7 DAY)) AND TO_DAYS(NOW())-1
+		GROUP BY 
+				aa.`account_id`
+	</select>
+	
+	<!--查询用户等级信息  -->
+	<select id="queryAccountLevel" parameterType="accountInfo" resultType="accountInfo">
+		SELECT 
+			level_id AS levelId,
+			account_id AS accountId,
+			account_score AS accountScore,
+			account_exp AS accountExp,
+			account_level AS accountLevel,
+			is_change AS isChange,
+			is_reward_level AS isRewardLevel,
+			repair_sign_number AS repairSignNumber,
+			withdrawals_number AS withdrawalsNumber,
+			fuse_coupon_number AS fuseCouponNumber,
+			free_withdrawals_number AS freeWithdrawalsNumber
+		FROM	
+			mm_account_level
+		WHERE
+			1=1
+			<if test="accountId!=null and accountId!=''">
+			and account_id=#{accountId}
+			</if>
+	</select>
+	
+	<!-- 查询用户资金明细 -->
+	<select id="queryAccountCapital" parameterType="accountCapital" resultType="accountCapital">
+		SELECT	
+			capital_id AS capitalId,
+			account_id AS accountId,
+			IFNULL(investment_money,0) AS investmentMoney,
+			freeze_money AS freezeMoney,
+			withdraw_money AS withdrawMoney,
+			no_withdraw_money AS noWithdrawMoney,
+			freedom_money AS freedomMoney,
+			now_withdraw_money AS nowWithdrawMoney
+		FROM	
+			mm_account_capital
+		WHERE
+			1=1
+			<if test="accountId!=null and accountId!=''">
+			and account_id=#{accountId}
+			</if>	
+	</select>
+	
+	<!--修改用户等级  -->
+	<update id="updateAccountVIP" parameterType="accountInfo" >
+		UPDATE 
+			mm_account_level
+		SET
+			account_level=#{accountLevel},
+			is_reward_level=#{isRewardLevel},
+			repair_sign_number=#{repairSignNumber},
+			withdrawals_number=#{withdrawalsNumber},
+			fuse_coupon_number=#{fuseCouponNumber},
+			free_withdrawals_number=#{freeWithdrawalsNumber}
+		WHERE
+			1=1	
+			<if test="accountId!=null and accountId!=''">	
+			and account_id=#{accountId}
+			</if>
+	</update>
+	
+	<!--月底查询v5以下的用户的投资金额和等级信息  -->
+	<select id="queryAccountCapitalByLevel"  resultType="accountCapital">
+		SELECT	
+			ac.capital_id AS capitalId,
+			ac.account_id AS accountId,
+			IFNULL(ac.investment_money,0) AS investmentMoney,
+			ac.freeze_money AS freezeMoney,
+			ac.withdraw_money AS withdrawMoney,
+			ac.no_withdraw_money AS noWithdrawMoney,
+			ac.freedom_money AS freedomMoney,
+			ac.now_withdraw_money AS nowWithdrawMoney,
+			al.account_level AS accountLevel,
+			al.is_change AS isChange
+		FROM	
+			mm_account_capital ac LEFT JOIN mm_account_level al
+		ON	
+			ac.account_id=al.account_id
+		WHERE
+			al.account_level !=0
+	</select>
+	
+	<update id="updateAccountLevelAndIsChange" parameterType="accountInfo">
+		UPDATE 
+			mm_account_level
+		SET
+			account_level=#{accountLevel},
+			is_change=#{isChange}
+		WHERE
+			1=1	
+			<if test="accountId!=null and accountId!=''">	
+			and account_id=#{accountId}
+			</if>
+	</update>
+	
+	<!--月初刷新用户的补签次数  -->
+	<update id="updateRepairSignNumber" parameterType="java.util.Map" >
+		UPDATE 
+			mm_account_level
+		SET 
+			repair_sign_number=#{repairSignNumber}
+		WHERE
+			account_level in
+			<foreach item="checkedIds" collection="checkedIds" open="(" separator="," close=")">
+			#{checkedIds}
+			</foreach>
+	</update>
+	
+	<!--月初刷新用户的特权提现次数  -->	
+	<update id="updateWithdrawalsNumber" parameterType="java.util.Map">
+		UPDATE 
+			mm_account_level
+		SET 
+			withdrawals_number=#{withdrawalsNumber}
+		WHERE
+			account_level in
+			<foreach item="checkedIds" collection="checkedIds" open="(" separator="," close=")">
+			#{checkedIds}
+			</foreach>
+	</update>
+	
+	<!--查询accountId大于0的用户Id-->
+	<select id="queryAccountId"  resultType="accountInfo">
+		SELECT 	
+			account_id AS accountId
+		FROM
+			mm_account_info
+		WHERE 
+			<![CDATA[account_id>0]]>
+			and status = '0'
+	</select>
+	
+	<!-- 添加优惠券详情 -->
+	<insert id="addCouponDetail" parameterType="couponDetailBean" keyProperty="couDetailId" useGeneratedKeys="true">
+		INSERT INTO mm_coupon_detail (
+			coupon_id,
+			coupon_code,
+			coupon_money,
+			is_receive,
+			is_show,
+			receive_time,
+			validity_days,
+			interest_days,
+			interest_type,
+			start_money
+		)
+		VALUES
+			(
+				#{couponId},
+				#{couponCode},
+				#{couponMoney},
+				#{isReceive},
+				#{isShow},
+				NOW(),
+				#{validityDays},
+				#{interestDays},
+				#{interestType},
+				IFNULL(#{startMoney},0)
+			)
+	</insert>
+	
+	<!--查询优惠券概述信息 -->
+	<select id="selectCouponInfo" resultType="couponInfoBean" parameterType="String">
+		SELECT
+			ci.coupon_id couponId,
+			ci.coupon_name couponName,
+			cd.coupon_money couponMoney,
+			ci.coupon_type couponType,
+			ci.coupon_quantity couponQuantity,
+			ci.add_time addTime,
+			ci.validity_days validityDays
+		FROM
+			mm_coupon_info AS ci
+		LEFT JOIN 
+			mm_coupon_detail cd
+		ON 
+			ci.coupon_id=cd.coupon_id
+		WHERE
+			ci.coupon_id = #{couponId}
+		limit 0,1	
+	</select>
+	
+	<!-- 修改优惠券概述信息 -->
+	<update id="updateCouponInfo" parameterType="couponInfoBean">
+		UPDATE 
+			mm_coupon_info
+		SET 
+			coupon_quantity = #{couponQuantity}
+		WHERE
+			coupon_id = #{couponId}
+	</update>
+	
+	<!-- 添加优惠券领取信息 -->
+	<insert id="addAdditional" parameterType="couponBean">
+		INSERT INTO mm_account_additional (
+			account_id,
+			cou_detail_id,
+			receive_time,
+			out_time
+		)
+		VALUES
+			(
+				#{accountId},
+				#{couDetailId},
+				NOW(),
+				<if test="outTime == '-1'">
+					str_to_date('2099-12-31 23:59:59','%Y-%m-%d %H:%i:%s')
+				</if>
+				<if test="outTime != '-1' and outTime != '-2'">
+					DATE_ADD(NOW(),INTERVAL #{outTime} DAY)
+				</if>
+			)
+	</insert>
+	
+	<!-- 月初刷新卡券融合次数 -->
+	<update id="updateFuseCouponNumber">
+		UPDATE mm_account_level
+		SET fuse_coupon_number = account_level - 1
+		WHERE
+			<![CDATA[ account_level >= 2 ]]>
+	</update>
+	
+	<!-- 月初刷新免费提现次数 -->
+	<update id="updateFreeWithdrawalsNumber" parameterType="java.util.Map">
+		UPDATE 
+			mm_account_level
+		SET 
+			free_withdrawals_number=#{freeWithdrawalsNumber}
+		WHERE
+			account_level in
+			<foreach item="checkedIds" collection="checkedIds" open="(" separator="," close=")">
+			#{checkedIds}
+			</foreach>
+	</update>
+	
+</mapper>

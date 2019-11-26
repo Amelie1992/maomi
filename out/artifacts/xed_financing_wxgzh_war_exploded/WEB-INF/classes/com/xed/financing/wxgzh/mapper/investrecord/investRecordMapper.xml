@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xed.financing.wxgzh.mapper.investrecord.InvestRecordMapper">
+
+	<!-- 查询投资记录列表  我的投标 -->
+	<select id="queryInvestRecord" parameterType="investRecordBean" resultType="investRecordBean">
+		SELECT 
+		  t.invest_id AS investId,
+		  t.subject_id AS subjectId,
+		  t.account_id AS accountId,
+		  IFNULL((SELECT TRUNCATE(SUM(c.credit_money) / 100, 2)  FROM mm_credit_record c WHERE c.invest_id = t.invest_id),0) AS totalCreditMoney,
+		  DATE_FORMAT(t.invest_time, '%Y-%m-%d') AS investTime,
+		  DATE_FORMAT(t.end_time,'%Y-%m-%d')AS endTime,
+		  t.full_time AS fullTime,
+		  IFNULL(TRUNCATE(t.invest_money/100, 2),0) AS investMoney,
+		  IFNULL(TRUNCATE(t.coupon_money/100, 0),0) AS couponMoney,
+		  t.subject_rate AS subjectRate,
+		  t.repeat_type AS repeatType,
+		  IFNULL(TRUNCATE(t.month_profit/100, 2),0) AS monthProfit,
+		  IFNULL(TRUNCATE(t.year_profit/100, 2),0) AS yearProfit,
+		  t.is_team AS isTeam,
+		  t.is_credit AS isCredit,
+		  t.invest_status AS investStatus,
+		  t.vip_rate AS vipRate,
+		  DATE_FORMAT(t.early_time,'%Y-%m-%d') AS earlyTime,
+		  t.is_early AS  isEarly,
+		  IFNULL(truncate(t.equalize_money/100,0), 0) AS  equalizeMoney,
+		  IFNULL(truncate(t.early_repayment_money/100,0), 0) AS earlyRepaymentMoney,
+		  IFNULL(truncate(t.early_surplus_money/100,0), 0) AS earlySurplusMoney,
+		  a.account_name AS accountName,
+		  s.subject_name AS subjectName,
+		  (t.subject_rate -s.subject_rate) AS subjectRates,
+		  s.subject_periods AS subjectPeriods,
+		  s.subject_rate AS sRate,
+		  s.subject_status AS subjectStatus,
+		  s.subject_type AS subjectType  
+		FROM
+		  mm_account_invest t,
+		  mm_account_info a,
+		  mm_subject_info s 
+		WHERE 
+		  t.account_id = a.account_id 
+		AND
+		  t.subject_id = s.subject_id
+		<if test="investStatus != null and investStatus != '' " >  
+			<if test="investStatus == 9" >  
+				AND 
+				  t.invest_status in (0,1,3,4)
+		  	</if> 
+		  	<if test="investStatus == 1" >  
+				AND 
+				  t.invest_status in (1,4)
+		  	</if> 
+		  	<if test="investStatus != 9 and investStatus != 1" >  
+				AND 
+				  t.invest_status =#{investStatus}
+		  	</if> 
+		</if>
+		AND 
+		  t.is_credit = '0'
+		AND
+		  t.account_id = #{accountId}
+		ORDER BY t.invest_status=0 DESC,t.invest_status=3 DESC,t.invest_status=1 DESC,t.invest_time DESC
+	</select>
+	
+	<!-- 查询投资记录列表  我的转让 -->
+	<select id="queryCreditRecord" parameterType="investRecordBean" resultType="investRecordBean">
+		SELECT 
+		  t.credit_id AS creditId,
+		  t.invest_id AS investId,
+		  t.subject_id AS subjectId,
+		  IFNULL(TRUNCATE(t.credit_money/100, 2),0) AS creditMoney,
+		  t.credit_type AS creditType,
+		  t.credit_rate AS creditRate,
+		  IFNULL(TRUNCATE(t.deal_money/100, 2),0) AS dealMoney,
+		  DATE_FORMAT(t.credit_time, '%Y-%m-%d') AS creditTime,
+		  DATE_FORMAT(t.deal_time, '%Y-%m-%d') AS dealTime,
+		  s.subject_name AS subjectName 
+		FROM
+	      	mm_account_invest AS i
+		LEFT JOIN 
+			mm_credit_record AS t
+		ON i.invest_id = t.invest_id
+		LEFT JOIN
+			mm_subject_info s
+		ON i.subject_id = s.subject_id
+		WHERE
+		  t.out_account_id = #{accountId}
+		AND
+		  t.is_cancel = '0'
+		AND 
+		(i.is_credit=1 or i.invest_status in (2,3))
+		ORDER BY credit_type,t.credit_time DESC
+	</select>
+	
+	<!-- 查询转让总金额 -->
+	<select id="querySumCredMoney" parameterType="investRecordBean">
+		SELECT 
+		  IFNULL(TRUNCATE(SUM(credit_money) / 100, 2),0) AS totalCreditMoney
+		FROM
+		  mm_credit_record 
+		WHERE invest_id = #{investId}
+	</select>
+	<select id="queryInvestRecordById" parameterType="investRecordBean" resultType="investRecordBean">
+		SELECT 
+		  t.invest_id AS investId,
+		  t.subject_id AS subjectId,
+		  t.account_id AS accountId,
+		  DATE_FORMAT(t.invest_time, '%Y-%m-%d') AS investTime,
+		  DATE_FORMAT(t.full_time, '%Y-%m-%d') AS fullTime,
+		  DATE_FORMAT(t.end_time, '%Y-%m-%d') AS endTime,
+		  IFNULL(TRUNCATE(t.invest_money/100, 2),0) AS investMoney,
+		  t.subject_rate AS subjectRate,
+		  IFNULL(TRUNCATE(t.month_profit/100, 2),0) AS monthProfit,
+		  IFNULL(TRUNCATE(t.year_profit/100, 2),0) AS yearProfit,
+		  t.is_team AS isTeam,
+		  t.is_credit AS isCredit,
+		  t.invest_status AS investStatus,
+		  a.account_name AS accountName,
+		  s.subject_name AS subjectName,
+		  s.subject_periods AS subjectPeriods,
+		  s.subject_rate AS subjectRates,
+		  s.subject_code AS subjectCode,
+		  IFNULL(TRUNCATE(c.credit_money/100, 2),0) AS creditMoney,
+		  c.credit_id AS creditId,
+		  c.credit_type AS creditType,
+		  c.credit_rate AS creditRate,
+		  IFNULL(TRUNCATE(c.deal_money/100, 2),0) AS dealMoney,
+		  DATE_FORMAT(c.credit_time, '%Y-%m-%d') AS creditTime,
+		  DATE_FORMAT(c.deal_time, '%Y-%m-%d') AS dealTime,
+		  c.out_account_id AS outAccountId,
+		  c.in_account_id AS inAccountId,
+		  DATE_FORMAT(now(), '%Y-%m-%d') AS currentTime
+		FROM
+		  (mm_account_invest t
+		LEFT JOIN
+		  mm_credit_record c
+		ON c.invest_id = t.invest_id),
+		  mm_account_info a,
+		  mm_subject_info s 
+		WHERE 
+		  t.account_id = a.account_id 
+		AND
+		  t.subject_id = s.subject_id
+		AND
+		  c.is_cancel = 0  
+		AND
+		  t.invest_id = #{investId}
+		<if test="creditId != null and creditId != '' " >  
+		AND
+		  c.credit_id = #{creditId}
+		</if>
+	</select>
+	
+	<!-- 立即转让    修改投标状态 -->
+	<update id="updateInvestStatus" parameterType="investRecordBean">
+		UPDATE 
+		  mm_account_invest 
+		SET
+		  is_credit = #{isCredit}
+		WHERE invest_id = #{investId}
+	</update>
+	
+	<!-- 修改转让表状态  取消转让 -->
+	<update id="updateCreditStauts" parameterType="investRecordBean">
+		UPDATE 
+		  mm_credit_record 
+		SET
+		  is_cancel = #{isCancel}
+		WHERE 
+		  credit_id = #{creditId} 
+	</update>
+	
+	<!-- 立即转让    添加转让信息 -->
+	<insert id="addCreditRecord" parameterType="investRecordBean">
+		INSERT INTO mm_credit_record 
+		(
+			  invest_id,
+			  subject_id,
+			  out_account_id,
+			  credit_money,
+			  credit_type,
+			  credit_rate,
+			  deal_money,
+			  out_money,
+			  deal_type,
+			  credit_time,
+			  is_cancel
+		) 
+		VALUES
+		(
+		    #{investId},
+		    #{subjectId},
+		    #{outAccountId},
+		    #{creditMoney},
+		    #{creditType},
+		    #{creditRate},
+		    #{dealMoney},
+		    #{outMoney},
+		    #{dealType},
+		    now(),
+		    #{isCancel}
+		) 
+	</insert>
+	
+	<!-- 修改转让状态  加急  平台接盘-->
+	<update id="updateCreditStatus" parameterType="investRecordBean">
+		update 
+			mm_credit_record
+		set
+				credit_type = #{creditType}
+			<if test="creditRate != null and creditRate != '' " >
+				,credit_rate = #{creditRate}
+			</if>
+		  	<if test="inAccountId != null and inAccountId != '' " >
+			  	,in_account_id = #{inAccountId}
+			  	,deal_money =#{dealMoney} 
+				,deal_time = now()
+		    </if>
+		where
+			credit_id = #{creditId}	
+	</update>
+	
+	<!-- 满标后修改投标标满标时间 -->
+	<update id="updateSubjectFullTime" parameterType="investRecordBean">
+		UPDATE 
+		  mm_account_invest 
+		SET
+		  full_time = NOW()
+		  ,last_profit_time = NOW()
+		  <if test="fullTime != null and fullTime != '' " >
+		  	<if test="fullTime =='0'.toString()" >
+		  		,end_time = DATE_ADD(now(),INTERVAL #{subjectPeriods} DAY)
+		  		,next_profit_time=DATE_ADD(now(),INTERVAL #{subjectPeriods} DAY)
+		  	</if>
+		  	<if test="fullTime =='1'.toString()" >
+		  		,end_time = DATE_ADD(NOW(),INTERVAL  #{subjectPeriods} MONTH)
+		  		,next_profit_time=DATE_ADD(now(),INTERVAL 1 MONTH)
+		  	</if>
+		  	<if test="fullTime =='2'.toString()" >
+		  		,end_time = DATE_ADD(NOW(),INTERVAL  #{subjectPeriods}*12 MONTH)
+		  		,next_profit_time=DATE_ADD(now(),INTERVAL 12 MONTH)
+		  	</if>
+		  </if>
+		WHERE 
+		  subject_id=#{subjectId}
+	</update>
+	
+	<!-- 投资记录变更为已转让 -->
+	<update id="updateInvestInfo" parameterType="investRecordBean">
+		UPDATE 
+		  mm_account_invest
+		SET
+		  invest_money = #{investMoney},
+		  invest_status = #{investStatus} 
+		WHERE invest_id = #{investId}
+	</update>
+	
+	<!-- 转让后生成投资记录 -->
+	<insert id="addInvestTransfer" parameterType="investRecordBean">
+		INSERT INTO mm_account_invest 
+		(
+		  subject_id,
+		  account_id,
+		  invest_time,
+		  full_time,
+		  invest_money,
+		  subject_rate,
+		  month_profit,
+		  year_profit,
+		  is_credit,
+		  invest_status
+		) 
+		VALUES
+		  (
+		    #{subjectId},
+		    #{accountId},
+		    NOW(),
+		    NOW(),
+		    #{investMoney},
+		    #{subjectRate},
+		    #{monthProfit},
+		    #{yearProfit},
+		    0,
+		    0
+		  ) 
+	</insert>
+	
+	<select id="selectOneInvestRecordById" parameterType="investRecordBean" resultType="investRecordBean">
+		SELECT
+			DATE_FORMAT(NOW(),'%Y-%m-%d') currentTime,
+			ai.invest_id investId,
+			ai.subject_id subjectId,
+			ai.account_id accountId,
+			DATE_FORMAT(ai.invest_time,'%Y-%m-%d') investTime,
+			ai.full_time fullTime,
+			ai.invest_money investMoney,
+			ai.coupon_money couponMoney,
+			ai.subject_rate subjectRate,
+			ai.month_profit monthProfit,
+			ai.year_profit yearProfit,
+			ai.is_team isTeam,
+			ai.is_credit isCredit,
+			ai.invest_status investStatus,
+			ai.surplus_money AS surplusMoney,
+			ai.last_profit_time AS lastProfitTime,
+			ai.next_profit_time AS nextProfitTime,
+			DATE_FORMAT(ai.end_time,'%Y-%m-%d')AS endTime,
+			ai.repeat_type AS repeatType,
+			ai.is_day_profit AS isDayProfit,
+			s.subject_name subjectName,
+			s.subject_rate subjectRates,
+			s.subject_periods AS subjectPeriods,
+			s.subject_term AS subjectTerm
+		FROM
+			mm_account_invest AS ai,
+			mm_subject_info s 
+		WHERE
+			ai.subject_id = s.subject_id
+		AND	
+			ai.invest_id = #{investId}
+	</select>
+	
+	<!-- 查询是否第一次投标 -->
+	<select id="countFirstSubject" parameterType="investRecordBean" resultType="java.lang.Integer">
+		SELECT
+			COUNT(1)
+		FROM
+			mm_account_invest s
+		WHERE
+			s.account_id = #{accountId} 
+		AND 
+			s.invest_money > 0
+		AND	
+			s.invest_status !=3
+		<if test="isDayProfit != null and isDayProfit != '' " >
+		AND	
+			s.is_day_profit =0
+		AND
+			s.invest_mode =0
+		</if>
+	</select>
+	
+	<!-- 用户代收本金 -->
+	<select id="countSumInvestSubject" parameterType="investRecordBean" resultType="java.lang.String">
+		SELECT 
+		  IFNULL(TRUNCATE(SUM(surplus_money/100), 2),0) AS countSumInvestSubject
+		FROM
+		  mm_account_invest 
+		WHERE invest_status IN (0, 3) 
+		  AND is_credit = 0 
+		  AND account_id = #{accountId} 
+	</select>
+	
+	<!-- 查询我的投资订单（iphone） -->
+	<select id="queryIphoneById" parameterType="investRecordBean" resultType="investRecordBean">
+		SELECT
+			ai.invest_id investId,
+			ai.subject_id subjectId,
+			ai.account_id accountId,
+			DATE_FORMAT(ai.invest_time,'%Y-%m-%d') investTime,
+			ai.full_time fullTime,
+			IFNULL(TRUNCATE(ai.invest_money / 100, 0),0) investMoney,
+			ai.coupon_money couponMoney,
+			ai.subject_rate subjectRate,
+			ai.month_profit monthProfit,
+			ai.year_profit yearProfit,
+			ai.is_team isTeam,
+			ai.is_credit isCredit,
+			ai.invest_status investStatus,
+			ai.surplus_money AS surplusMoney,
+			ai.last_profit_time AS lastProfitTime,
+			ai.next_profit_time AS nextProfitTime,
+			DATE_FORMAT(ai.end_time,'%Y-%m-%d')AS endTime,
+			ai.repeat_type AS repeatType,
+			ai.is_day_profit AS isDayProfit,
+			(SELECT TIMESTAMPDIFF(MONTH,DATE_FORMAT(ai.invest_time,'%Y-%m-%d'),DATE_FORMAT(ai.end_time,'%Y-%m-%d')) FROM mm_account_invest u WHERE u.invest_id=4608)AS months,
+			d.good_id goodId,
+			d.user_name userName,
+			d.user_telephone userTelephone,
+			(SELECT c.city_name FROM mm_city_info c LEFT JOIN mm_account_address u ON c.city_code = u.province WHERE u.invest_id=#{investId}) AS province,
+ 			(SELECT c.city_name FROM mm_city_info c LEFT JOIN mm_account_address u ON c.city_code = u.city WHERE u.invest_id=#{investId}) AS city,
+ 			(SELECT c.city_name FROM mm_city_info c LEFT JOIN mm_account_address u ON c.city_code = u.classify WHERE u.invest_id=#{investId}) AS classify,
+ 			d.user_address userAddress,
+ 			d.is_send isSend,
+ 			d.color color,
+ 			d.packages packages, 
+ 			d.express_company expressCompany,
+ 			d.express_code expressCode
+		FROM
+			mm_account_invest AS ai
+		LEFT JOIN 
+			mm_account_address d
+		ON 
+			ai.invest_id = d.invest_id
+		WHERE
+			ai.invest_id = #{investId}
+	</select>
+</mapper>

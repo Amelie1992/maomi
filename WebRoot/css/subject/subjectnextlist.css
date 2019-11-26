@@ -1,0 +1,205 @@
+.wrap {
+				width: 100%;
+				position: relative;
+				color:#888;
+			}
+			
+			.title {
+				width: 100%;
+				position: relative;
+				text-align: center;
+				font-size: 16px;
+				color: #333333;
+				/*font-weight: 600;*/
+				height: 40px;
+				line-height: 40px;
+				background-color: #F7F7F7;
+			}
+			
+			.back {
+				position: absolute;
+				left: 20px;
+				top: 14px;
+				width: 10px;
+				height: 15px;
+			}
+			.content th{
+				font-weight:normal;
+			}
+			.content,
+			.content_detail {
+				width: 100%;
+				overflow: hidden;
+				padding-bottom: 10px;
+				margin-top: 10px;
+				background-color: #FFFFFF;
+			}
+			
+			.bid-tips {
+				width: 100%;
+				text-align: left;
+				line-height: 30px;
+				/*border-bottom: 1px solid #E0E0E0;*/
+			}
+			
+			.bid-tips th:nth-of-type(1) {
+				text-indent: 20px;
+			}
+			
+			.bid-tips th:nth-of-type(2) {
+				padding-right: 20px;
+				text-align: right;
+				color: #F95D18;
+			}
+			
+			.bid-tips td:nth-of-type(1) {
+				text-indent: 20px;
+			}
+			
+			.bid-tips td:nth-of-type(2) {
+				padding-right: 20px;
+				text-align: right;
+				color: #F95D18;
+			}
+			
+			.content_detail {
+				position: relative;
+			}
+			
+			.content_detail_title {
+				font-size: 18px;
+				color: #333333;
+				position: relative;
+			}
+			
+			.content_detail_title b:nth-of-type(1) {
+				font-weight: normal;
+				position: absolute;
+				top: 2px;
+				left: 50px;
+			}
+			
+			.content_detail_title b:nth-of-type(2) {
+				font-weight: normal;
+				font-size: 12px;
+				position: absolute;
+				top: 2px;
+				right: 20px;
+			}
+			
+			.content_detail_title img {
+				width: 40px;
+			}
+			
+			.content_detail_title b span {
+				color: #F95D18;
+			}
+			
+			.content_detail_title-icon {
+				margin-left: 50px;
+				margin-bottom: 10px;
+			}
+			
+			.content_detail_title-icon span {
+				color: #888;
+				display: inline-block;
+				font-size: 10px;
+				/*border-radius: 10px;*/
+				margin-right: 5px;
+				padding: 2px;
+			}
+			
+			.content_detail_title-icon .limit-1 {
+				color: #0badff;
+				border: 1px solid #0badff;
+			}
+			
+			.content_detail_title-icon .limit-2 {
+				color: #38CD53;
+				border: 1px solid #38CD53;
+			}
+			
+			.content_detail_box {
+				height: 30px;
+			}
+			
+			.content_detail_left {
+				/*width: 70%;*/
+				float: left;
+				margin-left: 20px;
+			}
+			
+			.content_detail_left table {
+				width: 100%;
+				text-align: left;
+			}
+			
+			.content_detail_left table th {
+				font-size: 14px;
+				line-height: 20px;
+				color: #333;
+			}
+			
+			.content_detail_left table th span {
+				font-size: 16px;
+				color: #F95D18;
+			}
+			
+			.content_detail_left p {
+				margin-bottom: 10px;
+			}
+			
+			.content_detail_left p span {
+				display: inline-block;
+			}
+			
+			.content_detail_right {
+				float: right;
+				font-size: 14px;
+				line-height: 18px;
+			}
+			
+			.content_detail_right a {
+				width: 100px;
+				display: inline-block;
+				padding: 5px;
+				background-color: #FFC722;
+				margin-top: 5px;
+				text-align: center;
+				color: white;
+				border-radius: 5px;
+			}
+			
+			.bidNum {
+				float: left;
+				margin-left: 20px;
+				font-size: 12px;
+				color: #888888;
+				padding-top: 10px;
+			}
+			
+			.space {
+				width: 100%;
+				height: 15px;
+				background-color: #F7F7F7;
+			}
+			
+			.footer {
+				background-color: #fafafa;
+				/*height: 80px;*/
+				position: fixed;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+				border-top: 1px solid #EEEEEE;
+			}
+			
+			.footer table {
+				width: 100%;
+				text-align: center;
+				font-size: 14px;
+			}
+			
+			.footer table img {
+				width: 30%;
+			}

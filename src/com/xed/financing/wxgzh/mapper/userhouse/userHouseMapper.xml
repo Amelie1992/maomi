@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xed.financing.wxgzh.mapper.userhouse.UserHouseMapper">
+	<!-- 获取借还人房屋信息 -->
+	<select id="getUserHouseInfo" resultType="userHouseBean" parameterType="userHouseBean">
+		SELECT
+			house_id houseId,
+			user_id userId,
+			type_house typeHouse,
+			build_area buildArea,
+			house_age houseAge,
+			(SELECT city_name FROM mm_city_info WHERE city_code = uh.province) province,
+			(SELECT city_name FROM mm_city_info WHERE city_code = uh.city) city,
+			(SELECT city_name FROM mm_city_info WHERE city_code = uh.classify) classify,
+			house_address houseAddress,
+			TRUNCATE(uh.house_except_money/100,2) houseExceptMoney,
+			TRUNCATE(uh.house_pledge_money/100,2) housePledgeMoney,
+			add_time `addTime`
+		FROM
+			`mm_user_house` uh
+		WHERE
+			uh.user_id = #{userId}
+	</select>
+</mapper>

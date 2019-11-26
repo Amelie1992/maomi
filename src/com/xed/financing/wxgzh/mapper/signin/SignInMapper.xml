@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.xed.financing.wxgzh.mapper.signin.SignInMapper">
+	
+	<!-- 查询用户当前月签到总数 -->
+	<select id="queryCurrentMonthSignInDayCount" parameterType="String" resultType="int">
+		SELECT
+			COUNT(1)
+		FROM
+			mm_account_signin
+		WHERE
+			account_id = #{accountId}
+		AND DATE_FORMAT(signin_date,'%Y-%m') = DATE_FORMAT(NOW(),'%Y-%m')
+	</select>
+	
+	<!-- 查询用户当前月鱼干总数 -->
+	<select id="queryCurrentMonthSignInScoreCount" parameterType="String" resultType="int">
+		SELECT
+			SUM(score)
+		FROM
+			mm_account_score_info
+		WHERE
+			account_id = #{accountId}
+		AND score_type = 0
+		AND DATE_FORMAT(mod_time,'%Y-%m') = DATE_FORMAT(NOW(),'%Y-%m')	
+	</select>
+	
+	<!-- 查询用户当前月签到集合 -->
+	<select id="queryCurrentMonthSignInList" parameterType="String" resultType="signInBean" >
+		SELECT
+			signin_id signinId,
+			signin_date signinDate,
+			account_id accountId
+		FROM
+			mm_account_signin
+		WHERE
+			account_id = #{accountId}
+			AND DATE_FORMAT(signin_date,'%Y-%m') = DATE_FORMAT(NOW(),'%Y-%m')
+	</select>
+	
+	<!-- 添加签到 -->
+	<insert id="addSignIn" parameterType="signInBean">
+		INSERT INTO mm_account_signin (account_id, signin_date)
+		VALUES
+			(#{accountId}, NOW())
+	</insert>
+	
+	<!-- 检查当前是否签到完成 -->
+	<select id="checkSignIn" parameterType="String" resultType="int" >
+		SELECT
+			COUNT(1)
+		FROM
+			mm_account_signin
+		WHERE
+			account_id = #{accountId}
+		AND DATE_FORMAT(signin_date,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d')
+	</select>
+	
+	<!-- 累计签到多少天 -->
+	<select id="countSignOn" parameterType="signInBean" resultType="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  mm_account_signin 
+		WHERE account_id = #{accountId}
+		<![CDATA[
+		  AND DATE_FORMAT(signin_date, '%Y-%m-%d') >= DATE_FORMAT(#{beginDate}, '%Y-%m-%d') 
+		  AND DATE_FORMAT(signin_date, '%Y-%m-%d') <= DATE_FORMAT(#{endDate}, '%Y-%m-%d') 	
+		 ]]> 
+	</select>
+	
+	<!-- 补签昨日 -->
+	<insert id="signYesterday" parameterType="accountInfo">
+		INSERT INTO mm_account_signin (account_id, signin_date)
+		VALUES
+			(#{accountId}, date_add(NOW(),INTERVAL -1 DAY))
+	</insert>
+	
+	<!-- 检查昨天有没有签到,并且昨天是本月的 -->
+	<select id="changeYesterdaySign" parameterType="accountInfo" resultType="Integer">
+		SELECT
+			COUNT(1)
+		FROM
+			mm_account_signin
+		WHERE
+			account_id = #{accountId}
+		AND date_format(date_add(NOW(),INTERVAL -1 DAY),'%Y-%m-%d') = date_format(signin_date,'%Y-%m-%d')
+		AND date_format(signin_date,'%Y-%m')=date_format(now(),'%Y-%m') 
+	</select>
+	
+</mapper>

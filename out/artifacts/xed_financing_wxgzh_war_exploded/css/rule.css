@@ -1,0 +1,29 @@
+.rulebox{
+	margin:15px 12px 0px 12px;
+	padding-bottom:15px;
+	font-family: "微软雅黑";
+	font-size:12px;
+	line-height:24px;
+}
+h3{
+	font-family: "微软雅黑";
+	color: #f95d18;
+}
+p{
+	text-indent:24px;
+	margin-top:10px;
+	color:#757575;
+}
+.rule_tit{
+	margin-top:10px;
+	color:#ffad2c;
+}
+.rule_tit img{
+	width:14px;
+	height:14px;
+	margin-right:6px;
+}
+i{
+	color:#ffad2c;
+	font-style:normal;
+}

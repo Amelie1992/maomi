@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.freesubject.FreedomSubjectMapper">
+	
+	<!-- 查询猫咪宝列表 -->
+	<select id="queryFreedomSubject" parameterType="freedomSubjectBean" resultType="freedomSubjectBean">
+		SELECT 
+		  s.freedom_subject_id as freedomSubjectId,
+		  s.freedom_subject_name as freedomSubjectName,
+		  s.freedom_subject_type as freedomSubjectType,
+		  IFNULL(TRUNCATE(s.freedom_subject_money / 100, 2),0) as freedomSubjectMoney,
+		  IFNULL(TRUNCATE(s.freedom_surplus_money / 100, 2),0) as freedomSurplusMoney,
+		  IFNULL(TRUNCATE(s.freedom_origin_money / 100, 2),0) as freedomOriginMoney,
+		  IFNULL(TRUNCATE(s.freedom_restrict_money / 100, 2),0) as freedomRestrictMoney,
+		  s.freedom_subject_date as freedomSubjectDate,
+		  s.freedom_subject_status as freedomSubjectStatus,
+		  r.freedom_rate as freedomRate 
+		FROM
+		  mm_freedom_subject s
+		LEFT JOIN
+		  mm_freedom_rate r
+		ON
+		  s.freedom_subject_id=r.freedom_subject_id
+		WHERE
+		  freedom_subject_status !=0
+		AND
+		  DATE_FORMAT(r.freedom_date, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d') 
+	</select>
+	
+	<!-- 查询猫咪宝count -->
+	<select id="countFreedomSubject" parameterType="freedomSubjectBean" resultType="freedomSubjectBean">
+		SELECT 
+		  count(1)
+		FROM
+		  mm_freedom_subject s
+		LEFT JOIN
+		  mm_freedom_rate r
+		ON
+		  s.freedom_subject_id=r.freedom_subject_id
+		WHERE
+		  freedom_subject_status !=0
+		AND
+		  DATE_FORMAT(r.freedom_date, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d') 
+	</select>
+	
+	<!-- 查询详情 -->
+	<select id="queryFreedomSubjectById" parameterType="freedomSubjectBean" resultType="freedomSubjectBean">
+		SELECT 
+		  s.freedom_subject_id as freedomSubjectId,
+		  s.freedom_subject_name as freedomSubjectName,
+		  s.freedom_subject_type as freedomSubjectType,
+		  IFNULL(TRUNCATE(s.freedom_subject_money / 100, 2),0) as freedomSubjectMoney,
+		  IFNULL(TRUNCATE(s.freedom_surplus_money / 100, 2),0) as freedomSurplusMoney,
+		  IFNULL(TRUNCATE(s.freedom_origin_money / 100, 2),0) as freedomOriginMoney,
+		  IFNULL(TRUNCATE(s.freedom_restrict_money / 100, 2),0) as freedomRestrictMoney,
+		  s.freedom_subject_date as freedomSubjectDate,
+		  s.freedom_subject_status as freedomSubjectStatus,
+		  r.freedom_rate as freedomRate 
+		FROM
+		  mm_freedom_subject s
+		LEFT JOIN
+		  mm_freedom_rate r
+		ON
+		  s.freedom_subject_id=r.freedom_subject_id
+		WHERE
+		  s.freedom_subject_id=#{freedomSubjectId}
+		AND
+		  DATE_FORMAT(r.freedom_date, '%Y-%m-%d') = DATE_ADD(DATE_FORMAT(NOW(), '%Y-%m-%d'),INTERVAL -1 DAY)   
+	</select>
+	
+	<!-- 查询七日年化率和万份收益 -->
+	<select id="querySevenRateAndPromit" parameterType="freedomSubjectBean" resultType="freedomSubjectBean">
+		<if test="flag!=null and flag!=''">
+			<if test="flag=='3'.toString()">
+	  			 SELECT * FROM (
+	  		</if>
+  		</if>
+		SELECT 
+		  rate_id as rateId,
+		  freedom_subject_id as freedomSubjectId,
+		  freedom_rate as freedomRate,
+		  day_returns as dayReturns,
+		  DATE_FORMAT(freedom_date, '%m-%d') as freedomDate
+		FROM
+		  mm_freedom_rate 
+		WHERE
+		    freedom_subject_id=#{freedomSubjectId}
+		AND
+		  <![CDATA[
+  		 	DATE_FORMAT(freedom_date,'%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-%d')
+  		  ]]>
+  			ORDER BY freedom_date desc
+  		<if test="flag!=null and flag!=''">
+  			<if test="flag=='1'.toString()">
+  			  LIMIT 0,4
+  			</if>
+  			<if test="flag=='2'.toString()">
+  			  LIMIT 0,30
+  			</if>
+  			<if test="flag=='3'.toString()">
+  			  LIMIT 0,7
+  			</if>
+  		</if>
+  		
+  		<if test="flag!=null and flag!=''">
+			<if test="flag=='3'.toString()">
+			  			) f
+				ORDER BY f.freedomDate
+	  		</if>
+  		</if>
+	</select>
+	
+	<!-- 查询昨日七日年化和收益 -->
+	<select id="queryYesterdayRateAndPromitById" parameterType="freedomSubjectBean" resultType="freedomSubjectBean">
+		SELECT 
+		  rate_id as rateId,
+		  freedom_subject_id as freedomSubjectId,
+		  freedom_rate as freedomRate,
+		  day_returns as dayReturns,
+		  DATE_FORMAT(freedom_date, '%m-%d') as freedomDate
+		FROM
+		  mm_freedom_rate 
+		WHERE
+		    freedom_subject_id=#{freedomSubjectId}
+		<if test="flag!=null and flag!=''">
+  		   <![CDATA[
+  		 	AND	TO_DAYS(NOW()) - TO_DAYS(freedom_date)= 1
+  		   ]]>
+  		</if>  
+  		order by freedom_date desc
+	</select>
+	
+	<!-- 查询七日年化率和万份收益数量 -->
+	<select id="countSevenRateAndPromit" parameterType="freedomSubjectBean" resultType="freedomSubjectBean">
+		SELECT 
+		  count(1)
+		FROM
+		  mm_freedom_rate 
+		WHERE
+		  <![CDATA[
+  		 	DATE_FORMAT(freedom_date,'%Y-%m-%d') <= DATE_FORMAT(NOW(),'%Y-%m-%d')
+  		  ]]>
+	</select>
+	
+	<!-- 查询猫咪宝明细 -->
+	<select id="queryFreedomRecord" parameterType="freedomSubjectBean" resultType="freedomSubjectBean">
+		SELECT 
+		  record_id as recordId,
+		  freedom_subject_id as freedomSubjectId,
+		  account_id as accountId,
+		  freedom_money as freedomMoney,
+		  freedom_date as freedomDate,
+		  is_merge as isMerge,
+		  merge_id as mergeId
+		FROM
+		  mm_freedom_record
+		WHERE 
+		  account_id=#{accountId} 
+	</select>
+	
+	<!-- 查询猫咪宝明细数量 -->
+	<select id="countFreedomRecord" parameterType="freedomSubjectBean" resultType="freedomSubjectBean">
+		SELECT 
+		  count(1)
+		FROM
+		  mm_freedom_record
+		WHERE 
+		  account_id=#{accountId} 
+	</select>
+	
+	<!-- 修改猫咪宝信息 -->
+	<update id="updateFreedomSubject" parameterType="freedomSubjectBean">
+		UPDATE 
+		  mm_freedom_subject 
+		SET
+		  freedom_surplus_money = #{freedomSurplusMoney}
+		<if test="freedomSubjectStatus != null and freedomSubjectStatus != '' " >
+		  ,freedom_subject_status = #{freedomSubjectStatus} 
+		</if>
+		WHERE
+		  freedom_subject_id = #{freedomSubjectId}
+	</update>
+	
+	<!-- 增加猫咪宝投资记录 -->
+	<insert id="addFreedomSubject" parameterType="freedomSubjectBean">
+		INSERT INTO mm_freedom_record (
+		  freedom_subject_id,
+		  account_id,
+		  freedom_money,
+		  freedom_date,
+		  is_merge
+		) 
+		VALUES
+		  (
+		    #{freedomSubjectId},
+		    #{accountId},
+		    #{freedomMoney},
+		    NOW(),
+		    #{isMerge}
+		  ) 
+	</insert>
+	
+	
+	<!-- 获取用户未合并的猫咪宝投资记录 -->
+	<select id="getNoMergeFreedomSubject" parameterType="String" resultType="freedomSubjectBean">
+		SELECT
+			fr.record_id recordId,
+			fr.freedom_subject_id freedomSubjectId,
+			fr.account_id accountId,
+			fr.freedom_money freedomMoney,
+			fr.freedom_date freedomDate,
+			fr.is_merge isMerge,
+			fr.merge_id mergeId
+		FROM
+			mm_freedom_record AS fr
+		WHERE
+			 is_merge = 0
+		AND account_id = #{accountId}
+	</select>
+	
+	<!-- 修改金额  -->
+	<update id="updateRecordToReduce" parameterType="freedomSubjectBean">
+		UPDATE 
+		  mm_freedom_record 
+		SET
+		  freedom_money = #{freedomMoney}
+		WHERE 
+		  record_id = #{recordId}	
+	</update>
+	
+	<!-- 软删除合并数据 -->
+	<update id="updateRecordToDelete" parameterType="freedomSubjectBean">
+		UPDATE 
+		  mm_freedom_record 
+		SET
+		  is_merge = #{isMerge}
+		WHERE 
+		  record_id = #{recordId}	
+	</update>
+	
+	<!-- 累计入团 -->
+	<select id="countFightGroups" parameterType="freedomSubjectBean" resultType="java.lang.Integer">
+		SELECT 
+		  COUNT(1)
+		FROM
+		  mm_freedom_record
+	</select>
+	
+	<!-- 累计总收益 -->
+	<select id="countPromit" parameterType="freedomSubjectBean" resultType="freedomSubjectBean">
+		SELECT 
+		   IFNULL(TRUNCATE(SUM(profit_money) / 100, 2),0) as sumPromitMoney
+		FROM
+		   mm_freedom_profit
+		WHERE
+		   is_balance=1
+		AND
+		   account_id=#{accountId}
+  		<if test="flag!=null and flag!=''">
+  		   <![CDATA[
+  		 	AND	TO_DAYS(NOW()) - TO_DAYS(profit_date) = 1
+  		   ]]>
+  		</if>
+	</select>
+	
+	<!-- 查询我的猫咪宝 -->
+	<select id="queryMyFreedomSubject" parameterType="freedomSubjectBean" resultType="freedomSubjectBean">
+		SELECT 
+		  fs.freedom_subject_id AS freedomSubjectId,
+		  fs.freedom_subject_name AS freedomSubjectName,
+			(SELECT IFNULL(TRUNCATE(SUM(fr.freedom_money) / 100, 2),0)
+				FROM mm_freedom_record fr
+			 WHERE fr.freedom_subject_id = fs.freedom_subject_id
+				AND fr.account_id = #{accountId}
+				AND fr.is_merge = 0) AS haveSumMoney,
+			(SELECT IFNULL(TRUNCATE(SUM(cd.money) / 100, 2),0)
+				FROM mm_capital_detail cd
+		     WHERE cd.type = 14
+				AND cd.account_id = #{accountId}
+				AND DATE_FORMAT(deal_time, '%Y-%m-%d') = DATE_ADD(
+		        DATE_FORMAT(NOW(), '%Y-%m-%d'),
+		        INTERVAL - 1 DAY
+		      )) AS yesterdayPorfit,
+			(SELECT IFNULL(TRUNCATE(SUM(cd.money) / 100, 2),0) 
+				FROM mm_capital_detail cd
+			 WHERE cd.type = 14
+				AND cd.account_id = #{accountId}
+			) AS sumProfit
+		FROM
+		    mm_freedom_subject fs
+		WHERE fs.freedom_subject_status != '0' 
+		GROUP BY fs.freedom_subject_id 
+	</select>
+	
+	<!-- 查询当天猫咪宝投资量 -->
+	<select id="querySumTodayMoney" parameterType="freedomSubjectBean" resultType="java.lang.String">
+		SELECT 
+		  IFNULL(TRUNCATE(SUM(r.money) / 100, 2), 0) AS freedomMoney 
+		FROM
+		  mm_capital_detail r 
+		WHERE r.type = 12 
+		  AND DATE_FORMAT(r.deal_time, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d') 
+		  AND account_id = #{accountId}
+	</select>
+</mapper>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.accountaddress.AccountAddressMapper">
+	
+	<!-- 查询用户地址信息 -->
+	<select id="queryAccountAddress" parameterType="accountAddressBean" resultType="accountAddressBean">
+		SELECT
+			aa.addr_id as addrId,
+			aa.invest_id as investId,
+			aa.good_id as goodId,
+			aa.account_id as accountId,
+			aa.user_name as userName,
+			aa.user_telephone as userTelephone,
+			aa.province as province,
+			aa.city as city,
+			aa.classify as classify,
+			aa.user_address as userAddress,
+			aa.is_default as isDefault,
+  			aa.is_send as isSend,
+  			aa.express_company as expressCompany,
+  			aa.express_code as expressCode
+		FROM
+			mm_account_address aa
+		WHERE 1 = 1
+			<if test="addrId != null and addrId != '' ">
+				and aa.addr_id = #{addrId}
+			</if>
+			<if test="accountId != null and accountId != '' ">
+				and aa.account_id = #{accountId}
+			</if>
+			<if test="investId != null and investId != '' ">
+				and aa.invest_id = #{investId}
+			</if>
+	</select>
+	
+	<!-- 查询用户地址数量 -->
+	<select id="countAccountAddress" parameterType="accountAddressBean" resultType="int">
+		SELECT
+			COUNT(1)
+		FROM
+			mm_account_address aa
+		WHERE 1 = 1
+			<if test="addrId != null and addrId != '' ">
+				and aa.addr_id = #{addrId}
+			</if>
+			<if test="accountId != null and accountId != '' ">
+				and aa.account_id = #{accountId}
+			</if>
+			<if test="goodId != null and goodId != '' ">
+				and aa.good_id = #{goodId}
+			</if>
+	</select>
+	
+	<!-- 查询用户默认地址信息 -->
+	<select id="queryAccountAddressDefaultById" parameterType="accountAddressBean"  resultType="accountAddressBean">
+		SELECT
+			aa.addr_id as addrId,
+			aa.account_id as accountId,
+			aa.user_name as userName,
+			aa.user_telephone as userTelephone,
+			aa.province as province,
+			aa.city as city,
+			aa.classify as classify,
+			aa.user_address as userAddress,
+			aa.remark as remark,
+			aa.is_default as isDefault
+		FROM
+			mm_account_address aa
+		WHERE aa.is_default = 1
+			<if test="addrId != null and addrId != '' ">
+				and aa.addr_id = #{addrId}
+			</if>
+			<if test="accountId != null and accountId != '' ">
+				and aa.account_id = #{accountId}
+			</if>
+	</select>
+	
+	<!-- 查询用户默认地址信息 -->
+	<insert id="insertAccountAddress" parameterType="accountAddressBean">
+		INSERT mm_account_address
+		(
+			account_id,
+			invest_id,
+			good_id,
+			user_name,
+			user_telephone,
+			province,
+			city,
+			classify,
+			user_address,
+			is_default,
+			is_send,
+  			express_company,
+  			express_code,
+  			remark,
+  			color,
+  			packages
+		)
+		VALUES
+		(
+			#{accountId},
+			#{investId},
+			#{goodId},
+			#{userName},
+			#{userTelephone},
+			#{province},
+			#{city},
+			#{classify},
+			
+			#{userAddress},
+			#{isDefault},
+			#{isSend},
+			#{expressCompany},
+			#{expressCode},
+			#{remark},
+			#{color},
+			#{packages}
+		)
+	</insert>
+	
+	<!-- 修改收货地址 -->
+	<update id="editAccountAddress" parameterType="accountAddressBean">
+		UPDATE 
+		  mm_account_address 
+		SET
+		  user_name = #{userName},
+		  user_telephone = #{userTelephone},
+		  province = #{province},
+		  city = #{city},
+		  classify = #{classify},
+		  user_address = #{userAddress},
+		  remark = #{remark} 
+		WHERE 
+		  account_id = #{accountId}
+	</update>
+</mapper>

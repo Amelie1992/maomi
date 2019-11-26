@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xed.financing.wxgzh.mapper.goldpayInfo.GoldpayInfoMapper">
+	
+	<!-- 查询 -->
+	<select id="getGoldpayInfo" parameterType="goldpayInfoBean" resultType="goldpayInfoBean">
+		SELECT
+			mgpi.pay_id payId,
+			mgpi.account_id accountId,
+			mgpi.mchnt_cd mchntCd,
+			mgpi.mchnt_txn_ssn mchntTxnSsn,
+			mgpi.login_id loginId,
+			mgpi.amt amt,
+			mgpi.add_time addTime,
+			mgpi.resp_code respCode
+		FROM
+			mm_goldpay_info mgpi
+		WHERE
+			mgpi.mchnt_txn_ssn = #{mchntTxnSsn}
+		AND 
+			mgpi.login_id = #{loginId}
+	</select>
+	
+	<!-- 添加 -->
+	<insert id="addGoldpayInfo" parameterType="goldpayInfoBean">
+		INSERT INTO mm_goldpay_info (
+			account_id,
+			mchnt_cd,
+			mchnt_txn_ssn,
+			login_id,
+			amt,
+			add_time
+		)
+		VALUES(
+			#{accountId},
+			#{mchntCd},
+			#{mchntTxnSsn},
+			#{loginId},
+			#{amt},
+			NOW()
+		)
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="updateGoldpayInfo" parameterType="goldpayInfoBean">
+		UPDATE mm_goldpay_info
+		SET 
+			resp_code = #{respCode},
+			back_amt = #{backAmt},
+			rem = #{rem},
+			back_time = NOW()
+		WHERE
+			mchnt_txn_ssn = #{mchntTxnSsn}
+		AND 
+			login_id = #{loginId}
+	</update>
+</mapper>

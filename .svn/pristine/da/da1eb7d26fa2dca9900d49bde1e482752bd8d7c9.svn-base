@@ -1,0 +1,59 @@
+
+			
+			#navigation,
+			#navigation li ul {
+				list-style-type: none;
+			}
+			
+			#navigation {
+				/*margin: 20px;*/
+				background-color: dodgerblue;
+				
+			}
+			
+			#navigation li {				
+				text-align: center;
+				position: relative;
+			}
+			
+			#navigation li a:link,
+			#navigation li a:visited {
+				display: block;
+				text-decoration: none;
+				color: black;
+				/*width: 120px;*/
+				height: 40px;
+				line-height: 40px;
+				margin: 0 auto;
+			}
+			
+
+			
+
+			
+			#navigation li ul {
+				color: black;
+				display: none;
+				position: absolute;
+				top: 40px;
+				/*left: 0;*/
+				margin-top: 1px;
+				width: 100%;
+				text-align: center;
+			}
+			
+			#navigation li ul li ul {
+				display: none;
+				position: absolute;
+				top: 0px;
+				left: 130px;
+				margin-top: 0;
+				margin-left: 1px;
+				width: 100%;
+			}
+			#navigation .subs >li{
+				background-color: white;
+				width: 100%;
+				opacity:1;
+				border-bottom: 1px solid dodgerblue;
+			}

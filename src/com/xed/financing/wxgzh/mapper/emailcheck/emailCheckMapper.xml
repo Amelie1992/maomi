@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.emailcheck.EmailCheckMapper">
+
+	<!-- 添加用户邮箱 -->
+	<insert id="updateAccountEmail" parameterType="emailCheck">
+		UPDATE
+			mm_account_info SET account_email= #{accountEmail}
+		WHERE
+			account_id=#{accountId}
+	</insert>
+
+	<!-- 修改用户邮箱验证状态 -->
+	<insert id="updateIsEmailValidate"  parameterType="emailCheck">
+		UPDATE
+			mm_account_info SET is_email_validate= #{isEmailValidate}
+		WHERE
+			account_id=#{accountId}
+
+	</insert>
+
+	<!-- 根据用户id检查邮箱是否认证 -->
+	<select id="getAccountById" parameterType="java.lang.String" resultType="emailCheck">
+		SELECT
+			is_email_validate as isEmailValidate,
+			account_email as
+			accountEmail
+		FROM
+			mm_account_info
+		WHERE
+			account_id =#{accountId}
+	</select>
+
+	<!-- 添加邮箱认证信息 -->
+	<insert id="saveEmailInfo" parameterType="emailCheck">
+		INSERT INTO
+		mm_account_code (
+			account_id,
+			code_type,
+			code_content,
+			code_msg,
+			send_time,
+			over_time
+		)
+		VALUES
+		(
+			#{accountId},
+			#{codeType},
+			#{codeContent},
+			#{codeMsg},
+			now(),
+			DATE_ADD(now(),INTERVAL 30 MINUTE)
+		)
+	</insert>
+
+	<!-- 邮箱认证失效时间 -->
+	<select id="getTimeDiff" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT
+			TIMESTAMPDIFF(MINUTE, t.over_time, NOW())
+		FROM
+			mm_account_code t
+		WHERE
+			t.code_id = #{codeId}
+	</select>
+	<!-- 查询验证码 -->
+	<select id="getCodeMsg" parameterType="emailCheck" resultType="java.lang.Integer">
+		SELECT
+			code_msg AS codeMsg
+		FROM
+			mm_account_code
+		WHERE
+			account_id = #{accountId}
+		AND code_id = #{codeId}
+	</select>
+	
+	<!-- 查询验证码ID -->
+	<select id="getCodeIdByMsg" parameterType="emailCheck" resultType="java.lang.Integer">
+		SELECT
+			max(code_id) AS codeId
+		FROM
+			mm_account_code
+		WHERE
+			account_id = #{accountId}
+		AND code_msg = #{codeMsg}
+	</select>
+</mapper>

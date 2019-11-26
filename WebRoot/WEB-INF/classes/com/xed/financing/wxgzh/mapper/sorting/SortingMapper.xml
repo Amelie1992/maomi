@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.sorting.SortingMapper">
+
+	<!-- 查询榜 0总榜 1月榜-->
+	<select id="queryInvestRecordBeanlList" resultType="InvestRecordBean">
+		SELECT (@rowNum := @rowNum + 1) AS rn,a.* FROM(
+			SELECT 
+		    	IFNULL(TRUNCATE(SUM(i.invest_money) / 100, 2), 0) investMoney,
+		    	a.telephone telephone,
+		    	a.account_id accountId,
+		    	a.account_name accountName
+		    FROM
+		    	mm_account_invest i,
+		    	mm_account_info a 
+		    WHERE 
+		    	i.account_id = a.account_id 
+		    AND
+		    	invest_status not in(2)
+		  <if test="flag == 1">
+				AND DATE_FORMAT(i.invest_time,'%Y-%m') = DATE_FORMAT(NOW(),'%Y-%m') 
+		  </if>
+		  GROUP BY a.account_id 
+		  ORDER BY investMoney DESC) a,
+	    (SELECT (@rowNum := 0)) b 
+		LIMIT 0, 10 
+	</select>
+
+
+</mapper>

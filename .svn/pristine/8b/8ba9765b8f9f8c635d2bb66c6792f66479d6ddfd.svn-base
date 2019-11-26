@@ -1,0 +1,78 @@
+.banner img {
+			width: 100%;
+		}
+		
+		.layui-timeline {
+			width: 95%;
+			margin: 25px auto;
+		}
+		
+		.layui-timeline-axis {
+			width: 12px;
+			height: 12px;
+			background-color: #f47a21;
+		}
+		
+		.layui-timeline-item:before {
+			background-color: #f47a21;
+			left: 0;
+		}
+		
+		.layui-timeline-item-img img {
+			width: 100%;
+		}
+		
+		.layui-timeline-title {
+			color: #f47a21;
+		}
+		
+		.layui-text h1,
+		.layui-text h2,
+		.layui-text h3 {
+			color: #f47a21;
+		}
+		
+		.layui-text {
+			color: #422c26;
+		}
+		
+		.space {
+			height: 10px;
+			background-color: #f5f5f5;
+		}
+		
+		.tips {
+			padding: 15px;
+			margin-bottom: 65px;
+		}
+		
+		.tips-title {
+			display: inline-block;
+			width: 80px;
+			height: 32px;
+			line-height: 32px;
+			background-color: #F47A21;
+			color: white;
+			font-size: 14px;
+			text-align: center;
+			margin-bottom: 10px;
+		}
+		
+		.tips ul li {
+			color: #422c26;
+			font-size: 12px;
+			line-height: 20px;
+		}
+		.tz-btn{
+			display: inline-block;
+			width: 100%;
+			height: 50px;
+			text-align: center;
+			line-height: 50px;
+			color: white;
+			background-color: #F47A21;
+			font-size: 18px;
+			position: fixed;
+			bottom: 0;
+			left: 0;
+		}

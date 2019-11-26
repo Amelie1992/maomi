@@ -1,0 +1,20 @@
+#数据服所在服务器地址
+hostIP:10.0.31.200
+#用户名
+userName:cat_jhh
+#密码 
+password:cat_jhh
+#保存路径   /usr/mysql_backups
+savePath: /usr/mysql_backups/
+#安装路径
+packPath:/opt/zbox/bin/
+#数据库名
+databaseName:cat_
+
+
+#hostIP:116.62.236.10
+#userName:maomicat
+#password:mm2017cat_XED!JHH
+#savePath: /home/backups/
+#packPath:/opt/zbox/bin/
+#databaseName:cat_

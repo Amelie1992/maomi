@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xed.financing.wxgzh.mapper.proposalrecord.ProposalRecordMapper">
+
+	<!-- 查询意见反馈 -->
+	<select id="queryProposalList" parameterType="proposalRecordBean" resultType="proposalRecordBean">
+			SELECT 
+				pr.proposal_id AS proposalId,
+				pr.account_id AS accountId,
+				pr.name AS name,
+				INSERT(pr.telephone,4,4,'****') AS telephone,
+				pr.proposal_content AS proposalContent,
+				pr.is_investigation AS isInvestigation,
+				pr.is_adopt AS isAdopt,
+				pr.reward_content AS rewardContent,
+				pr.is_reward AS isReward,
+				DATE_FORMAT(
+		   		pr.add_time,
+		    	'%Y-%m-%d'
+		  		) AS addTime
+			FROM
+				mm_proposal_record pr
+			WHERE 1 = 1
+			<if test="accountId != null and accountId != '' ">
+				and pr.accountId = #{accountId}
+			</if>
+			<if test="name != null and name != '' ">
+				and pr.name like '%#{name}%'
+			</if>
+			<if test="telephone != null and telephone != '' ">
+				and pr.telephone = #{telephone}
+			</if>
+			<if test="proposalContent != null and proposalContent != '' ">
+				and pr.proposal_content like '%#{proposalContent}%'
+			</if>
+			<if test="isInvestigation != null and isInvestigation != '' ">
+				and pr.is_investigation = #{isInvestigation}
+			</if>
+			<if test="isAdopt != null and isAdopt != '' ">
+				and pr.is_adopt = #{isAdopt}
+			</if>
+			<if test="isReward != null and isReward != '' ">
+				and pr.is_reward = #{isReward}
+			</if>
+		order by pr.add_time DESC
+	</select>
+
+	<!-- 添加抽奖记录 -->
+	<insert id="addProposal" parameterType="proposalRecordBean">
+		INSERT INTO mm_proposal_record (
+		proposal_id,
+		account_id,
+		name,
+		telephone,
+		proposal_content,
+		add_time
+		)VALUES (
+		#{proposalId}, 
+		#{accountId},
+		#{name},
+		#{telephone},
+		#{proposalContent},
+		NOW()
+		)
+	</insert>
+	
+	<!-- 添加抽奖记录 -->
+	<update id="updateProposal" parameterType="proposalRecordBean">
+		UPDATE mm_proposal_record 
+		SET proposal_id = #{proposalId},
+		<if test="accountId != null and accountId != '' ">
+			account_id = #{accountId},
+		</if>
+		<if test="name != null and name != '' ">
+			name = #{name},
+		</if>
+		<if test="telephone != null and telephone != '' ">
+			telephone = #{telephone},
+		</if>
+		<if test="proposalContent != null and proposalContent != '' ">
+			proposal_content = #{proposalContent},
+		</if>
+		<if test="isInvestigation != null and isInvestigation != '' ">
+			is_investigation = #{isInvestigation},
+		</if>
+		<if test="isAdopt != null and isAdopt != '' ">
+			is_adopt = #{isAdopt},
+		</if>
+		<if test="rewardContent != null and rewardContent != '' ">
+			reward_content = #{rewardContent},
+		</if>
+		<if test="isReward != null and isReward != '' ">
+			is_reward = #{isReward},
+		</if>
+		WHERE proposal_id = #{proposalId}
+	</update>
+	
+	<!-- 修改优惠券概述信息 -->
+	<delete id="deleteProposal" parameterType="proposalRecordBean">
+		delete from mm_proposal_record
+		where proposal_id = #{proposalId}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,283 @@
+.wrap {
+				width: 100%;
+				background-color: #Ff9500;
+			}
+			
+			.head img {
+				width: 100%;
+			}
+			
+			.content {
+				position: relative;
+				top: -135px;
+			}
+			
+			.lcj-tz {
+				width: 96%;
+				margin: 0 auto;
+				background-color: white;
+				border-radius: 11px;
+				padding-bottom: 3%;
+			}
+			
+			.lcj-tz-title {
+				width: 100%;
+				margin: 0 auto;
+				height: 60px;
+				background-image: url(../../images/activity/fiveoneight/lcj-title.png);
+				background-size: 100% 100%;
+				background-position: center;
+				text-align: center;
+			}
+			
+			.lcj-tz-title img {
+				width: 207px;
+				height: 37px;
+				margin-top: 11px;
+			}
+			
+			.activity-rule {
+				padding: 4%;
+				font-size: 14px;
+				font-weight: normal;
+				color: #757575;
+				line-height: 22px;
+				text-align: left;
+			}
+			
+			.activity-rule b {
+				font-weight: normal;
+				color: #F95D18;
+			}
+			
+			.activity-box {
+				padding: 0 4%;
+			}
+			
+			.activity-box table {
+				width: 100%;
+				text-align: center;
+				background-size: 100% 100%;
+				background-position: center;
+			}
+			
+			.activity-box-1 table {
+				background-image: url(../../images/activity/fiveoneight/lcj-box-100.png);
+			}
+			
+			.activity-box-2 table {
+				background-image: url(../../images/activity/fiveoneight/lcj-box-200.png);
+			}
+			
+			.activity-box table th {
+				padding-top: 5%;
+			}
+			
+			.activity-box table th:nth-child(1) img {
+				width: 80px;
+				height: 50px;
+			}
+			
+			.activity-box table th:nth-child(2) img {
+				width: 21px;
+				height: 21px;
+			}
+			
+			.activity-box table th:nth-child(3) img {
+				width: 50px;
+				height: 50px;
+			}
+			
+			.activity-box table th:nth-child(4) img {
+				width: 100px;
+				height: 40px;
+			}
+			
+			.activity-box table td {
+				font-size: 12px;
+				color: #F95D18;
+				padding-bottom: 5%;
+				padding-top: 2%;
+			}
+			/*邀请好友*/
+			
+			.yqhy {
+				width: 96%;
+				margin: 0 auto;
+				background-color: white;
+				border-radius: 11px;
+				text-align: center;
+				margin-top: 30px;
+			}
+			
+			.activity-box-example {
+				width: 92%;
+				margin: 0 auto;
+				background-color: #7593ff;
+				border-radius: 8px;
+			}
+			
+			.activity-box-example p {
+				color: white;
+			}
+			
+			.activity-box-example p:nth-child(1) {
+				text-align: center;
+				padding: 10px 0;
+				font-size: 14px;
+			}
+			
+			.activity-box-example p:nth-child(2) {
+				text-align: left;
+				line-height: 22px;
+				padding: 10px 10px;
+				font-size: 12px;
+			}
+			
+			.lcj-yqhy-btn {
+				width: 200px;
+				height: 40px;
+				margin: 0 auto;
+				padding: 15px 0 30px 0;
+			}
+			
+			.activity-box-1,
+			.activity-box-2,
+			.activity-box-3 {
+				/*overflow: hidden;*/
+				width: 94%;
+				margin: 0 auto;
+				height: 90px;
+				position: relative;
+				margin-bottom: 20px;
+			}
+			
+			.activity-tel div {
+				display: inline-block;
+			}
+			
+			.activity-box-1 {
+				margin-top: 40px;
+			}
+			
+			.activity-box-rank {
+				width: 56px;
+				height: 56px;
+				line-height: 56px;
+				border-radius: 28px;
+				background-image: url(../../images/activity/fiveoneight/lcj-rank.png);
+				background-size: 100% 100%;
+				background-position: center;
+				font-size: 12px;
+				color: white;
+				text-align: center;
+				position: absolute;
+				top: 10px;
+				left: 2%;
+			}
+			
+			.activity-box-tel {
+				position: absolute;
+				top: -20px;
+				left: 32%;
+			}
+			
+			.activity-box-tel img {
+				width: 73px;
+				height: 84px;
+			}
+			
+			.activity-box-rank-prizebox {
+				width: 90%;
+				height: 80px;
+				float: right;
+				background-image: url(../../images/activity/fiveoneight/lcj-prize1.png);
+				border-radius: 10px;
+			}
+			
+			.activity-box-rank-prizebox div {
+				width: 120px;
+				float: right;
+				padding-top: 15px;
+				padding-right: 14px;
+			}
+			
+			.activity-box-rank-prizebox div p {
+				color: white;
+				font-size: 12px;
+				line-height: 22px;
+				text-align: center;
+			}
+			
+			.activity-box-4 {
+				margin-top: 40px;
+			}
+			
+			.activity-box-4 table {
+				width: 94%;
+				margin: 0 auto;
+				text-align: center;
+			}
+			
+			.activity-box-4 table th {
+				position: relative;
+			}
+			
+			.activity-box-4 table th div {
+				width: 130px;
+				height: 111px;
+				margin: 0 auto;
+				background-image: url(../../images/activity/fiveoneight/lcj-prize2.png);
+				background-size: 130px 111px;
+				background-position: center;
+				font-size: 14px;
+				color: white;
+			}
+			
+			.activity-box-4 table th div p {
+				width: 130px;
+				text-align: center;
+				padding-top: 80px;
+			}
+			
+			.activity-box-4 table th img {
+				width: 80px;
+				height: 81px;
+				position: absolute;
+				top: -55px;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				margin: auto;
+			}
+			
+			.gotorank {
+				display: inline-block;
+				text-align: center;
+				width: 200px;
+				height: 40px;
+				margin: 0 auto;
+			}
+			
+			.gotorank img {
+				width: 100%;
+				padding: 20px 0;
+			}
+			
+			.lcj-rule {
+				width: 96%;
+				margin: 0 auto;
+				color: white;
+				font-size: 12px;
+				line-height: 22px;
+				padding-bottom: 20px;
+				position: relative;
+				top: -100px;
+				
+			}
+			
+			.lcj-rule p {
+				text-align: center;
+				padding: 20px 0 10px 0;
+				font-size: 14px;
+			}

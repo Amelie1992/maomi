@@ -1,0 +1,14 @@
+#商户号--正式
+#mchntCd = 0003010F0405306
+#balanceUrl= https://jzh.fuiou.com/BalanceAction.action
+#shapToCust = https://jzh.fuiou.com/transferBmu.action
+#custToCust = https://jzh.fuiou.com/transferBu.action
+#reg = https://jzh.fuiou.com/reg.action
+
+
+#商户号---------user112
+mchntCd = 0001000F0096241
+balanceUrl= https://jzh-test.fuiou.com/jzh/BalanceAction.action
+shapToCust = https://jzh-test.fuiou.com/jzh/transferBmu.action
+custToCust = https://jzh-test.fuiou.com/jzh/transferBu.action
+reg = https://jzh-test.fuiou.com/jzh/reg.action

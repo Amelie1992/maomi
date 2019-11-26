@@ -1,0 +1,464 @@
+html,
+body,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+form,
+input,
+textarea,
+select,
+button,
+fieldset,
+legend,
+img,
+ul,
+ol,
+li,
+dl,
+dt,
+dd,
+th,
+td,
+pre,
+blockquote {
+	margin: 0;
+	padding: 0;
+	/*font-weight: normal;*/
+}
+
+a {
+	text-decoration: none;
+	color: #474747;
+}
+
+
+/*去掉a标签的虚线框，避免出现奇怪的选中区域*/
+
+html {
+	height: 100%;
+	-webkit-text-size-adjust: 100%;
+	-ms-text-size-adjust: 100%;
+	-webkit-font-smoothing: antialiased
+}
+
+
+body,
+button,
+input,
+select,
+textarea,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font: 14px "微软雅黑", "Microsoft Yahei", arial, simhei
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0
+}
+
+img,
+fieldset {
+	border: 0;
+	vertical-align: middle
+}
+
+ul,
+li,
+ol {
+	list-style: none
+}
+
+em,
+i {
+	font-style: normal
+}
+
+iframe {
+	display: block
+}
+
+
+
+.headCon {
+	width: 100%;
+	min-width: 1200px;
+	background-color: white;
+}
+
+.cont {
+	width: 1200px;
+	height: 100%;
+	margin: 0 auto;
+}
+
+.head {
+	height: 80px;
+	width: 1200px;
+	margin: 0 auto;
+	border-top: 1px #dddddd solid;
+	background-color: white;
+}
+
+.head-left {
+	float: left;
+}
+
+.head-left img {
+	margin-top: 16px;
+}
+
+.title {
+	width: 1200px;
+	height: 30px;
+	margin: 0 auto;
+	line-height: 30px;
+	font-size: 14px;
+	padding: 5px 0;
+	position: relative;
+	color: #444444;
+	background-color: #F2F2F2;
+}
+
+.app {
+	margin-left: 10px;
+}
+
+
+.wxBox{
+	position: absolute;
+	width: 150px;
+	left: 650px;
+	top: 45px;
+	font-size: 10px;
+	background-color:white ;
+	border: 1px solid #E0E0E0;
+	text-align: center;
+	display: none;
+	z-index: 500;
+}
+.title span img {
+	width: 24px;
+	height: 24px;
+}
+
+.service {
+	margin-right: 88px;
+}
+
+.title .tips {
+	float: right;
+	margin-left: 10px;
+	/*padding: 0 10px;*/
+}
+
+.tips a:hover{
+	color: #F95D18;
+}
+
+.regist,
+.login,
+.help,
+.message {
+	border-left: 1px solid #ddd;
+}
+
+.messageNum {
+	display: inline-block;
+	border: 1px solid red;
+	border-radius: 20px;
+	background-color: red;
+	color: white;
+	font-size: 10px;
+	line-height: 10px;
+}
+
+.about {
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+}
+
+
+/*nav导航盒子*/ 
+
+
+/*nav导航盒子*/
+
+.nav {
+	width: 700px;
+	height: 54px;
+	line-height: 54px;
+	text-align: center;
+	font-size: 16px;
+	position: relative;
+	padding-top: 16px;
+	padding-left: 100px;
+	float: right;
+	/*font-weight: bold;*/
+	font-family: "微软雅黑";
+	/*z-index: 10000;*/
+}
+
+
+/*nav-main*/
+
+ul.nav-main {
+	width: 100%;
+	height: 100%;
+	list-style-type: none
+}
+
+ul.nav-main span {
+	display: inline-block;
+	margin-left: 18px;
+	width: 12px;
+	height: 9px;
+	background: url(../images/sj1.png) no-repeat center center;
+	transform: rotate(180deg);
+	-webkit-transform: rotate(180deg);
+}
+
+
+/*图标向上旋转*/
+
+.hover-up {
+	/*transition-duration: .5s;*/
+	transform: rotate(180deg);
+	-webkit-transform: rotate(180deg);
+}
+
+
+/*图标向下旋转*/
+
+.hover-down {
+	/*transition-duration: .5s;*/
+	transform: rotate(0);
+	-webkit-transform: rotate(0)
+}
+
+
+/*导航条设置*/
+
+ul.nav-main>li {
+	text-align: center;
+	width: 138px;
+	height: 254px;
+	height: 100%;
+	display: block;
+	float: left;
+	color: #333333 ;
+	cursor: pointer;
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+	border-right: 1px solid #FFFFFF;
+}
+ul.nav-main>li b{
+	font-weight: normal;
+	padding:10px 5px;
+}
+ul.nav-main>li b:hover{
+	border-bottom: 2px solid #F95D18;
+}
+ul.nav-main>li:hover {
+	color: #F95D18;
+}
+#li-1:hover{
+	border-top: 1px solid #EEE;
+	border-left: 1px solid #EEE;
+	border-right: 1px solid #EEE;
+	
+	
+	/*-webkit-box-shadow: 0 0 10px 5px #e0e0e;
+	-moz-box-shadow: 0 0 10px 5px #e0e0e0;
+	box-shadow: 0 0 10px 5px #e0e0e0;*/
+}
+#li-3:hover{
+	border-top: 1px solid #EEE;
+	border-left: 1px solid #EEE;
+	border-right: 1px solid #EEE;
+}
+
+ul.nav-main>li:hover span {
+	background: url(../images/sj1.png) no-repeat center center;
+	z-index: 100000;
+	transition-duration: .5s;
+	transform: rotate(0);
+	-webkit-transform: rotate(0)
+}
+
+
+/*隐藏盒子设置*/
+
+div.hidden-box {
+	width: 138px;
+	position: absolute;
+	display: none;
+	background-color: white;
+	/*border-top: 2px solid #ffad2c;*/
+	z-index: 10000;
+	border-left: 1px solid #EEEEEE;
+	border-right: 1px solid #EEEEEE;
+	border-bottom: 1px solid #EEEEEE;
+}
+
+.hidden-box>ul {
+	list-style-type: none;
+	color: #333;
+	height: 200px;
+	cursor: pointer;
+}
+
+.hidden-box>ul li {
+	position: relative;
+	line-height: 30px;
+	height: 30px;
+	padding: 10px 0;
+	font-weight: 500;
+	/*border-bottom: 1px solid #F16228;*/
+	z-index: 1000;
+}
+
+.hidden-box>ul li:hover {
+	color: #F95D18;
+}
+
+/*隐藏盒子位置设置*/
+
+.hidden-loc-index {
+	left:240px
+}
+#box-3{
+	left: 520px;
+}
+
+
+/*footer*/
+
+.footer {
+	width: 100%;
+	/*overflow: hidden;*/
+}
+
+
+/*底部导航*/
+
+.footer {
+	width: 100%;
+	min-width: 1200px;
+	height: 150px;
+	/*margin-top: 40px;*/
+	background-color: #404752;
+	padding-top: 30px;
+}
+
+.footerCon {
+	width: 1200px;
+	margin: 0 auto;
+}
+
+.footerConNav div {
+	display: inline-block;
+	margin-right: 18px;
+	text-align: center;
+	height: 115px;
+	vertical-align: top;
+}
+
+.footerConNav {
+	color: whitesmoke;
+	float: left;
+	width: 375px;
+}
+
+.footerConNav p {
+	font-size: 18px;
+}
+
+.footerConNav ul {
+	margin-top: 20px;
+}
+
+.footerConNav p:hover {
+	color: #F8c842;
+	cursor: pointer;
+}
+
+.footerCon div li {
+	margin-top: 5px;
+	text-align: left;
+	line-height: 22px;
+	
+}
+
+.footerCon a {
+	color: whitesmoke;
+}
+
+.footerCon a:hover {
+	color: #F8c842;
+}
+
+.footerConText {
+	margin-right: 20px;
+	float: left;
+	text-align: center;
+}
+
+.footerConPic {
+	margin-right: 70px;
+	margin-left: 30px;
+	float: left;
+}
+
+.serviceTel {
+	text-align: right;
+	float: right;
+}
+
+.copyright {
+	width: 100%;
+	min-width: 1200px;
+	text-align: center;
+	color: #D1D1D1;
+	background-color: #404752;
+}
+
+.copyright a {
+	color: #D1D1D1;
+}
+
+.line {
+	position: absolute;
+}
+
+.wrap {
+	width: 100%;
+}
+
+.navgation {
+	width: 100%;
+	min-width: 1200px;
+}
+
+.footer {
+	width: 100%;
+	min-width: 1200px;
+}
+
+.wrap nav {
+	width: 100%;
+	min-width: 1200px;
+}
+
+.wrap footer {
+	width: 100%;
+	min-width: 1200px;
+}

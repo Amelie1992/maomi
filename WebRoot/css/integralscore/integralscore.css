@@ -1,0 +1,164 @@
+body {
+	background-color: #F7F7F7;
+}
+
+.wrap {
+	width: 100%;
+}
+
+.title {
+	width: 100%;
+	position: relative;
+	text-align: center;
+	font-size: 14px;
+	color: #333333;
+	font-weight: 600;
+	height: 50px;
+	line-height: 50px;
+	background-color: white;
+}
+
+.back {
+	position: absolute;
+	left: 20px;
+	top: 18px;
+	width: 10px;
+	height: 15px;
+}
+
+.wrap div {
+	width: 100%;
+}
+
+.currentAccount {
+	text-indent: 15px;
+	height: 40px;
+	line-height: 40px;
+	color: #888;
+	background-color: #F7F7F7;
+}
+
+.currentYugan {
+	text-indent: 15px;
+	height: 40px;
+	line-height: 40px;
+	color: #888;
+	font-size: 12px;
+	background-color: #F7F7F7;
+}
+
+.getYugan {
+	text-indent: 15px;
+	overflow: hidden;
+	background-color: white;
+	height: 40px;
+	line-height: 40px;
+	font-size: 17px;
+}
+
+.getYugan span:nth-child(2) {
+	float: right;
+	color: #F54749;
+	padding-right: 15px;
+}
+
+.chongzhi {
+	overflow: hidden;
+	background-color: #F7F7F7;
+	text-align: center;
+	height: 40px;
+	padding-top: 10px;
+}
+
+.chongzhi div {
+	display: inline-block;
+	width: 70px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	background-color: white;
+	border: 1px solid white;
+}
+
+.chongzhi div:hover {
+	border: 1px solid #F0AD4E;
+	color: #F54749;
+}
+
+.chongzhi1 {
+	overflow: hidden;
+	background-color: #F7F7F7;
+	text-align: center;
+	height: 40px;
+	padding-top: 10px;
+}
+
+.chongzhi1 div {
+	display: inline-block;
+	width: 80%;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	background-color: white;
+	border: 1px solid white;
+}
+
+.chongzhi1 div input {
+	width: 90%;
+	height: 30px;
+	border: none;
+	outline: none;
+}
+
+.chongzhi1 div:hover {
+	border: 1px solid #F0AD4E;
+	color: #F54749;
+}
+
+input[type="text"]:focus {
+	border: none;
+}
+
+.zhifu {
+	overflow: hidden;
+	height: 40px;
+	line-height: 40px;
+	margin-top: 20px;
+	background-color: #F7F7F7;
+	text-indent: 15px;
+}
+
+.zhifu  span:nth-child(1) {
+	color: #F54749;
+}
+
+.zhifu  span:nth-child(2) {
+	float: right;
+	font-size: 12px;
+	color: #888;
+	padding-right: 15px;
+}
+
+.ljgm {
+	width: 100%;
+	text-align: center;
+	margin-top: 20px;
+	background-color: #F7F7F7;
+}
+
+.goumaiBtn {
+	display: inline-block;
+	width: 80%;
+	margin: 0 auto;
+	height: 40px;
+	line-height: 40px;
+	color: white;
+	font-size: 18px;
+	text-align: center;
+	background-color: #Ffac00;
+}
+
+.goumaiBtn:active {
+	position: relative;
+	top: 1px;
+}

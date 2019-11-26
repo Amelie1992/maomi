@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xed.financing.wxgzh.mapper.goldDetails.GoldDetailsMapper">
+
+	<!-- 添加金账户明细 -->
+	<insert id="addGoldDetail" parameterType="goldDetailsBean">
+		INSERT INTO mm_gold_details (
+			in_cust_no,
+			out_cust_no,
+			money,
+			transfer_type,
+			purpose,
+			deal_time,
+			remark
+		)
+		VALUES (
+			#{inCustNo},
+			#{outCustNo},
+			#{money},
+			#{transferType},
+			#{purpose},
+			NOW(),
+			#{remark}
+		)
+	</insert>
+</mapper>

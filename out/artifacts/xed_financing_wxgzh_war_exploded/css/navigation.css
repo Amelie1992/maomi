@@ -1,0 +1,22 @@
+.currentChose {
+	color: #FC7831;
+}
+
+.footer {
+	background-color: #fafafa;
+	/*height: 80px;*/
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+}
+
+.footer table {
+	width: 100%;
+	text-align: center;
+	font-size: 14px;
+}
+
+.footer table img {
+	width: 30%;
+}
